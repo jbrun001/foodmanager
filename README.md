@@ -3,9 +3,9 @@
 ## application prototype goals
 -	[X] Set up, understand flutter, create a framework for the application.
 -	[X] Prove that an application framework can be written in flutter, and works on multiple devices.
--	[X] Prove that list / search interface style is possible. Recipe Search.
--   [ ] Prove that recipe drag and drop is possible for meal planner current UI design.
+-	[X] Prove that list / search interface style is possible. Recipe Search UI.
 -   [X] Understand how styling is applied to flutter components
+-   [ ] Prove that recipe drag and drop is possible for meal planner current UI design.
 -   [ ] Understand if/how elements can be re-used in different places without duplication (for example recipe list, or recipe view)
 -	[ ] Prove that the app can access JSON from a rest API (can be a public API for technical proof of concept, because Databases project will be deployed on server)
 -   [ ] Prove that data can be passed from one screen to another, securely
