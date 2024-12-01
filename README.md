@@ -5,7 +5,7 @@
 -	[X] Prove that an application framework can be written in flutter, and works on multiple devices.
 -	[X] Prove that list / search interface style is possible. Recipe Search UI.
 -   [X] Understand how styling is applied to flutter components
--   [ ] Prove that recipe drag and drop is possible for meal planner current UI design.
+-   [X] Prove that recipe drag and drop is possible for meal planner current UI design.
 -   [ ] Understand if/how elements can be re-used in different places without duplication (for example recipe list, or recipe view)
 -	[ ] Prove that the app can access JSON from a rest API (can be a public API for technical proof of concept, because Databases project will be deployed on server)
 -   [ ] Prove that data can be passed from one screen to another, securely
@@ -18,8 +18,9 @@
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 - [online documentation](https://docs.flutter.dev/)
 
-# UML
+# Requirements
 
+## Use Case 
 
 
 # UI flow
@@ -89,7 +90,6 @@ erDiagram
       portions INT  "portions of this recipe in the meal plan"
       recipe_id INT FK "id of the recipe used on this day"
     }
-
     ingredients {
         ingredient_id INT PK "unique id for each ingredient" 
         name VARCHAR(50) "description of the ingredient e.g. lamb mince"
@@ -148,6 +148,7 @@ erDiagram
       user_id INT FK "user who created this smart list"
       store_id INT FK "the selected store for this smart list"
       week DATETIME "date of the first day in the meal plan"
+      amount DECIMAL "weight of fresh produce in grams"
     }
     smartlistitems {
       listitem_id INT PK
@@ -155,6 +156,15 @@ erDiagram
       amount DECIMAL "amount of ingredient in the smart list"
       units VARCHAR(10) "units of the ingredient in the smart list"
       purchased BOOLEAN "indicates if item was purchased"
+    }
+    wastelogs {
+      waste_id INT PK "unique reference for this waste logging"
+      user_id INT FK
+      week DATETIME "date of the start of the week"
+      logdate DATETIME "date and time the recording was made"
+      amount DECIMAL "total waste in grams"
+      composted DECIMAL "%age composted"
+      inedible_parts DECIMAL "%age inedible parts"
     }
 
     recipes ||--|{ recipe_methods : contains
@@ -167,6 +177,7 @@ erDiagram
     users ||--|{ mealplan : allows
     users ||--|{ smartlists : allows
     smartlists ||--|{ smartlistitems : contains
+    users ||--|{ wastelogs : allows
 ```
 
 #
