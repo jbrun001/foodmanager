@@ -154,6 +154,7 @@ erDiagram
       ingredient_id INT FK
       amount DECIMAL "amount of ingredient in the smart list"
       units VARCHAR(10) "units of the ingredient in the smart list"
+      purchased BOOLEAN "indicates if item was purchased"
     }
 
     recipes ||--|{ recipe_methods : contains
