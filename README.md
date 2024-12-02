@@ -18,6 +18,12 @@
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 - [online documentation](https://docs.flutter.dev/)
 
+## Android APK build process
+
+`flutter build apk`
+apk will be in `build/output/flutter-apk/`
+`apb install build/app/flutter-apk/app-release.apk`
+
 # Requirements
 
 ## Use Case 
