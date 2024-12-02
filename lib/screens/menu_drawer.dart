@@ -9,24 +9,32 @@ class MenuDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(color: Colors.blue),
-            child: Text('Menu',
+            child: Text('POC Menu',
                 style: TextStyle(color: Colors.white, fontSize: 24)),
           ),
           ListTile(
-            title: Text('Meal Planner'),
+            title: Text('Recipes POC Design'),
+            onTap: () => context.go('/recipes'),
+          ),
+          ListTile(
+            title: Text('Meal Planner POC Drag and Drop'),
             onTap: () => context.go('/planner'),
           ),
           ListTile(
-            title: Text('Recipes'),
-            onTap: () => context.go('/recipes'),
+            title: Text('POC data send'),
+            onTap: () => context.go('/datasend'),
+          ),
+          ListTile(
+            title: Text('POC JSON API'),
+            onTap: () => context.go('/jsonapi'),
+          ),
+          ListTile(
+            title: Text('POC firebase'),
+            onTap: () => context.go('/firebase'),
           ),
           ListTile(
             title: Text('Smartlist'),
             onTap: () => context.go('/smartlist'),
-          ),
-          ListTile(
-            title: Text('Profile'),
-            onTap: () => context.go('/profile'),
           ),
         ],
       ),

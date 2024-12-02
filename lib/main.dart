@@ -4,7 +4,9 @@ import 'screens/login_screen.dart';
 import 'screens/planner_screen.dart';
 import 'screens/recipes_screen.dart';
 import 'screens/smartlist_screen.dart';
-import 'screens/profile_screen.dart';
+import 'screens/pocjsonapi_screen.dart';
+import 'screens/pocdatasend_screen.dart';
+import 'screens/pocfirebase_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -40,12 +42,16 @@ final GoRouter _router = GoRouter(
       builder: (context, state) => SmartlistScreen(),
     ),
     GoRoute(
-      path: '/profile/:id', // Route with a parameter
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return ProfileScreen(
-            id: id); // pass `id` to the ProfileScreen as a test
-      },
+      path: '/datasend',
+      builder: (context, state) => PocdatasendScreen(),
+    ),
+    GoRoute(
+      path: '/jsonapi',
+      builder: (context, state) => PocjsonapiScreen(),
+    ),
+    GoRoute(
+      path: '/firebase',
+      builder: (context, state) => PocfirebaseScreen(),
     ),
   ],
 );

@@ -227,7 +227,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recipes'),
+        title: Text('Recipes - POC wireframes possible'),
       ),
       drawer: MenuDrawer(),
       body: Stack(

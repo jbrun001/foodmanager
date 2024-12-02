@@ -271,7 +271,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
     return Scaffold(
       appBar: AppBar(
         // top bar
-        title: Text('Meal Planner'), // screen name
+        title: Text('Meal Planner POC drag and drop'), // screen name
       ),
       drawer: MenuDrawer(), // menu icon in top bar
       body: Column(
