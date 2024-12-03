@@ -8,7 +8,7 @@
 - [X] Prove that recipe drag and drop is possible for meal planner current UI design.
 - [ ] Understand if/how elements can be re-used in different places without duplication (for example recipe list, or recipe view)
 -	[ ] Prove that the app can access JSON from a rest API (can be a public API for technical proof of concept, because Databases project will be deployed on server)
-- [ ] Prove that data can be passed from one screen to another, securely
+- [X] Prove that data can be passed from one screen to another, securely
 -	[ ] Prove a test connection to firebase works (by reading and saving some data)
 
 
