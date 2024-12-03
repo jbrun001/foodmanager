@@ -21,10 +21,6 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => context.go('/planner'),
           ),
           ListTile(
-            title: Text('POC data send'),
-            onTap: () => context.go('/datasend'),
-          ),
-          ListTile(
             title: Text('POC JSON API'),
             onTap: () => context.go('/jsonapi'),
           ),

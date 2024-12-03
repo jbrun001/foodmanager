@@ -5,7 +5,6 @@ import 'screens/planner_screen.dart';
 import 'screens/recipes_screen.dart';
 import 'screens/smartlist_screen.dart';
 import 'screens/pocjsonapi_screen.dart';
-import 'screens/pocdatasend_screen.dart';
 import 'screens/pocfirebase_screen.dart';
 
 void main() {
@@ -40,10 +39,6 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/smartlist',
       builder: (context, state) => SmartlistScreen(),
-    ),
-    GoRoute(
-      path: '/datasend',
-      builder: (context, state) => PocdatasendScreen(),
     ),
     GoRoute(
       path: '/jsonapi',
