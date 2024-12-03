@@ -40,17 +40,16 @@ flowchart
     login["login<br>process"]
     menudrawer["menu<br>drawer"]
     recipes["recipe<br>select"]
-    addtomylist[["add recipe to<br> my recipes"]]
     recipeview[["view<br>recipe"]]
     planner["meal<br>planner"]
     cooked[["remove meal<br>ingredients<br>from stock"]]
-    smartlist["shopping<br>list"]
+    smartlist["smart<br>list"]
     addingredients[["add<br>ingredients<br>to stock"]]
     leftovers["leftover<br>preview"]
     recipesuggest[["suggest<br>recipe"]]
     ingredientstock["ingredient<br>stock"]
     logwaste["log<br>food waste"]
-    analysewaste["analyse<br>waste"]
+    analysewaste[["analyse<br>waste"]]
     logout["logout<br>process"]
 
     login-->menudrawer
@@ -58,16 +57,15 @@ flowchart
     menudrawer-->planner
     planner-->cooked
     menudrawer-->recipes
-    recipes-->addtomylist
     recipes-->recipeview
     menudrawer-->smartlist
-    smartlist-->leftovers
+    menudrawer-->leftovers
+    ingredientstock-->addingredients
     leftovers-->recipesuggest
-    recipesuggest-->addtomylist
-    smartlist-->addingredients
+    leftovers-->recipeview
     menudrawer-->ingredientstock
     menudrawer-->logwaste
-    menudrawer-->analysewaste
+    logwaste-->analysewaste
     menudrawer-->logout
 
 ```
