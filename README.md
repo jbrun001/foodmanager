@@ -96,6 +96,15 @@ erDiagram
       portions INT  "portions of this recipe in the meal plan"
       recipe_id INT FK "id of the recipe used on this day"
     }
+
+    mealplan_ingredients {
+      item_id INT PK
+      mealplan_id INT FK
+      ingredient_id INT FK
+      amount DECIMAL "amount reqired by the recipe"
+      units VARCHAR(10) "units of the ingredient in the meal plan ingredient list"
+    }
+
     ingredients {
         ingredient_id INT PK "unique id for each ingredient" 
         name VARCHAR(50) "description of the ingredient e.g. lamb mince"
@@ -151,17 +160,22 @@ erDiagram
     }
     smartlists {
       list_id INT PK "id for this smart list - one per week"
+      mealplan_id INT FK "id for the meal plan that this smart list relates to"
       user_id INT FK "user who created this smart list"
       store_id INT FK "the selected store for this smart list"
       week DATETIME "date of the first day in the meal plan"
-      amount DECIMAL "weight of fresh produce in grams"
+      amount DECIMAL "weight of fresh produce in grams required by recipes"
     }
     smartlistitems {
       listitem_id INT PK
       ingredient_id INT FK
-      amount DECIMAL "amount of ingredient in the smart list"
+      mealplan_id INT FK
+      amount DECIMAL "amount reqired by the recipe"
       units VARCHAR(10) "units of the ingredient in the smart list"
       purchased BOOLEAN "indicates if item was purchased"
+      purchase_amount DECIMAL "amount of ingredient that needs to be purchased"
+      leftover_amount DECIMAL "amount of ingredient that will be left over"
+      recipe_amount DECIMAL "amount of ingredient that all meal plan recipes require"
     }
     wastelogs {
       waste_id INT PK "unique reference for this waste logging"
@@ -180,6 +194,7 @@ erDiagram
     stock ||--|| ingredients : allows
     moq ||--|| store : allows
     mealplan ||--|| recipes : allows
+    mealplan ||--|{ mealplan_ingredients : allows
     users ||--|{ mealplan : allows
     users ||--|{ smartlists : allows
     smartlists ||--|{ smartlistitems : contains

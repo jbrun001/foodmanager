@@ -1,0 +1,84 @@
+// I have written the pseudo code for an SQL Dataset to understand 
+// the flow, and to demonstrate the data design is correct, as I am more familiar
+// with SQL. This will need to be translated to work with the denormalised
+// NoSQL collections during the project.
+
+// get a result set of all the ingredients needed for all the meals
+// in the meal plan. currentMealPlan is the id of the currently 
+// selected mealplan.
+mealPlanIngredients = 
+    select mealplan.mealplan_id, mealplan.portions,
+        ingredients.ingredient_id, ingredients.name,
+        recipe_ingredients.amount as amountRequired
+    join
+        recipe on mealplan.recipe_id = recipe.recipe_id
+    join 
+        recipe_ingredients on recipe_ingredients.recipe_id = recipe.recipe_id
+    join 
+        ingredients on recipe_ingredients.ingredient_id = ingredients.ingredient_id
+    where mealplan.mealplan_id = currentMealPlan
+// make sure there is no existing data
+delete * from mealplan_ingredients where mealplan_ingredients = currentMealPlan
+foreach{mealPlanIngredients} {
+    // calculate the correct amount for the portions required, round up result
+    // and add to a list of mealplan ingredients
+    if ingredient.amount != 0 && recipe.portion != 0 {
+        amountRequired = ceil((ingredient.amount / recipe.portions) * mealPlan.portions)
+        insert 
+        into 
+            mealplan_ingredients (mealplan.meal_plan_id, ingredient_id, name, amount) 
+        values 
+            (currentMealPlan, ingredient.id, ingredient.name, amountRequired)
+    }
+}
+
+// get the amount of each ingredient required for the whole meal plan, 
+// the minimumOrderAmount for each ingredient for the current store and
+// the current amount in stock for this ingredient in one result table
+smartListIngredients = 
+    select mealplan_ingredients.ingredient_id, mealplan_ingredients.name,
+        sum(mealplan_ingredients.amount) as recipeAmount,
+        moq.amount as minimumOrderAmount,
+        stock.amount as currentStock,
+        mealplan.mealplan_id,
+        sum(mealplan_ingredients.amount) - stock.amount as additionalAmount
+    from
+        mealplan_ingredients
+    join
+        mealplan on mealplan_ingredients.mealplan_id = mealplan.mealplan_id
+    join
+        moq on mealplan_ingredients.ingredient_id = moq.ingredient_id AND moq.store = 'Tesco'
+    join
+        stock on mealplan_ingredients.ingredient_id = stock.ingredient_id 
+    where  
+        mealplan.mealplan_id = currentMealPlan
+    group by 
+        mealplan_ingredients.ingredient_id,
+        mealplan_ingredients.name,
+        mealplan.mealplan_id,
+        moq.amount,
+        stock.amount
+
+// remove any data already in this smart list
+delete * from smartlistitems where smartlistitems.mealplan_id = currentMealPlan
+// calculate what we need to buy based on what we need and what the minimum order is
+foreach (smartListIngredients) {
+    // only put items on the smart list that need to be purchased
+    if additionalAmount > 0 {
+        // calculate the ratio of what we need vs the minimum order and round up
+        // to nearest whole number
+        amountToPurchase = ceil(additionalAmount/minimumOrderAmount)
+        // assuming all meals are cooked calculate what will be left at the end of the meal plan
+        amountLeftover = (amountToPurchase - recipeAmount)
+        insert 
+        into 
+            smartlistitems (mealplan_id, ingredient_id, purchase_amount, leftover_amount, recipe_amount)
+        values             
+            (currentMealPlan, smartListIngredients.ingredient_id, amountToPurchase, amountLeftOver, recipeAmount)
+    }
+}
+
+// this code will need to be re-run when entering the smart lists screen, if there 
+// has been any change to the mealplan on this date or any change to the stock levels
+// when on the smart list screen this needs to be re-run if the date, or the store 
+// is changed
