@@ -1,0 +1,11 @@
+[
+  {
+    "waste_id": 1,
+    "user_id": 1,
+    "week": "2024-11-24",
+    "logdate": "2024-11-24",
+    "amount": 203.3,
+    "composted": 10.3,
+    "inedible__parts": 15.4
+  }
+]

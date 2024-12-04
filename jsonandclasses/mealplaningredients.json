@@ -1,0 +1,9 @@
+[
+    {
+        "item_id": 1,
+        "mealplan_id:":  1,
+        "ingredient_id": 2,
+        "amount": 400,
+        "units": "g"
+    }
+]

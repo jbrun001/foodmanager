@@ -19,6 +19,9 @@
 - [flutter design material.dart tutorial - medium](https://medium.com/@flutter.rashpinder/flutters-the-material-app-widget-a-developer-s-guided-series-part-1-cded465e6e8e)
 - [flutter design material.dart tutorial - geeksforgeeks](https://www.geeksforgeeks.org/flutter-material-design/)
 - [flutter design material.dart guide and code labs - material.io](https://m2.material.io/develop/flutter)
+- [research into flutter and firebase](https://codewithandrea.com/videos/starter-architecture-flutter-firebase/)
+- [JSON to dart converter](https://quicktype.io/dart)
+- [Dart to Plant/Mermaid](https://pub.dev/packages/dcdg)
 
 ## Android APK build process
 
@@ -109,6 +112,172 @@ flowchart
 
 
 # data structures
+
+
+## Class Diagrams
+```mermaid
+classDiagram
+    class User {
+        int userId
+        String email
+        String pwhash
+        int preferredPortions
+        String preferredStore
+        User(userId: int, email: String, pwhash: String, preferredPortions: int, preferredStore: String)
+        verifyPassword(String inputPassword): bool
+        toJson(): Map<String, dynamic>
+        fromJson(Map<String, dynamic> json): User
+        validateEmail(): bool
+    }
+
+    class Recipe {
+        int recipeId
+        String title
+        String description
+        String thumbnail
+        String image
+        int cooktime
+        int preptime
+        int calories
+        int portions
+        String cusine
+        String category
+        String keywords
+        List~String~ additionalIngredients
+        List~Recipeingredient~ recipeingredients
+        List~RecipeMethod~ recipeMethods
+        Recipe(recipeId: int, title: String, description: String, thumbnail: String, image: String, cooktime: int, preptime: int, calories: int, portions: int, cusine: String, category: String, keywords: String, additionalIngredients: List~String~, recipeingredients: List~Recipeingredient~, recipeMethods: List~RecipeMethod~)
+        fromJson(Map<String, dynamic> json): Recipe
+        toJson(): Map<String, dynamic>
+    }
+
+    class RecipeMethod {
+        int recipeMethodId
+        int stepOrder
+        String title
+        String description
+        String image
+        RecipeMethod(recipeMethodId: int, stepOrder: int, title: String, description: String, image: String)
+        fromJson(Map<String, dynamic> json): RecipeMethod
+        toJson(): Map<String, dynamic>
+    }
+
+    class RecipeIngredient {
+        int recipeIngredientId
+        int recipeId
+        double amount
+        List~Ingredient~ ingredients
+        Recipeingredient(recipeIngredientId: int, recipeId: int, amount: double, ingredients: List~Ingredient~)
+        fromJson(Map<String, dynamic> json): RecipeMethod
+        toJson(): Map<String, dynamic>
+    }
+
+    class Ingredient {
+        int ingredientId
+        String ingredientName
+        String units
+        Ingredient(ingredientId: int, ingredientName: String, units: String)
+        fromJson(Map<String, dynamic> json): RecipeMethod
+        toJson(): Map<String, dynamic>
+    }
+
+    class MealPlan {
+        int mealPlanId
+        int userId
+        DateTime mealDate
+        int portions
+        int recipeId
+    }
+
+    class MealPlanIngredient {
+        int itemId
+        int mealplanId
+        int ingredientId
+        double amount
+        String units
+        MealPlanIngredients(itemId: int, mealplanId: int, ingredientId: int, amount: double, units: String)
+    }
+
+    class Stock {
+        int stockId
+        int userId
+        int ingredientId
+        double ingredientAmount
+        Stock(stockId: int, userId: int, ingredientId: int, ingredientAmount: double)
+    }
+
+
+     class Moq {
+        int moqId
+        int storeId
+        int ingredientId
+        double amount
+        String units
+        DateTime lastUpdated
+        Moq(moqId: int, storeId: int, ingredientId: int, amount: double, units: String, lastUpdated: DateTime)
+    }
+
+    class Store {
+      int storeId
+      String name
+      Store(storeId: String, name: String)
+    }
+
+    class Smartlist {
+        int listId
+        int mealplanId
+        int userId
+        int storeId
+        DateTime week
+        double amount
+        Smartlist(listId: int, mealplanId: int, userId: int, storeId: int, week: DateTime, amount: double)
+    }
+
+       class Smartlistitem {
+        int listitemId
+        int ingredientId
+        int mealplanId
+        double amount
+        bool purchased
+        double purchaseAmount
+        double leftoverAmount
+        double recipeAmount
+        Smartlistitem(listitemId: int, ingredientId: int, mealplanId: int, amount: double, purchased: bool, purchaseAmount: double, leftoverAmount: double, recipeAmount: double)
+    }
+
+    class WasteLog {
+        int wasteId
+        int userId
+        DateTime week
+        DateTime logdate
+        double amount
+        double composted
+        double inedibleParts
+        WasteLog(wasteId: int, userId: int, week: DateTime, logdate: DateTime, amount: double, composted: double, inedibleParts: double)
+    }
+
+    User "1" --> "*" WasteLog
+    User "1" --> "*" Smartlist : links to
+    Smartlist "1" --> "*" Smartlistitem
+    SmartlistItem "1" --> "1" Ingredient : links to
+    Store "1" --> "*" Moq : links to
+    Ingredient "1"-->"*" Moq : links to
+    User "1" --> "*" Stock : links to
+    User "1" --> "*" MealPlan : links to
+    Stock "1" --> "1" Ingredient : links to
+    MealPlan "1" --> "*" MealPlanIngredients 
+    MealPlanIngredients "1" --> "1" Ingredient
+    MealPlan "1" --> "1" Recipe : links to
+    Recipe "1" -- "*" RecipeIngredient
+    Recipe "1" -- "*" RecipeMethod
+    RecipeIngredient "1" -- "1" Ingredient
+
+
+
+```
+
+## Database Design SQL
+
 
 ```mermaid
 ---
@@ -236,4 +405,4 @@ erDiagram
     users ||--|{ wastelogs : allows
 ```
 
-#
+

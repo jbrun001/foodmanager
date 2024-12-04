@@ -1,0 +1,47 @@
+[
+    {
+      "recipe_id": 1,
+      "title": "One-Pot Hainanese-Style Chicken & Rice with Pak Choi",
+      "description": "",
+      "thumbnail": "https://via.placeholder.com/100",
+      "image": "https://via.placeholder.com/200",
+      "cooktime": 25,
+      "preptime": 5,
+      "calories": 620,
+      "portions": 4,
+      "cusine": "hainanese",
+      "category": "meal",
+      "keywords": "",
+      "additional_ingredients": ["Salt", "Pepper"],
+      "recipeingredients": [
+        {
+          "recipe_ingredient_id": 1,
+          "recipe_id": 1,
+          "amount": 200,
+          "ingredients": [
+            {
+              "ingredient_id": 1, 
+              "ingredient_name": "Spaghetti", 
+              "units": "g"
+            }
+          ]
+        }
+      ],
+      "recipe_methods": [
+        {
+          "recipe_method_id": 1, 
+          "step_order": 1, 
+          "title": "", 
+          "description": "Boil the water.", 
+          "image": ""
+        },
+        {
+          "recipe_method_id": 2, 
+          "step_order": 2, 
+          "title": "", 
+          "description": "Boil the water again.", 
+          "image": ""
+        }
+      ]
+    }
+  ]

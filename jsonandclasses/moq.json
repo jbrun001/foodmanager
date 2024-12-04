@@ -1,0 +1,10 @@
+[
+    {
+        "moq_id": 1,
+        "store_id": 1, 
+        "ingredient_id": 1,
+        "amount": 200,
+        "units": "g",
+        "last_updated": "2024-11-20"
+    }
+]

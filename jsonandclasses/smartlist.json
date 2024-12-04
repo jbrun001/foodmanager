@@ -1,0 +1,10 @@
+[
+  {
+    "list_id": 1,
+    "mealplan_id": 1,
+    "user_id": 1,
+    "store_id": 1,
+    "week": "2024-11-23",
+    "amount": 20.2
+  }
+]

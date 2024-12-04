@@ -1,0 +1,12 @@
+[
+  {
+    "listitemId": 1,
+    "ingredient_id": 1,
+    "mealplan_id": 1,
+    "amount": 120.4,
+    "purchased": true,
+    "purchase_amount": 230.4,
+    "leftover_amount": 243.2,
+    "recipe_amount": 230.1
+  }
+]
