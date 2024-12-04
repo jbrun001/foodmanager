@@ -259,14 +259,14 @@ classDiagram
     User "1" --> "*" WasteLog
     User "1" --> "*" Smartlist : links to
     Smartlist "1" --> "*" Smartlistitem
-    SmartlistItem "1" --> "1" Ingredient : links to
+    Smartlistitem "1" --> "1" Ingredient : links to
     Store "1" --> "*" Moq : links to
     Ingredient "1"-->"*" Moq : links to
     User "1" --> "*" Stock : links to
     User "1" --> "*" MealPlan : links to
     Stock "1" --> "1" Ingredient : links to
     MealPlan "1" --> "*" MealPlanIngredients 
-    MealPlanIngredients "1" --> "1" Ingredient
+    MealPlanIngredient "1" --> "1" Ingredient
     MealPlan "1" --> "1" Recipe : links to
     Recipe "1" -- "*" RecipeIngredient
     Recipe "1" -- "*" RecipeMethod
