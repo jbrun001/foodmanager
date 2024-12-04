@@ -33,6 +33,8 @@ copy to drive and download from there.
 
 
 # UI flow
+
+## user application UI flow
 ```mermaid
 ---
 config:
@@ -72,7 +74,39 @@ flowchart
     menudrawer-->logout
 
 ```
-    
+
+## admin website UI flow
+```mermaid
+---
+config:
+#  look: handDrawn
+  theme: base
+---
+flowchart
+    login["login<br>process"]
+    index["index<br>welcome"]
+    menudrawer["menu<br>drawer"]
+    users["manage<br>users"]
+    quantities["manage<br>quantities"]
+    ingredients["manage<br>ingredients"]
+    recipes["manage<br>recipes"]
+    addingredients[["add<br>ingredients<br>to recipe"]]
+    addmethods[["add<br>methods<br>to recipe"]]
+    download["download<br>data"]
+    logout["logout<br>process"]
+    login-->menudrawer
+    login-->index
+    menudrawer-->users
+    menudrawer-->quantities
+    menudrawer-->ingredients
+    menudrawer-->recipes
+    recipes-->addingredients
+    recipes-->addmethods
+    menudrawer-->download
+    menudrawer-->logout
+```
+
+
 
 # data structures
 
