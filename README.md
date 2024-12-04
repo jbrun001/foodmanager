@@ -265,7 +265,7 @@ classDiagram
     User "1" --> "*" Stock : links to
     User "1" --> "*" MealPlan : links to
     Stock "1" --> "1" Ingredient : links to
-    MealPlan "1" --> "*" MealPlanIngredients 
+    MealPlan "1" --> "*" MealPlanIngredient
     MealPlanIngredient "1" --> "1" Ingredient
     MealPlan "1" --> "1" Recipe : links to
     Recipe "1" -- "*" RecipeIngredient
