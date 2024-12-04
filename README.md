@@ -115,6 +115,217 @@ flowchart
 
 
 ## Class Diagrams
+
+
+### high level overview
+```mermaid
+classDiagram
+    class User {
+        userId
+        email
+    }
+
+    class Recipe {
+        recipeId
+        title
+    }
+
+    class MealPlan {
+        mealPlanId
+        userId
+        recipeId
+    }
+
+    class Smartlist {
+        listId
+        mealplanId
+        userId
+    }
+
+    class WasteLog {
+        wasteId
+        userId
+    }
+
+    class Store {
+        storeId
+        name
+    }
+
+    class Ingredient {
+        ingredientId
+        name
+    }
+
+    User "1" --> "*" WasteLog
+    User "1" --> "*" MealPlan
+    User "1" --> "*" Smartlist
+    MealPlan "1" --> "1" Recipe
+    Smartlist "1" --> "1" MealPlan
+    Smartlist "1" --> "*" Ingredient
+    Store "1" --> "*" Ingredient
+
+```
+### User related entities
+```mermaid
+classDiagram
+    class User {
+        +int userId
+        +String email
+        -String pwhash
+        +int preferredPortions
+        +String preferredStore
+        +verifyPassword(String inputPassword): bool
+        +toJson(): Map<String, dynamic>
+        +fromJson(Map<String, dynamic> json): User
+        +validateEmail(): bool
+    }
+
+    class WasteLog {
+        +int wasteId
+        +int userId
+        +DateTime week
+        +DateTime logdate
+        +double amount
+        +double composted
+        +double inedibleParts
+    }
+
+    class Stock {
+        +int stockId
+        +int userId
+        +int ingredientId
+        +double ingredientAmount
+    }
+
+    class Smartlist {
+        +int listId
+        +int mealplanId
+        +int userId
+        +int storeId
+        +DateTime week
+        +double amount
+    }
+
+    class Smartlistitem {
+        +int listitemId
+        +int ingredientId
+        +int mealplanId
+        +double amount
+        +bool purchased
+        +double purchaseAmount
+        +double leftoverAmount
+        +double recipeAmount
+    }
+
+    User "1" --> "*" WasteLog
+    User "1" --> "*" Stock
+    User "1" --> "*" Smartlist
+    Smartlist "1" --> "*" Smartlistitem
+    Smartlistitem "1" --> "1" Ingredient
+```
+### Recipe and Meal Planning Entities
+```mermaid
+classDiagram
+    class Recipe {
+        +int recipeId
+        +String title
+        +String description
+        +String thumbnail
+        +String image
+        +int cooktime
+        +int preptime
+        +int calories
+        +int portions
+        +String cusine
+        +String category
+        +String keywords
+        +List~String~ additionalIngredients
+        +fromJson(Map<String, dynamic> json): Recipe
+        +toJson(): Map<String, dynamic>
+    }
+
+    class RecipeIngredient {
+        +int recipeIngredientId
+        +int recipeId
+        +double amount
+        +List~Ingredient~ ingredients
+    }
+
+    class RecipeMethod {
+        +int recipeMethodId
+        +int stepOrder
+        +String title
+        +String description
+        +String image
+    }
+
+    class Ingredient {
+        +int ingredientId
+        +String ingredientName
+        +String units
+    }
+
+    class MealPlan {
+        +int mealPlanId
+        +int userId
+        +DateTime mealDate
+        +int portions
+        +int recipeId
+    }
+
+    class MealPlanIngredient {
+        +int itemId
+        +int mealplanId
+        +int ingredientId
+        +double amount
+        +String units
+    }
+
+    Recipe "1" --> "*" RecipeIngredient
+    Recipe "1" --> "*" RecipeMethod
+    RecipeIngredient "1" --> "1" Ingredient
+    MealPlan "1" --> "1" Recipe
+    MealPlan "1" --> "*" MealPlanIngredient
+    MealPlanIngredient "1" --> "1" Ingredient
+```
+### Store and Inventory Entities
+```mermaid
+classDiagram
+    class Store {
+        +int storeId
+        +String name
+    }
+
+    class Moq {
+        +int moqId
+        +int storeId
+        +int ingredientId
+        +double amount
+        +String units
+        +DateTime lastUpdated
+    }
+
+    class Ingredient {
+        +int ingredientId
+        +String ingredientName
+        +String units
+    }
+
+    class Stock {
+        +int stockId
+        +int userId
+        +int ingredientId
+        +double ingredientAmount
+    }
+
+    Store "1" --> "*" Moq
+    Moq "*" --> "1" Ingredient
+    Stock "1" --> "1" Ingredient
+```
+
+### Full Class Diagram (too big to include in documentation)
+
 ```mermaid
 classDiagram
     class User {
