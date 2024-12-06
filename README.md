@@ -35,4 +35,4 @@ development:
 copy to drive and download from there.
 
 ## Design & Method Diagrams
-[UI flow, Class Diagrams, Data ERDs](documentation/class-erd-userflow.md)
+[UI flow, Class Diagrams, Data ERDs](documentation/designandmethods/class-erd-userflow.md)
