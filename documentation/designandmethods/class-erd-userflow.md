@@ -269,6 +269,7 @@ classDiagram
         +int ingredientId
         +double amount
         +String units
+        +String ingredientURL
         +DateTime lastUpdated
     }
 
@@ -390,8 +391,9 @@ classDiagram
         int ingredientId
         double amount
         String units
+        String ingredientURL
         DateTime lastUpdated
-        Moq(moqId: int, storeId: int, ingredientId: int, amount: double, units: String, lastUpdated: DateTime)
+        Moq(moqId: int, storeId: int, ingredientId: int, amount: double, units: String, ingredientURL: String,lastUpdated: DateTime)
     }
 
     class Store {
@@ -504,7 +506,8 @@ erDiagram
         ingredient_id INT "ingredient that this minimum order quantity is for"
         amount DECIMAL "minimum order quanitity for this ingredient"
         units VARCHAR(10) "units for theminimum order quantity"
-        last_updated DATETiME "date and time this moq was checked"
+        ingredientURL VARCHAR(100) "the URL for this product at this store"
+        last_updated DATETIME "date and time this moq was checked"
     }
     store {
         store_id INT PK "unique id for a store"

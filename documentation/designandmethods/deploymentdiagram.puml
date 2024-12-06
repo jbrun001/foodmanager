@@ -1,0 +1,70 @@
+@startuml
+title Deployment Diagram for Food Manager App - Option A business logic in flutter 
+
+node "Client Devices" {
+  [Flutter App] <<Mobile>>
+}
+
+node "Firebase Cloud" {
+  [Firebase Database] <<Database>>
+}
+
+node "Server (doc@gs)" {
+  [Node.js App] <<Server>>
+  [Web Data Collector] <<Service>>
+}
+
+node "Third Party Servers" {
+  [Stores] <<External Service>>
+}
+
+'relationships descriptions
+[Flutter App] --> [Firebase Database] : <<Firebase SDK>>\nRead/Write Data
+[Node.js App] --> [Firebase Database] : <<Firebase Admin SDK>>\nWrite Quantity Data
+[Node.js App] --> [Web Data Collector] : <<Internal API Call>>\nObtain Data
+[Web Data Collector] --> [Stores] : <<HTTP(S)>>\nFetch Pack Sizes
+[Flutter App] --> [Firebase Database] : <<Firebase SDK>>\nAuthentication
+
+@enduml
+
+
+@startuml
+title Deployment Diagram for Food Manager App - Option B buisness logic in API
+
+node "Client Devices" {
+  [Flutter App] <<Mobile>>
+}
+
+node "Firebase Cloud" {
+  [Firebase Database] <<Database>>
+}
+
+node "Server (doc@gs)" {
+  [Node.js App] <<Server>>
+  [Web Data Collector] <<Service>>
+  [PortionAPI] <<Service>>
+  [SmartListAPI] <<Service>>
+  [SuggestedRecipeAPI] <<Service>>
+
+}
+
+node "Third Party Servers" {
+  [Stores] <<External Service>>
+}
+
+'relationships descriptions
+[Flutter App] --> [Firebase Database] : <<Firebase SDK>>\nRead/Write Data
+[Node.js App] --> [Firebase Database] : <<Firebase Admin SDK>>\nWrite Quantity Data
+[Node.js App] --> [Web Data Collector] : <<Internal API Call>>\nObtain Data
+[Flutter App] --> [PortionAPI] : <<HTTP(S) Rest API Call>>\nRequest Portion Conversion
+[PortionAPI] --> [Flutter App] : <<HTTP(S) JSON>>\nReturn Portion Conversion
+[Flutter App] --> [SmartListAPI] : <<HTTP(S) Rest API Call>>\nRequest SmartList Calculation
+[SmartListAPI] --> [Flutter App] : <<HTTP(S) JSON>>\nReturn SmartList
+[Flutter App] --> [SuggestedRecipeAPI] : <<HTTP(S) Rest API Call>>\nRequest Recipe Suggestion
+[Flutter App] --> [SuggestedRecipeAPI] : <<HTTP(S) JSONl>>\nReturn Recipe Suggestions
+
+[Node.js App] --> [Web Data Collector] : <<Internal API Call>>\nObtain Data
+[Web Data Collector] --> [Stores] : <<HTTP(S)>>\nFetch Pack Sizes
+[Flutter App] --> [Firebase Database] : <<Firebase SDK>>\nAuthentication
+
+@enduml

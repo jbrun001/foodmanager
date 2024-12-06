@@ -1,0 +1,28 @@
+@startuml
+title Component Diagram for Food Manager App
+
+package "Client Applications" {
+  [Flutter App] <<Mobile>>
+}
+
+
+package "Backend Cloud" {
+  [Firebase Database] <<Database>>
+}
+
+package "Backend doc@gs" {
+  [Node.js App] <<Server>>
+  [Web Data Collector] <<Service>>
+}
+
+package "Third Party" {
+  [Stores] <<External Service>>
+}
+
+[Flutter App] --> [Firebase Database] : <<Firebase SDK>>\n Read/Write Data
+[Node.js App] --> [Firebase Database] :  <<Firebase Admin SDK>>\n Write Quantity Data
+[Node.js App] --> [Web Data Collector] : <<Internal API Call>>\n Obtain Data
+[Web Data Collector] --> [Stores] : <<HTTP(S)>>\n Fetch Pack Sizes
+[Flutter App] --> [Firebase Database] : <<Firebase SDK>>\n Authentication
+
+@enduml
