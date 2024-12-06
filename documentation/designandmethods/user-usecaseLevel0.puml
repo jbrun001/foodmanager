@@ -1,0 +1,140 @@
+@startuml Level0
+
+skinparam shadowing true
+skinparam usecase {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+    FontColor Black
+    FontSize 14
+}
+
+skinparam actor {
+    FontColor DarkBlue
+}
+
+actor NewUser as "New User"
+actor User as "Signed-up User"
+'actor Admin as "Admin User"
+
+NewUser --> User : "Signs Up for Account"
+rectangle "Food Manager User Use Cases" #LightGoldenRodYellow {
+    left to right direction
+    rectangle "Account Administration" #Lavender {
+        User --> (Login) 
+        User --> (Manage Profile)
+        (Manage Profile) <-- (Reset Password) : <<extends>>
+        NewUser --> (Sign up)
+        User --> (Logout) 
+    }
+
+    rectangle "Meal Planning" #LightBlue {
+        User --> (View Recipes)
+        (View Recipes) <-- (Search\n Recipes) : <<extends>>
+        (View Recipes) <-- (View\n Recipe) : <<extends>>
+        (View Recipes) <-- (Select\n Recipe) : <<extends>>
+        User --> (View Meal Plan)
+        (View Meal Plan) <-- (Assign Recipe\n to Day) : <<extends>>
+        (Assign Recipe\n to Day) --> (Create\n Meal Plan\n Ingredients) : <<includes>>
+        (Update Recipe\n Portions) --> (Create\n Meal Plan\n Ingredients) : <<includes>>
+        (View Meal Plan) <-- (Update Recipe\n Portions) : <<extends>>
+        User --> (Left Over Preview)
+        (Left Over Preview) --> (Select\n Suggested\n Recipe)
+    }
+
+    rectangle "Shopping List Management" #LightBlue {
+        User --> (View Smart List)
+        (View Smart List) <-- (Select\n Store) : <<extends>>
+        (View Smart List) <-- (Select\n Meal Plan) : <<extends>>
+        (View Smart List) --> (Mark\n Ingredient\n as Bought) : <<extends>>
+
+    }
+
+    rectangle "Stock Managment" #LightBlue {
+      
+        User --> (View Stock)
+
+        (View Stock) <-- (Update\n Stock Amount) : <<extends>>
+        (View Stock) <-- (View\n Ingredients) : <<extends>>
+        (View\n Ingredients) --> (Search\n Ingredients) : <<includes>>
+        (View\n Ingredients) <-- (Add Ingredient\n to Stock) : <<extends>>
+    }
+    
+'rectangle "Food Manager Admin Use Cases" #LightGoldenRodYellow {
+'    rectangle "Recipe Managment" #LightBlue {
+'        (Manage Users) <-- Admin
+'        (Manage Quantities) <-- Admin
+'         (Manage Ingredients) <-- Admin
+'        (Manage Recipes) <-- Admin
+'        (Downloads) <-- Admin
+'        (Login) <-- Admin
+'        (Manage Profile) <-- Admin
+'        (Logout) <-- Admin
+'    }
+'}
+}
+@enduml
+
+
+
+
+
+@startuml Levelbackup
+left to right direction
+skinparam shadowing true
+skinparam usecase {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+    FontColor Black
+    FontSize 14
+}
+
+skinparam actor {
+    FontColor DarkBlue
+}
+
+actor User as "User"
+actor Admin as "Admin"
+
+rectangle "User Use Cases" #LightGoldenRodYellow {
+    User --> (Login) 
+    (Login) --> (Validate\n Password) : <<extends>>
+    User --> (View Recipes)
+    (View Recipes) --> (Search\n Recipes) : <<includes>>
+    (View Recipes) <-- (View\n Recipe) : <<extends>>
+    (View Recipes) <-- (Select\n Recipe) : <<extends>>
+    User --> (View Meal Plan)
+    (View Meal Plan) <-- (Assign Recipe\n to Day) : <<extends>>
+    (Assign Recipe\n to Day) --> (Create\n Meal Plan\n Ingredients) : <<includes>>
+    (Update Recipe\n Portions) --> (Create\n Meal Plan\n Ingredients) : <<includes>>
+    (View Meal Plan) <-- (Update Recipe\n Portions) : <<extends>>
+    
+    User --> (View Smart List)
+    (View Smart List) --> (Create List) : <<includes>
+    (View Smart List) <-- (Change Store) : <<extends>>
+    (Change Store) --> (Calculate\n Ingredient\n Amounts) : <<includes>>
+    (Create List) --> (Calculate\n Ingredient\n Amounts) : <<includes>>
+    (Calculate\n Ingredient\n Amounts) --> (Get Ingredien\n Meal Plan\n Amount) : <<includes>>
+    (Calculate\n Ingredient\n Amounts) --> (Get Mininum\n Ingredient\n Pack Size) : <<includes>>
+    (Calculate\n Ingredient\n Amounts) --> (Get\n Ingredient\n Stock Level) : <<includes>
+
+
+
+    User --> (View Stock)
+
+    (View Stock) <-- (Update\n Stock Amount) : <<extends>>
+    (View Stock) <-- (View\n Ingredients) : <<extends>>
+    (View\n Ingredients) --> (Search\n Ingredients) : <<includes>>
+    (View\n Ingredients) <-- (Add Ingredient\n to Stock) : <<extends>>
+
+    User --> (Logout) 
+}
+
+rectangle "Admin Use Cases" #LightBlue {
+    Admin --> (Manage Ingredients Database) 
+}
+
+
+
+@enduml
+
+

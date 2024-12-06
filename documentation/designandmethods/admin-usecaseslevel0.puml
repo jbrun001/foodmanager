@@ -1,0 +1,61 @@
+@startuml Level0
+left to right direction
+skinparam shadowing true
+skinparam usecase {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+    FontColor Black
+    FontSize 14
+}
+
+skinparam actor {
+    FontColor DarkBlue
+}
+
+actor Admin as "Admin User"
+rectangle "Food Manager Admin Use Cases"  #LightGoldenRodYellow {
+    rectangle "Recipe Managment" #LightGreen {
+        (Manage Recipes) <-- Admin
+        (Search\n Recipes) <-- (Manage Recipes) : <<extends>>
+        (Create\n Recipe) <-- (Manage Recipes) : <<extends>>
+        (View/Update/Delete\n Recipe) <-- (Search\n Recipes) : <<extends>>
+        (View/Update/Delete\nRecipe Ingredients) <-- (Create\n Recipe) : <<extends>>
+        (View/Update/Delete\n Methods) <-- (Create\n Recipe) : <<extends>>
+        (View/Update/Delete\n Methods) <-- (View/Update/Delete\n Recipe) : <<extends>>
+        (Create\n Recipe\n Methods) <-- (View/Update/Delete\n Recipe) : <<extends>>
+        (Create\n Recipe\n Methods) <-- (Create\n Recipe) : <<extends>>
+        (Create\n Recipe\n Ingredients) <-- (View/Update/Delete\n Recipe) : <<extends>>
+        (Create\n Recipe\n Ingredients) <-- (Create\n Recipe) : <<extends>>
+    }
+    rectangle "Ingredient Managment" #LightGreen {
+        (Manage Ingredients) <-- Admin
+        (Search\n Ingredients) <-- (Manage Ingredients) : <<extends>>
+        (Create\n Ingredient) <-- (Manage Ingredients) : <<extends>>
+        (View/Update/Delete\n Ingredient) <-- (Search\n Ingredients) : <<extends>>
+    }
+
+    rectangle "Quantity Managment" #LightGreen {
+        (Manage Quantities) <-- Admin
+        (Search\n Quantities) <-- (Manage Quantities) : <<extends>>
+        (Create\n Quantities) <-- (Manage Quantities) : <<extends>>
+        (View/Update/Delete\n Quantities) <-- (Search\n Quantities) : <<extends>>
+        (Create Store) <-- (Manage Quantities)
+        (View/Update/Delete\n Store) <-- (Manage Quantities)
+    }
+
+    rectangle "Data Managment" #LightGreen {
+        (Data Management) <-- Admin
+        (Download\n Food Waste\n Data) <-- (Data Management)
+    }
+
+    rectangle "Account Administration" #Lavender {
+        (Login) <-- Admin   
+        (Manage Profile) <-- Admin 
+        (Manage Profile) <-- (Reset Password) : <<extends>> 
+        (Logout) <-- Admin 
+        (View Users) <-- Admin
+        (Delete User) <-- (View Users) : <<extends>>
+        (Search User) <-- (View Users) : <<extends>>
+    }
+}
+@enduml
