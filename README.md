@@ -36,3 +36,8 @@ copy to drive and download from there.
 
 ## Design & Method Diagrams
 [UI flow, Class Diagrams, Data ERDs](documentation/designandmethods/class-erd-userflow.md)
+
+### Use Case - User
+![User Use Cases](./documentation/media/UseCase0-User.png)
+### Use Case - Admin
+![Admin Use Cases](./documentation/media/UseCase0-Admin.png)
