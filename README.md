@@ -26,9 +26,13 @@
 ## Android APK build process
 
 For actual apk on device to see size etc. prototype is 49Mb.
+
 `flutter build apk`
+
 apk will be in `build/output/flutter-apk/`
 
 development:
 copy to drive and download from there.
 
+## Design & Method Diagrams
+[UI flow, Class Diagrams, Data ERDs](documentation/class-erd-userflow.md)
