@@ -1,0 +1,26 @@
+@startuml
+skinparam shadowing true
+skinparam usecase {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+    FontColor Black
+    FontSize 14
+}
+left to right direction
+actor "Admin" as User
+actor "External\nStore\nWebsites" as Website
+actor "Cron\nScheduler" as Cron
+
+rectangle "Quanitity Web Scraping Use Case" #LightSteelBlue {
+  usecase "Set\n Scraping\n Schedule" as SetSchedule
+  usecase "Query\n Ingredients\n from Firebase" as QueryFirebase
+  usecase "Perform\n Scheduled\n Scraping" as Scrape
+  usecase "Store\n and\n Notify" as StoreNotify
+}
+
+User --> SetSchedule
+Cron --> QueryFirebase
+Cron --> Scrape
+Scrape --> Website
+Scrape --> StoreNotify
+@enduml

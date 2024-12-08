@@ -137,7 +137,7 @@ classDiagram
 classDiagram
     class User {
         +int userId
-        +String email
+        +Int firebaseId
         -String pwhash
         +int preferredPortions
         +String preferredStore
@@ -297,7 +297,7 @@ classDiagram
 classDiagram
     class User {
         int userId
-        String email
+        int firebaseId
         String pwhash
         int preferredPortions
         String preferredStore
@@ -467,7 +467,7 @@ config:
 erDiagram
     users{
         user_id INT PK "unique id for each user"
-        email VARCHAR(60) "email address also used for login name"
+        firebaseId INT "UUID from firebase"
         pwhash VARCHAR(200) "hashed password"
         preferred_portions INT "preferred portion size for recipes"
         preferred_store INT "preferred store for purchasing"
