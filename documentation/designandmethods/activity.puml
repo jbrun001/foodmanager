@@ -1,1 +1,29 @@
-us
+@startuml 
+title Activity Diagram for Viewing and Managing Smart List
+
+start
+
+:User opens the app;
+:View Smart List;
+
+if (Is there a Smart List for this Meal Plan?) then (no)
+  :Create List;
+else (yes)
+  if (Does the user want to change the store?) then (yes)
+    :Change Store;
+  endif
+endif
+
+:Calculate Ingredient Amounts;
+
+fork
+  :Get Ingredient Meal Plan Amount;
+fork again
+  :Get Minimum Ingredient Pack Size;
+fork again
+  :Get Ingredient Stock Level;
+endfork
+
+stop
+
+@enduml

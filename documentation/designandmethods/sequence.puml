@@ -1,34 +1,34 @@
-@startuml
-title Sequence Diagram for "Smart List" Feature
+@startuml 
+title Sequence Diagram for Viewing and Managing Smart List 
 
 actor User
 participant "Flutter App" as App
-participant "Firebase Database" as Firebase
-participant "Node.js App" as Server
-participant "Web Data Collector" as Scraper
+participant "Firebase Database" as DB
 
-User -> App: View Smart List
-App -> Firebase: Fetch Smart List
-Firebase --> App: Return Smart List Data
+User -> App : View Smart List For Current Meal Plan
+App -> DB : Retrieve existing list data
+DB --> App : Return list data
+App -> User : Display Smart List
 
-User -> App: Change Store
-App -> Firebase: Update Store Selection
-Firebase --> App: Confirm Store Update
+alt No Smart List for current meal plan
+  User -> App : Create List
+  App -> DB : Fetch Meal Plan Ingredients
+  DB -> App : Return Meal Plan Ingredients
+  App -> DB : Save new list
+  DB --> App : Confirmation
+end
 
-App -> Server: Calculate Ingredient Amounts
-Server -> Firebase: Get Ingredient Meal Plan Amounts
-Firebase --> Server: Meal Plan Data
+alt User changes the store
+  User -> App : Change Store
+  App -> DB : Fetch updated minimum pack size data
+  DB --> App : Return minimum pack sizes data
+  App -> DB : Save updated data
+  DB --> App : Confirmation
+end
 
-Server -> Firebase: Get Minimum Ingredient Pack Sizes
-Firebase --> Server: Minimum Pack Size Data
+App -> DB : Fetch required data for calculations
+DB --> App : Return data
 
-Server -> Firebase: Get Ingredient Stock Levels
-Firebase --> Server: Stock Level Data
-
-Server --> App: Return Calculated Ingredient Amounts
-
-User -> App: Create List
-App -> Firebase: Save Created List
-Firebase --> App: Confirm List Saved
+App -> User : Display updated Smart List
 
 @enduml
