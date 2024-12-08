@@ -87,49 +87,95 @@ flowchart
 ```mermaid
 classDiagram
     class User {
-        userId
-        email
-    }
-
-    class Recipe {
-        recipeId
-        title
-    }
-
-    class MealPlan {
-        mealPlanId
-        userId
-        recipeId
-    }
-
-    class Smartlist {
-        listId
-        mealplanId
-        userId
+        +int userId
+        +Int firebaseId
     }
 
     class WasteLog {
-        wasteId
-        userId
+        +int wasteId
+        +int userId
     }
 
+    class Stock {
+        +int stockId
+        +int userId
+        +int ingredientId
+    }
+
+    class Smartlist {
+        +int listId
+        +int mealplanId
+        +int userId
+        +int storeId
+    }
+
+    class Smartlistitem {
+        +int listitemId
+        +int ingredientId
+        +int mealplanId
+    }
+
+    class Recipe {
+        +int recipeId
+    }
+
+    class RecipeIngredient {
+        +int recipeIngredientId
+        +int recipeId
+    }
+
+    class RecipeMethod {
+        +int recipeMethodId
+        +int stepOrder
+    }
+
+    class MealPlan {
+        +int mealPlanId
+        +int userId
+    }
+
+    class MealPlanIngredient {
+        +int itemId
+        +int mealplanId
+        +int ingredientId
+    }
     class Store {
-        storeId
-        name
+        +int storeId
+        +String name
+    }
+
+    class Moq {
+        +int moqId
+        +int storeId
+        +int ingredientId
     }
 
     class Ingredient {
-        ingredientId
-        name
+        +int ingredientId
     }
 
+    class Stock {
+        +int stockId
+        +int userId
+    }
+
+
+
+
     User "1" --> "*" WasteLog
-    User "1" --> "*" MealPlan
+    User "1" --> "*" Stock
     User "1" --> "*" Smartlist
+    Smartlist "1" --> "*" Smartlistitem
+    Smartlistitem "1" --> "1" Ingredient
+    Recipe "1" --> "*" RecipeIngredient
+    Recipe "1" --> "*" RecipeMethod
+    RecipeIngredient "1" --> "1" Ingredient
     MealPlan "1" --> "1" Recipe
-    Smartlist "1" --> "1" MealPlan
-    Smartlist "1" --> "*" Ingredient
-    Store "1" --> "*" Ingredient
+    MealPlan "1" --> "*" MealPlanIngredient
+    MealPlanIngredient "1" --> "1" Ingredient
+    Store "1" --> "*" Moq
+    Moq "*" --> "1" Ingredient
+    Stock "1" --> "1" Ingredient
 
 ```
 ### User related entities
