@@ -1,5 +1,5 @@
 @startuml 
-title Sequence Diagram for Viewing and Managing Smart List 
+title Sequence Diagram for View and Create Smart List 
 
 actor User
 participant "Flutter App" as App

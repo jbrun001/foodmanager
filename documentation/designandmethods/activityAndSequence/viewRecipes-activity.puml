@@ -1,0 +1,24 @@
+@startuml
+title Activity Diagram for Search & View Recipes
+start
+
+:User opens recipe search screen;
+
+:Fetch 30 most recent recipes from Firestore;
+
+:Display recipes list;
+
+if (Search by keyword or title?) then (Yes)
+    :Enter search query;
+    :Filter recipes based on query;
+    :Display filtered recipes;
+else (No)
+    :Display recent recipes;
+endif
+
+:User selects a recipe;
+
+:Fetch and display recipe details;
+
+stop
+@enduml

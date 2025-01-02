@@ -1,0 +1,65 @@
+@startuml
+
+class User {
+}
+
+class Ingredient {
+}
+
+class RecipeIngredient {
+}
+
+class RecipeMethod {
+}
+
+class SmartlistItem {
+}
+
+class StockItem {
+}
+
+class Recipe {
+}
+
+class Smartlist {
+}
+
+class Meal {
+}
+
+class MealPlan {
+}
+
+class MealIngredient {
+}
+
+class Store {
+}
+
+class Moq {
+}
+
+User "1" -- "*" Smartlist : creates
+User "1" -- "*" MealPlan : plans
+User "1" -- "*" StockItem : owns
+
+StockItem "*" -- "1" Ingredient : references
+
+Smartlist "1" *-- "*" SmartlistItem : contains
+SmartlistItem "*" -- "1" Ingredient : references
+
+Recipe "1" *-- "*" RecipeIngredient : contains
+RecipeIngredient "*" -- "1" Ingredient : references
+Recipe "1" *-- "*" RecipeMethod
+
+MealPlan "1"*--"*" Meal : contains
+Meal "1" *-- "*" MealIngredient : contains
+MealIngredient "*" -- "1" Ingredient : references
+Meal "*" -- "1" Recipe : references
+Ingredient "1" -- "*" Moq : hasMinimumOrder
+Moq "*" -- "1" Store : availableAt
+
+Smartlist ..> MealPlan : depends on
+Smartlist ..> StockItem : depends on
+
+@enduml

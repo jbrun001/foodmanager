@@ -1,0 +1,28 @@
+@startuml
+start
+title Activity Diagram for Manage User Profile
+:User opens profile screen;
+
+if (Update Profile?) then (Yes)
+    :Enter new profile details;
+    :Validate Inputs;
+    :Update Store;
+    :Update PreferredPortions;
+    :Save updates to Firebase;
+else (No)
+    if (Change Password?) then (Yes)
+        :Prompt current password;
+        :Re-authenticate user;
+        if (Re-authentication successful?) then (Yes)
+            :Enter new password;
+            :Update password in Firebase;
+        else (No)
+            :Show error message;
+        endif
+    else (No)
+        :Exit Profile Management;
+    endif
+endif
+
+stop
+@enduml

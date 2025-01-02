@@ -1,0 +1,25 @@
+@startuml
+
+'--- Smartlist Class ---
+class MealPlan {
+    -- Attributes --
+    + int mealPlanId
+    + int userId
+    + DateTime week 
+
+    -- Constructors --
+    + MealPlan(int mealPlanId, int userId, DateTime week)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static MealPlan fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<MealPlan> getMealPlan(int mealPlanId)
+    + Future<void> deleteMealPlan()
+}
+
+'--- Relationships ---
+Users "1" -- "*" MealPlan : plans
+MealPlan "1" *-- "*" Meal : contains
+
+@enduml

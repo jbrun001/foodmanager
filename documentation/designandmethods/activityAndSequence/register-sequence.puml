@@ -1,0 +1,30 @@
+@startuml
+title Sequence Diagram for Register
+actor User
+participant "Flutter App" as App
+participant "FirebaseAuth" as Auth
+participant "Firestore Database" as Firestore
+
+User -> App: Open Registration Screen
+User -> App: Enter email, password, \nstore, and portions
+
+App -> App: Validate Inputs
+
+alt Invalid Inputs
+    App -> User: Show validation error
+else Valid Inputs
+    App -> Auth: Create user with email and password
+    Auth --> App: Return firebaseId
+
+    App -> Firestore: updatePreferredStore (firebaseId, store)
+    Firestore --> App: Confirmation
+    App -> Firestore: updatePreferredPortions (firebaseId, portions)
+    Firestore --> App: Confirmation
+
+    App -> User: Show success message
+else Email Already Exists
+    App -> User: Show error message
+end
+
+App -> User: Complete Registration Process \nReturn to Manage Profile Screen
+@enduml

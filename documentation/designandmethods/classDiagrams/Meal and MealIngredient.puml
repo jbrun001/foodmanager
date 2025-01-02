@@ -1,0 +1,46 @@
+@startuml
+
+class Meal {
+    -- Attributes --
+    + int mealId
+    + int mealPlanId
+    + int recipeId
+    + DateTime mealDate
+    + int portions
+
+    -- Constructors --
+    + MealPlan(int mealId, mealPlanId, int recipleId, DateTime mealDate, int portions)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static MealPlan fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + Future<void> updateMealDetails(DateTime mealDate, int portions)
+    + Future<void> deleteMeal()
+}
+
+class MealIngredient {
+    -- Attributes --
+    + int mealIngredientId
+    + int mealId
+    + int ingredientId
+    + double amount
+    + String unit
+    -- Constructors --
+    MealIngredient(int mealIngredientId, int mealId, int IngredientId, double amount, string unit)
+    -- Methods --
+    + Future<void> saveToFirestore()
+    + Future<void> updateIngredient(double amount)
+    + Future<void> deleteIngredient()
+}
+
+
+
+
+'--- Relationships ---
+MealPlan "1" -- "*" Meal : contains
+Meal "1" *-- "*" MealIngredient : contains
+Meal "1" -- "*" Recipe : references
+MealIngredient "*" -- "1" Ingredient : references
+
+@enduml

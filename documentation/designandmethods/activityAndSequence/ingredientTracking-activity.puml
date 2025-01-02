@@ -1,0 +1,35 @@
+@startuml
+title Activity Diagram for View Stock & Add Stock
+start
+
+:User opens Ingredient Tracking screen;
+
+:Fetch list of ingredients in stock;
+
+:Display ingredients with amounts;
+
+while (User interaction?) is (Yes)
+    if (Search Ingredients?) then (Yes)
+        :Filter list based on search query;
+    endif
+
+    if (Update Amount?) then (Yes)
+        :Edit amount in the input field;
+        :Save updated amount to database;
+    endif
+
+    if (Add Ingredient?) then (Yes)
+        :Open Add Ingredient Screen;
+
+        :Search for ingredients;
+
+        :Select ingredient and specify amount;
+
+        :Add ingredient to pending list;
+
+        :Confirm and save ingredient to database;
+    endif
+endwhile
+
+stop
+@enduml

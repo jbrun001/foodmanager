@@ -1,0 +1,29 @@
+@startuml
+
+title Activity Diagram for Preview Leftovers
+start
+
+:User selects Smartlist for Meal Plan;
+
+:Fetch SmartlistItems for selected Smartlist;
+
+:Fetch MealIngredients for Meal Plan;
+
+:Calculate Leftover Ingredients;
+while (More SmartlistItems?) is (Yes)
+    :Subtract quantities that will be \nused in cooking meals from\nSmartlistItem amounts;
+    if (Remaining > 0?) then (Yes)
+        :Add to leftovers list;
+    else (No)
+        :Exclude from leftovers;
+    endif
+endwhile
+
+:Display Leftovers on screen;
+
+:Fetch Recipes based on\nleftovers and preferred portions;
+
+:Display Suggested Recipes;
+
+stop
+@enduml

@@ -1,0 +1,26 @@
+@startuml
+title Activity Diagram for Register
+start
+
+:User opens registration screen;
+
+:Enter email, password, store, and portions;
+:Validate inputs;
+
+if (Valid inputs?) then (Yes)
+    :Check if email is already registered;
+
+    if (Email exists?) then (Yes)
+        :Show error message;
+    else (No)
+        :Create Firebase user;
+        :Generate firebaseId;
+        :Save user details in Firestore;
+        :Display success message;
+    endif
+else (No)
+    :Show validation error;
+endif
+
+stop
+@enduml

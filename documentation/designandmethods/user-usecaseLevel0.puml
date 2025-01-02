@@ -13,7 +13,7 @@ skinparam actor {
 }
 
 actor NewUser as "New User"
-actor User as "Signed-up User"
+actor User as "Registered User"
 'actor Admin as "Admin User"
 
 NewUser --> User : "Signs Up for Account"
@@ -22,8 +22,8 @@ rectangle "Food Manager User Use Cases" #LightGoldenRodYellow {
     rectangle "Account Administration" #Lavender {
         User --> (Login) 
         User --> (Manage Profile)
-        (Manage Profile) <-- (Reset Password) : <<extends>>
-        NewUser --> (Sign up)
+        (Manage Profile) <-- (Change Password) : <<extends>>
+        NewUser --> (Register)
         User --> (Logout) 
     }
 

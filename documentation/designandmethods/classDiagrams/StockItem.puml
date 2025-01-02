@@ -1,0 +1,28 @@
+@startuml
+
+class StockItem {
+    -- Attributes --
+    + int stockItemId
+    + int userId
+    + int ingredientId
+    + double ingredientAmount
+
+    -- Constructors --
+    + StockItem(int stockId, int userId, int ingredientId, double ingredientAmount)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static StockItem fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<StockItem> getStockItem(int stockId)
+    + static Future<StockItem> getStockAmount(int stockId)
+    + Future<void> updateStockAmount(double newAmount)
+    + Future<void> deleteStockItem()
+}
+
+
+User "1" -- "*" StockItem : owns
+
+StockItem "*" -- "1" Ingredient : references
+
+@enduml

@@ -1,0 +1,48 @@
+@startuml
+title Sequence Diagram for View/Manage Meal Plan
+actor User
+participant "Flutter App" as App
+participant "Firestore Database" as Firestore
+
+User -> App: Select Date
+App -> App: Calculate start of the week (Sunday)
+
+App -> Firestore: Check for Meal Plan
+Firestore --> App: Return Meal Plan or None
+
+alt Meal Plan Exists
+    App -> Firestore: Load meal plan
+else No Meal Plan
+    App -> Firestore: Create new meal plan
+    Firestore --> App: Confirm creation
+end
+
+App -> User: Display meal plan for the week
+
+loop User Interactions
+    alt Drag Recipe to Day
+        User -> App: Drag recipe to day
+        App -> Firestore: Add meal with recipe and preferred portions
+        App -> Firestore: Calculate required ingredients
+        Firestore --> App: Confirm addition
+    end
+
+    alt Change Portions
+        User -> App: Update portions
+        App -> Firestore: Recalculate required ingredients
+        Firestore --> App: Confirm update
+    end
+
+    alt Remove Meal
+        User -> App: Remove meal from day
+        App -> Firestore: Delete meal
+        Firestore --> App: Confirm deletion
+    end
+
+    alt Go to Smartlist
+        User -> App: Click Smartlist Button
+        App -> SmartlistScreen: Navigate to Smartlist
+    end
+end
+
+@enduml

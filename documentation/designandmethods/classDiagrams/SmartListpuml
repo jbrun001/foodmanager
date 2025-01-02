@@ -1,0 +1,34 @@
+@startuml
+
+'--- Smartlist Class ---
+class Smartlist {
+    -- Attributes --
+    + int listId
+    + int userId
+    + int storeId
+    + int mealPlanId
+    + double amount
+
+    -- Constructors --
+    + Smartlist(int listId, int userId, int storeId, int mealPlanId, double amount)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static Smartlist fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<Smartlist> getSmartlistByMealPlan(int mealPlanId)
+    + Future<void> updateStore(int storeId)
+    + Future<void> calculateAmounts()
+    + Future<void> deleteSmartlist()
+}
+
+'--- Relationships ---
+Smartlist "1" -- "*" SmartlistItem : contains
+Smartlist "1" -- "1" MealPlan : references
+Smartlist "1" -- "1" Store : uses
+
+Smartlist ..> MealPlan : depends on
+Smartlist ..> StockItem : depends on
+Smartlist ..> MealPlanIngredient : depends on
+
+@enduml

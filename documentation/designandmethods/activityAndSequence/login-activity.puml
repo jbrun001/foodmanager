@@ -1,0 +1,21 @@
+@startuml
+title Activity Diagram for Login
+
+start
+:User opens the app;
+:User enters email and password;
+
+if (Are inputs valid?) then (Yes)
+    :Authenticate with Firebase;
+    if (Authentication Successful?) then (Yes)
+        :Navigate to Main Screen;
+    else (No)
+        :Show Error Message;
+    endif
+else (No)
+    :Show Validation Error;
+endif
+
+stop
+
+@enduml

@@ -1,0 +1,37 @@
+@startuml
+title Sequence Diagram for View Stock & Add Stock
+actor User
+participant "Flutter App" as App
+participant "Firestore Database" as Firestore
+
+User -> App: Open Ingredient Tracking Screen
+App -> Firestore: Fetch stock ingredients
+Firestore --> App: Return ingredient list
+App -> User: Display stock list with amounts
+
+alt Search Ingredients
+    User -> App: Enter search query
+    App -> Firestore: Fetch matching ingredients
+    Firestore --> App: Return filtered list
+    App -> User: Display filtered ingredients
+end
+
+alt Update Amount
+    User -> App: Modify ingredient amount
+    App -> Firestore: Update stock amount
+    Firestore --> App: Confirm update
+end
+
+alt Add Ingredient
+    User -> App: Navigate to Add Ingredient Screen
+    User -> App: Search ingredients
+    App -> Firestore: Fetch matching ingredients
+    Firestore --> App: Return search results
+    User -> App: Select ingredients and add amounts
+    App -> Firestore: Save new ingredients to stock
+    Firestore --> App: Confirm addition
+end
+
+User -> App: Return to Ingredient Tracking Screen
+
+@enduml

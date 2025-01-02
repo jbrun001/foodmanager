@@ -1,0 +1,40 @@
+@startuml
+title Sequence Diagram for Manage User Profile
+actor User
+participant "Flutter App" as App
+participant "FirebaseAuth" as Firebase
+participant "FirebaseFirestore" as Firestore
+
+User -> App: Open Profile Management
+
+alt Update Preferred Store
+    User -> App: Update Store
+    App -> Firestore: Save Store Preference
+    Firestore --> App: Confirmation
+    App -> User: Show success message
+end
+
+alt Update Preferred Portions
+    User -> App: Update Portions
+    App -> Firestore: Save Portions Preference
+    Firestore --> App: Confirmation
+    App -> User: Show success message
+end
+
+alt Change Password
+    User -> App: Select Change Password
+    App -> Firebase: Re-authenticate User
+    Firebase --> App: Success or Failure
+
+    alt Re-authentication Success
+        User -> App: Enter New Password
+        App -> Firebase: Update Password
+        Firebase --> App: Confirmation
+        App -> User: Show success message
+    else Re-authentication Failure
+        App -> User: Show error message
+    end
+end
+
+App -> User: Exit Profile Management
+@enduml

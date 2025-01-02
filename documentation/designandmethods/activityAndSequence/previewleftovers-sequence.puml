@@ -1,0 +1,20 @@
+@startuml
+title Sequence Diagram for Preview Leftovers
+actor User
+participant "Flutter App" as App
+participant "Firestore Database" as Firestore
+
+User -> App: Select Smartlist for Meal Plan
+App -> Firestore: Fetch SmartlistItems
+Firestore --> App: Return SmartlistItems
+
+App -> Firestore: Fetch MealIngredients for Meal Plan
+Firestore --> App: Return MealIngredients
+
+App -> App: Calculate Leftover Ingredients
+App -> Firestore: Fetch Suggested Recipes based on leftovers
+Firestore --> App: Return Suggested Recipes
+
+App -> User: Display leftovers and suggested recipes
+
+@enduml

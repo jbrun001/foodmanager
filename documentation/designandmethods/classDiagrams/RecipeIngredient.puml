@@ -1,0 +1,41 @@
+@startuml
+
+
+
+'--- RecipeIngredient Class ---
+class RecipeIngredient {
+    -- Attributes --
+    + int ingredientId
+    + int recipeId
+    + double amount
+    + String unit
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static RecipeIngredient fromJson(Map<String, dynamic> json)
+    + Future<void> saveIngredientToFirestore()
+    + Future<void> deleteIngredient()
+}
+
+'--- RecipeMethod Class ---
+class RecipeMethod {
+    -- Attributes --
+    + int methodId
+    + int recipeId
+    + int stepNumber
+    + String instruction
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static RecipeMethod fromJson(Map<String, dynamic> json)
+    + Future<void> saveMethodToFirestore()
+    + Future<void> deleteMethod()
+}
+
+'--- Relationships ---
+Recipe "1" -- "*" RecipeIngredient : contains
+Recipe "1" -- "*" RecipeMethod : contains
+RecipeIngredient "*" -- "1" Ingredient : references
+
+
+@enduml

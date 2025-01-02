@@ -1,0 +1,25 @@
+@startuml
+title Sequence Diagram for Search & View Recipes
+actor User
+participant "Flutter App" as App
+participant "Firestore Database" as Firestore
+
+User -> App: Open Recipe List
+
+alt No Search Query
+    App -> Firestore: Fetch 30 most recent recipes
+    Firestore --> App: Return recent recipes
+    App -> User: Display recent recipes
+else Search Query Provided
+    User -> App: Enter search query
+    App -> Firestore: Fetch recipes matching query
+    Firestore --> App: Return filtered recipes
+    App -> User: Display filtered recipes
+end
+
+User -> App: Select recipe
+App -> Firestore: Fetch recipe details
+Firestore --> App: Return recipe details
+App -> User: Display selected recipe details
+
+@enduml

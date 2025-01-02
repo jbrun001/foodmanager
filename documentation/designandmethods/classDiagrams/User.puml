@@ -1,0 +1,31 @@
+@startuml
+
+class User {
+    -- Attributes --
+    + int userId
+    + string firebaseId
+    + String pwhash
+    + int preferredPortions
+    + String preferredStore
+
+    -- Constructors --
+    + User(int userId, String email, String pwhash, int preferredPortions, String preferredStore)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static Users fromJson(Map<String, dynamic> json)
+    + Future<void> saveUserToFirestore()
+    + static Future<Users> getUserData(string firebaseId)
+    + Future<void> updateUserPreferredStore(string firebaseId, String preferredStore)
+    + Future<void> updateUserPreferredPortions(string firebaseId, int preferredPortions)
+    + Future<void> deleteUserAccount()
+    + Future<void> changePassword(String newPassword)
+    + static Future<void> logOut()
+}
+
+
+User "1" -- "*" Smartlist : owns
+User "1" -- "*" MealPlan : plans
+User "1" -- "*" StockItem : manages
+
+@enduml

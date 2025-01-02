@@ -1,0 +1,39 @@
+@startuml
+
+'--- Recipe Class ---
+class Recipe {
+    -- Attributes --
+    + int recipeId
+    + String title
+    + String description
+    + String thumbnail
+    + String image
+    + int cooktime
+    + int preptime
+    + int calories
+    + int portions
+    + String cuisine
+    + String category
+    + String keywords
+    + DateTime lastUpdated
+
+    -- Constructors --
+    + Recipe(int recipeId, String title, String description, String thumbnail, String image,
+             int cooktime, int preptime, int calories, int portions, String cuisine, 
+             String category, String keywords)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static Recipe fromJson(Map<String, dynamic> json)
+    + Future<void> saveRecipeToFirestore()
+    + static Future<Recipe> getRecipe(int recipeId)
+    + Future<void> deleteRecipe()
+    + Future<void> updateThumbnail(String thumbnailUrl)
+}
+
+'--- Relationships ---
+Recipe "1" -- "*" RecipeIngredient : contains
+Recipe "1" -- "*" RecipeMethod : contains
+Recipe "1" -- "*" Meal : references
+
+@enduml

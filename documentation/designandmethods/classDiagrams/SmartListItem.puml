@@ -1,0 +1,38 @@
+@startuml
+'--- SmartlistItem Class ---
+class SmartlistItem {
+    -- Attributes --
+    + int listitemId
+    + int ingredientId
+    + int mealplanId
+    + double amount
+    + bool purchased
+    + double purchaseAmount
+    + double leftoverAmount
+    + double recipeAmount
+
+    -- Constructors --
+    + SmartlistItem(int listitemId, int ingredientId, int mealplanId, double amount, 
+        bool purchased, double purchaseAmount, double leftoverAmount, double recipeAmount)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static SmartlistItem fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<List<SmartlistItem>> getItemsForSmartlist(int listId)
+    + Future<void> markAsPurchased(double purchaseAmount)
+    + Future<void> updateLeftoverAmount(double leftoverAmount)
+    + Future<void> deleteItem()
+}
+
+note bottom of SmartlistItem
+    Represents an item within a Smartlist.
+    Tracks quantities, purchase status, and leftovers.
+end note
+
+'--- Relationships ---
+Smartlist "1" -- "*" SmartlistItem : contains
+SmartlistItem "*" -- "1" Ingredient : references
+
+@enduml
+

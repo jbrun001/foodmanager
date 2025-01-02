@@ -1,0 +1,41 @@
+@startuml
+title Activity Diagram for View/Manage Meal Plan
+start
+
+:User selects a date using the date selector;
+
+:Calculate start of the week (Sunday);
+
+:Check database for existing meal plan for the week;
+
+if (Meal Plan Exists?) then (Yes)
+    :Load existing meal plan;
+else (No)
+    :Create new meal plan for the week;
+    :Save new meal plan to database;
+endif
+
+:Display meal plan for the selected week;
+
+while (User interacts with plan?) is (Yes)
+    if (Drag Recipe to Day?) then (Yes)
+        :Add meal with recipe and user-preferred portions;
+        :Calculate ingredients required for the meal;
+    endif
+
+    if (Change Portions?) then (Yes)
+        :Update portions for the meal;
+        :Recalculate required ingredients;
+    endif
+
+    if (Remove Meal?) then (Yes)
+        :Delete meal from plan;
+    endif
+
+    if (Go to Smartlist?) then (Yes)
+        :Navigate to Smartlist for the week;
+    endif
+endwhile
+
+stop
+@enduml
