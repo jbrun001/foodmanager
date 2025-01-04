@@ -1,0 +1,26 @@
+@startuml
+title Sequence Diagram for Log Food Waste and Analyse
+actor User
+participant "Flutter App" as App
+participant "Firestore Database" as Firestore
+
+User -> App: Open Food Waste Logging Screen
+App -> Firestore: Fetch previous WasteLogs
+Firestore --> App: Return WasteLogs
+App -> User: Display data and statistics
+
+User -> App: Enter waste amount, inedible %, composted %
+App -> App: Calculate statistics
+App -> User: Update statistics display
+
+User -> App: Click "Log Waste"
+App -> Firestore: Save new WasteLog entry
+Firestore --> App: Confirm save
+App -> User: Show success message
+
+User -> App: Click "More Analysis"
+App -> Firestore: Fetch historical waste data
+Firestore --> App: Return waste data
+App -> User: Display graphical analysis
+
+@enduml

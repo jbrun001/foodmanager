@@ -1,0 +1,291 @@
+@startuml
+
+class Ingredient {
+    + int ingredientId
+    + String ingredientName
+    + String units
+    + Map<String, dynamic> toJson()
+    + static Ingredient fromJson(Map<String, dynamic> json)
+}
+
+class Meal {
+    -- Attributes --
+    + int mealId
+    + int mealPlanId
+    + int recipeId
+    + DateTime mealDate
+    + int portions
+
+    -- Constructors --
+    + MealPlan(int mealId, mealPlanId, int recipleId, DateTime mealDate, int portions)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static MealPlan fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + Future<void> updateMealDetails(DateTime mealDate, int portions)
+    + Future<void> deleteMeal()
+}
+
+class MealIngredient {
+    -- Attributes --
+    + int mealIngredientId
+    + int mealId
+    + int ingredientId
+    + double amount
+    + String unit
+    -- Constructors --
+    MealIngredient(int mealIngredientId, int mealId, int IngredientId, double amount, string unit)
+    -- Methods --
+    + Future<void> saveToFirestore()
+    + Future<void> updateIngredient(double amount)
+    + Future<void> deleteIngredient()
+}
+
+'--- Smartlist Class ---
+class MealPlan {
+    -- Attributes --
+    + int mealPlanId
+    + int userId
+    + DateTime week 
+
+    -- Constructors --
+    + MealPlan(int mealPlanId, int userId, DateTime week)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static MealPlan fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<MealPlan> getMealPlan(int mealPlanId)
+    + Future<void> deleteMealPlan()
+}
+
+class Moq {
+    + int moqId
+    + int storeId
+    + int ingredientId
+    + double amount
+    + String units
+    + String ingredientURL
+    + DateTime lastUpdated
+    + Map<String, dynamic> toJson()
+    + static Moq fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<Moq> getMoq(int storeId, ingredientId)
+    + Future<void> deleteMoq()
+}
+
+class Store {
+    + int storeId
+    + String name
+    + Map<String, dynamic> toJson()
+    + static Store fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<Store> getStore(int storeId)
+    + Future<void> deleteStore()
+
+}
+
+'--- Recipe Class ---
+class Recipe {
+    -- Attributes --
+    + int recipeId
+    + String title
+    + String description
+    + String thumbnail
+    + String image
+    + int cooktime
+    + int preptime
+    + int calories
+    + int portions
+    + String cuisine
+    + String category
+    + String keywords
+    + DateTime lastUpdated
+
+    -- Constructors --
+    + Recipe(int recipeId, String title, String description, String thumbnail, String image,
+             int cooktime, int preptime, int calories, int portions, String cuisine, 
+             String category, String keywords)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static Recipe fromJson(Map<String, dynamic> json)
+    + Future<void> saveRecipeToFirestore()
+    + static Future<Recipe> getRecipe(int recipeId)
+    + Future<void> deleteRecipe()
+    + Future<void> updateThumbnail(String thumbnailUrl)
+}
+
+
+
+
+'--- RecipeIngredient Class ---
+class RecipeIngredient {
+    -- Attributes --
+    + int ingredientId
+    + int recipeId
+    + double amount
+    + String unit
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static RecipeIngredient fromJson(Map<String, dynamic> json)
+    + Future<void> saveIngredientToFirestore()
+    + Future<void> deleteIngredient()
+}
+
+'--- RecipeMethod Class ---
+class RecipeMethod {
+    -- Attributes --
+    + int methodId
+    + int recipeId
+    + int stepNumber
+    + String instruction
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static RecipeMethod fromJson(Map<String, dynamic> json)
+    + Future<void> saveMethodToFirestore()
+    + Future<void> deleteMethod()
+}
+
+'--- Smartlist Class ---
+class Smartlist {
+    -- Attributes --
+    + int listId
+    + int userId
+    + int storeId
+    + int mealPlanId
+    + double amount
+
+    -- Constructors --
+    + Smartlist(int listId, int userId, int storeId, int mealPlanId, double amount)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static Smartlist fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<Smartlist> getSmartlistByMealPlan(int mealPlanId)
+    + Future<void> updateStore(int storeId)
+    + Future<void> calculateAmounts()
+    + Future<void> deleteSmartlist()
+}
+
+
+'--- SmartlistItem Class ---
+class SmartlistItem {
+    -- Attributes --
+    + int listitemId
+    + int ingredientId
+    + int mealplanId
+    + double amount
+    + bool purchased
+    + double purchaseAmount
+    + double leftoverAmount
+    + double recipeAmount
+
+    -- Constructors --
+    + SmartlistItem(int listitemId, int ingredientId, int mealplanId, double amount, 
+        bool purchased, double purchaseAmount, double leftoverAmount, double recipeAmount)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static SmartlistItem fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<List<SmartlistItem>> getItemsForSmartlist(int listId)
+    + Future<void> markAsPurchased(double purchaseAmount)
+    + Future<void> updateLeftoverAmount(double leftoverAmount)
+    + Future<void> deleteItem()
+}
+
+class StockItem {
+    -- Attributes --
+    + int stockItemId
+    + int userId
+    + int ingredientId
+    + double ingredientAmount
+
+    -- Constructors --
+    + StockItem(int stockId, int userId, int ingredientId, double ingredientAmount)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static StockItem fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<StockItem> getStockItem(int stockId)
+    + static Future<StockItem> getStockAmount(int stockId)
+    + Future<void> updateStockAmount(double newAmount)
+    + Future<void> deleteStockItem()
+}
+
+
+class User {
+    -- Attributes --
+    + int userId
+    + string firebaseId
+    + String pwhash
+    + int preferredPortions
+    + String preferredStore
+
+    -- Constructors --
+    + User(int userId, String email, String pwhash, int preferredPortions, String preferredStore)
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static Users fromJson(Map<String, dynamic> json)
+    + Future<void> saveUserToFirestore()
+    + static Future<Users> getUserData(string firebaseId)
+    + Future<void> updateUserPreferredStore(string firebaseId, String preferredStore)
+    + Future<void> updateUserPreferredPortions(string firebaseId, int preferredPortions)
+    + Future<void> deleteUserAccount()
+    + Future<void> changePassword(String newPassword)
+    + static Future<void> logOut()
+}
+
+class WasteLog {
+    + int wasteId
+    + int userId
+    + DateTime week
+    + DateTime logdate
+    + double amount
+    + double composted
+    + double inedibleParts
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static WasteLog fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<List<WasteLog>> fetchLogs(int userId)
+    + static Future<List<WasteLog>> fetchAnalysisData(int userId)
+}
+
+
+
+
+User "1" -- "*" WasteLog : logs
+
+User "1" -- "*" Smartlist : creates
+User "1" -- "*" MealPlan : plans
+User "1" -- "*" StockItem : owns
+
+StockItem "*" -- "1" Ingredient : references
+
+Smartlist "1" *-- "*" SmartlistItem : contains
+SmartlistItem "*" -- "1" Ingredient : references
+
+Recipe "1" *-- "*" RecipeIngredient : contains
+RecipeIngredient "*" -- "1" Ingredient : references
+Recipe "1" *-- "*" RecipeMethod
+
+MealPlan "1"*--"*" Meal : contains
+Meal "1" *-- "*" MealIngredient : contains
+MealIngredient "*" -- "1" Ingredient : references
+Meal "*" -- "1" Recipe : references
+Ingredient "1" -- "*" Moq : hasMinimumOrder
+Moq "*" -- "1" Store : availableAt
+
+Smartlist ..> MealPlan : depends on
+Smartlist ..> StockItem : depends on
+
+@enduml

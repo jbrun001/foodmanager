@@ -38,6 +38,11 @@ class Store {
 
 class Moq {
 }
+class WasteLog {
+    
+}
+
+User "1" -- "*" WasteLog : logs
 
 User "1" -- "*" Smartlist : creates
 User "1" -- "*" MealPlan : plans

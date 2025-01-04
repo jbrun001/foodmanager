@@ -27,5 +27,6 @@ class User {
 User "1" -- "*" Smartlist : owns
 User "1" -- "*" MealPlan : plans
 User "1" -- "*" StockItem : manages
+User "1" -- "*" WasteLog : logs
 
 @enduml

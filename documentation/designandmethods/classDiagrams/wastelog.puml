@@ -1,0 +1,28 @@
+@startuml
+
+class WasteLog {
+    + int wasteId
+    + int userId
+    + DateTime week
+    + DateTime logdate
+    + double amount
+    + double composted
+    + double inedibleParts
+
+    -- Methods --
+    + Map<String, dynamic> toJson()
+    + static WasteLog fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<List<WasteLog>> fetchLogs(int userId)
+    + static Future<List<WasteLog>> fetchAnalysisData(int userId)
+}
+
+class User {
+
+}
+
+'--- Relationships ---
+User "1" -- "*" WasteLog : logs
+
+
+@enduml

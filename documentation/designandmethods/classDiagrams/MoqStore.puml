@@ -1,0 +1,41 @@
+@startuml
+
+class Ingredient {
+}
+
+class Moq {
+    + int moqId
+    + int storeId
+    + int ingredientId
+    + double amount
+    + String units
+    + String ingredientURL
+    + DateTime lastUpdated
+    + Map<String, dynamic> toJson()
+    + static Moq fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<Moq> getMoq(int storeId, ingredientId)
+    + Future<void> deleteMoq()
+}
+
+class Store {
+    + int storeId
+    + String name
+    + Map<String, dynamic> toJson()
+    + static Store fromJson(Map<String, dynamic> json)
+    + Future<void> saveToFirestore()
+    + static Future<Store> getStore(int storeId)
+    + Future<void> deleteStore()
+
+}
+
+
+'--- Relationships ---
+Moq "*" -- "1" Ingredient : references
+Moq "*" -- "1" Store : availableAt
+
+note bottom of Moq
+    Tracks Minimum Order Quantities per store and ingredient
+end note
+
+@enduml

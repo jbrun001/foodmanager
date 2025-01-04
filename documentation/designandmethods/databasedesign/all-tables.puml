@@ -1,0 +1,140 @@
+@startuml
+
+entity Ingredient {
+  * ingredientId : INT <<PK>>
+  --
+  * ingredientName : VARCHAR
+  * units : VARCHAR
+}
+
+entity Meal {
+  * mealId : INT <<PK>>
+  * mealPlanId : INT <<FK>>
+  * recipeId : INT <<FK>>
+  * mealDate : DATETIME
+  * portions : INT
+}
+
+entity MealIngredient {
+  * mealIngredientId : INT <<PK>>
+  * mealId : INT <<FK>>
+  * ingredientId : INT <<FK>>
+  * amount : DOUBLE
+  * unit : VARCHAR
+}
+
+entity MealPlan {
+  * mealPlanId : INT <<PK>>
+  * userId : INT <<FK>>
+  * week : DATETIME
+}
+
+entity Moq {
+  * moqId : INT <<PK>>
+  * storeId : INT <<FK>>
+  * ingredientId : INT <<FK>>
+  * amount : DOUBLE
+  * units : VARCHAR
+  * ingredientURL : VARCHAR
+  * lastUpdated : DATETIME
+}
+
+entity Store {
+  * storeId : INT <<PK>>
+  * name : VARCHAR
+}
+
+entity Recipe {
+  * recipeId : INT <<PK>>
+  * title : VARCHAR
+  * description : TEXT
+  * thumbnail : VARCHAR
+  * image : VARCHAR
+  * cooktime : INT
+  * preptime : INT
+  * calories : INT
+  * portions : INT
+  * cuisine : VARCHAR
+  * category : VARCHAR
+  * keywords : VARCHAR
+  * lastUpdated : DATETIME
+}
+
+entity RecipeIngredient {
+  * ingredientId : INT <<FK>>
+  * recipeId : INT <<FK>>
+  * amount : DOUBLE
+  * unit : VARCHAR
+}
+
+entity RecipeMethod {
+  * methodId : INT <<PK>>
+  * recipeId : INT <<FK>>
+  * stepNumber : INT
+  * instruction : TEXT
+}
+
+entity Smartlist {
+  * listId : INT <<PK>>
+  * userId : INT <<FK>>
+  * storeId : INT <<FK>>
+  * mealPlanId : INT <<FK>>
+  * amount : DOUBLE
+}
+
+entity SmartlistItem {
+  * listItemId : INT <<PK>>
+  * ingredientId : INT <<FK>>
+  * mealPlanId : INT <<FK>>
+  * amount : DOUBLE
+  * purchased : BOOLEAN
+  * purchaseAmount : DOUBLE
+  * leftoverAmount : DOUBLE
+  * recipeAmount : DOUBLE
+}
+
+entity StockItem {
+  * stockItemId : INT <<PK>>
+  * userId : INT <<FK>>
+  * ingredientId : INT <<FK>>
+  * ingredientAmount : DOUBLE
+}
+
+entity User {
+  * userId : INT <<PK>>
+  * firebaseId : VARCHAR
+  * pwhash : VARCHAR
+  * preferredPortions : INT
+  * preferredStore : VARCHAR
+}
+
+entity WasteLog {
+  * wasteId : INT <<PK>>
+  * userId : INT <<FK>>
+  * week : DATETIME
+  * logdate : DATETIME
+  * amount : DOUBLE
+  * composted : DOUBLE
+  * inedibleParts : DOUBLE
+}
+
+
+User ||--o{ WasteLog : logs
+User ||--o{ Smartlist : creates
+User ||--o{ MealPlan : plans
+User ||--o{ StockItem : owns
+
+StockItem }|--|| Ingredient : references
+Smartlist ||--o{ SmartlistItem : contains
+SmartlistItem }|--|| Ingredient : references
+Recipe ||--|{ RecipeIngredient : contains
+RecipeIngredient }|--|| Ingredient : references
+Recipe ||--|{ RecipeMethod : contains
+MealPlan ||--|{ Meal : contains
+Meal ||--|{ MealIngredient : contains
+MealIngredient }|--|| Ingredient : references
+Meal }o--|| Recipe : references
+Ingredient ||--o{ Moq : hasMinimumOrder
+Moq }|--|| Store : availableAt
+
+@enduml

@@ -59,6 +59,13 @@ rectangle "Food Manager User Use Cases" #LightGoldenRodYellow {
         (View\n Ingredients) <-- (Add Ingredient\n to Stock) : <<extends>>
     }
     
+
+    rectangle "Food Waste Logging" #LightBlue {
+      
+        User --> (Log Food Waste)
+        (Log Food Waste) <-- (Food Waste Analysis) : <<extends>>
+    }
+    
 'rectangle "Food Manager Admin Use Cases" #LightGoldenRodYellow {
 '    rectangle "Recipe Managment" #LightBlue {
 '        (Manage Users) <-- Admin

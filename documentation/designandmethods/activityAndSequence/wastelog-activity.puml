@@ -1,0 +1,32 @@
+@startuml
+
+title Activity Diagram for Log Food Waste and Analyse
+
+start
+:User opens Food Waste Logging screen;
+
+:Selects date for logging;
+
+:Enters food waste amount (grams);
+
+:Enters inedible parts percentage;
+
+:Enters composted percentage;
+
+:User clicks "Log Waste";
+
+:Save WasteLog data to database;
+
+:Display updated statistics (waste % and composted %);
+
+:User clicks "More Analysis"?;
+
+if (Yes) then (Yes)
+    :Load waste analysis data;
+    :Display graphical trends for waste percentage and totals;
+else (No)
+    :Stay on logging screen;
+endif
+
+stop
+@enduml

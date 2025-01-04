@@ -1,0 +1,94 @@
+@startuml
+entity Ingredient {
+  * ingredientId : INT <<PK>>
+}
+
+entity Meal {
+  * mealId : INT <<PK>>
+  * mealPlanId : INT <<FK>>
+  * recipeId : INT <<FK>>
+}
+
+entity MealIngredient {
+  * mealIngredientId : INT <<PK>>
+  * mealId : INT <<FK>>
+  * ingredientId : INT <<FK>>
+}
+
+entity MealPlan {
+  * mealPlanId : INT <<PK>>
+  * userId : INT <<FK>>
+}
+
+entity Moq {
+  * moqId : INT <<PK>>
+  * storeId : INT <<FK>>
+}
+
+entity Store {
+  * storeId : INT <<PK>>
+  * name : VARCHAR
+}
+
+entity Recipe {
+  * recipeId : INT <<PK>>
+}
+
+entity RecipeIngredient {
+  * ingredientId : INT <<FK>>
+  * recipeId : INT <<FK>>
+}
+
+entity RecipeMethod {
+  * methodId : INT <<PK>>
+  * recipeId : INT <<FK>>
+}
+
+entity Smartlist {
+  * listId : INT <<PK>>
+  * userId : INT <<FK>>
+  * storeId : INT <<FK>>
+  * mealPlanId : INT <<FK>>
+}
+
+entity SmartlistItem {
+  * listItemId : INT <<PK>>
+  * ingredientId : INT <<FK>>
+  * mealPlanId : INT <<FK>>
+}
+
+entity StockItem {
+  * stockItemId : INT <<PK>>
+  * userId : INT <<FK>>
+}
+
+entity User {
+  * userId : INT <<PK>>
+}
+
+entity WasteLog {
+  * wasteId : INT <<PK>>
+  * userId : INT <<FK>>
+ }
+
+
+
+User ||--o{ WasteLog : logs
+User ||--o{ Smartlist : creates
+User ||--o{ MealPlan : plans
+User ||--o{ StockItem : owns
+
+StockItem }|--|| Ingredient : references
+Smartlist ||--o{ SmartlistItem : contains
+SmartlistItem }o--|| Ingredient : references
+Recipe ||--|{ RecipeIngredient : contains
+RecipeIngredient }o--|| Ingredient : references
+Recipe ||--|{ RecipeMethod : contains
+MealPlan ||--o{ Meal : contains
+Meal ||-o{ MealIngredient : contains
+MealIngredient }o--|| Ingredient : references
+Meal }o--|| Recipe : references
+Ingredient ||--o{ Moq : hasMinimumOrder
+Moq }|--|| Store : availableAt
+
+@enduml

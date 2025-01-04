@@ -1,0 +1,28 @@
+@startuml
+
+class Ingredient {
+    + int ingredientId
+    + String ingredientName
+    + String units
+    + Map<String, dynamic> toJson()
+    + static Ingredient fromJson(Map<String, dynamic> json)
+}
+
+
+class StockItem {
+}
+
+class SmartListItem {
+}
+
+class MealPlanIngredient {
+}
+
+'--- Relationships ---
+Moq "*" -- "1" Ingredient : references
+StockItem "*" -- "1" Ingredient : references
+SmartListItem "*" -- "1" Ingredient : references
+MealPlanIngredient "*" -- "1" Ingredient : references
+RecipeIngredient "*" -- "1" Ingredient : references
+
+@enduml
