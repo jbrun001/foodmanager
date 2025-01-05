@@ -1,0 +1,61 @@
+@startuml
+
+entity User {
+  * userId : STRING <<PK>>
+  --
+  * firebaseId : STRING
+  * pwhash : STRING
+  * preferredPortions : INT
+  * preferredStore : STRING
+  -- Subcollections --
+  * mealPlans : COLLECTION
+  * stockItems : COLLECTION
+  * wasteLogs : COLLECTION
+  * smartlists : COLLECTION
+}
+
+entity Recipe {
+  * recipeId : STRING <<PK>>
+  --
+  * title : STRING
+  * description : STRING
+  * thumbnail : STRING
+  * image : STRING
+  * cooktime : INT
+  * preptime : INT
+  * calories : INT
+  * portions : INT
+  * cuisine : STRING
+  * category : STRING
+  * keywords : STRING
+  * lastUpdated : TIMESTAMP
+  -- Subcollections --
+  * ingredients : COLLECTION
+  * methods : COLLECTION
+}
+
+entity Ingredient {
+  * ingredientId : STRING <<PK>>
+  --
+  * ingredientName : STRING
+  * units : STRING
+  -- Subcollections --
+  * moq : COLLECTION
+}
+
+User ||--o{ WasteLog : logs
+User ||--o{ Smartlist : creates
+User ||--o{ MealPlan : plans
+User ||--o{ StockItem : owns
+
+Recipe ||--|{ RecipeIngredient : contains
+RecipeIngredient }|--|| Ingredient : references
+Recipe ||--|{ RecipeMethod : contains
+
+Ingredient ||--o{ Moq : hasMinimumOrder
+Moq }|--|| Store : availableAt
+
+Smartlist ..> MealPlan : depends on
+Smartlist ..> StockItem : depends on
+
+@enduml

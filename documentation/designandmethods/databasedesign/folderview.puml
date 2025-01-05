@@ -1,0 +1,67 @@
+@start uml
+
+Users (Collection)
+  userId (Document)
+    - firebaseId : STRING
+    - pwhash : STRING
+    - preferredPortions : INT
+    - preferredStore : STRING
+
+    MealPlans (Subcollection)
+      mealPlanId (Document)
+        - week : TIMESTAMP
+
+    StockItems (Subcollection)
+      stockItemId (Document)
+        - ingredientId : STRING
+        - ingredientAmount : DOUBLE
+
+    WasteLogs (Subcollection)
+      wasteId (Document)
+        - week : TIMESTAMP
+        - logdate : TIMESTAMP
+        - amount : DOUBLE
+        - composted : DOUBLE
+        - inedibleParts : DOUBLE
+
+    Smartlists (Subcollection)
+      listId (Document)
+        - storeId : STRING
+        - mealPlanId : STRING
+        - amount : DOUBLE
+        Items (Subcollection)
+          listItemId (Document)
+            - ingredientId : STRING
+            - amount : DOUBLE
+            - purchased : BOOLEAN
+            - leftoverAmount : DOUBLE
+
+Recipes (Collection)
+  recipeId (Document)
+    - title : STRING
+    - description : STRING
+    - cooktime : INT
+    - portions : INT
+
+    Ingredients (Subcollection)
+      ingredientId (Document)
+        - amount : DOUBLE
+        - unit : STRING
+
+    Methods (Subcollection)
+      methodId (Document)
+        - stepNumber : INT
+        - instruction : STRING
+
+Ingredients (Collection)
+  ingredientId (Document)
+    - ingredientName : STRING
+    - units : STRING
+
+    Moq (Subcollection)
+      moqId (Document)
+        - storeId : STRING
+        - amount : DOUBLE
+        - units : STRING
+
+@end uml

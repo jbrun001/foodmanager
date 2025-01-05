@@ -1,0 +1,29 @@
+@startuml
+
+start
+:Initialize Smartlist;
+:Add Smartlist to database;
+
+:Fetch Meals and calculate 
+ingredient totals;
+
+:Fetch StockItems for userId;
+:Calculate stock levels;
+
+repeat :For each ingredient; 
+  :Calculate required - stock;
+  if (Need to buy\nIngredient?) then (Yes)
+    :Fetch MOQ;
+    if (MOQ exists?) then (Yes)
+      :Round up to nearest pack size;
+    endif
+    :Calculate leftover amounts;
+  else (No)
+    :Set toBuy = 0;
+  endif
+repeat while (More ingredients?) is (No)
+
+:Add items to Smartlist;
+stop
+
+@enduml
