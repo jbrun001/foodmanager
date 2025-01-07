@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'menu_drawer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart'; // for date formatting
 
 // use template of recipe_screen as that is a stateful widget
@@ -29,27 +31,28 @@ class _PlannerScreenState extends State<PlannerScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
-          'amount': 200,
+          'ingredient_name': 'Long Grain Rice',
+          'amount': 130,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
+          'ingredient_name': 'Chicken Breast',
+          'amount': 2,
           'unit': ''
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
-          'unit': 'g'
+          'ingredient_name': 'Pak Choi',
+          'amount': 2,
+          'unit': ''
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {
+          'step': 'put the rice in the pot with enough water to cover',
+          'image': ''
+        },
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
@@ -68,27 +71,30 @@ class _PlannerScreenState extends State<PlannerScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
-          'amount': 200,
+          'ingredient_name': 'Long Grain Rice',
+          'amount': 130,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
-          'unit': ''
+          'ingredient_name': 'Chicken Thighs',
+          'amount': 200,
+          'unit': 'g'
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
+          'ingredient_name': 'Thai Red Curry Paste',
+          'amount': 40,
           'unit': 'g'
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {'step': 'Chop the chicken into bite size pieces', 'image': ''},
+        {
+          'step': 'Add a little oil to a wide based pan, and heat on medium',
+          'image': 'https://via.placeholder.com/100'
+        },
+        {'step': 'Add chicken and cook for 3-4 mins until brown', 'image': ''},
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
@@ -109,27 +115,30 @@ class _PlannerScreenState extends State<PlannerScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
+          'ingredient_name': 'Haddock',
           'amount': 200,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
-          'unit': ''
+          'ingredient_name': 'Long Grain Rice',
+          'amount': 130,
+          'unit': 'g'
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
+          'ingredient_name': 'Sweet Potato',
+          'amount': 200,
           'unit': 'g'
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {'step': 'Add the rice to a pot', 'image': ''},
+        {
+          'step': 'Add cold water to rice',
+          'image': 'https://via.placeholder.com/100'
+        },
+        {'step': 'Cook on high until water is boiling', 'image': ''},
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
@@ -148,27 +157,31 @@ class _PlannerScreenState extends State<PlannerScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
+          'ingredient_name': 'Flat White Mushrooms',
           'amount': 200,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
-          'unit': ''
+          'ingredient_name': 'Linguine',
+          'amount': 180,
+          'unit': 'g'
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
+          'ingredient_name': 'Chopped Tomato',
+          'amount': 200,
           'unit': 'g'
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {'step': 'Cut mushrooms into thick slices', 'image': ''},
+        {
+          'step':
+              'Add to an oiled wide based pan and fry until starting to brown',
+          'image': 'https://via.placeholder.com/100'
+        },
+        {'step': 'Add chopped tomato', 'image': ''},
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
@@ -187,40 +200,45 @@ class _PlannerScreenState extends State<PlannerScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
+          'ingredient_name': 'Minced Beef',
           'amount': 200,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
-          'unit': ''
+          'ingredient_name': 'Soft Tortilla Wraps',
+          'amount': 200,
+          'unit': 'g'
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
+          'ingredient_name': 'Peanut Butter',
+          'amount': 25,
           'unit': 'g'
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {'step': 'Add minced beef to an oiled wide based pan', 'image': ''},
+        {
+          'step':
+              'cook on medium, breaking up beef until beef starting to brown',
+          'image': 'https://via.placeholder.com/100'
+        },
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
   ];
-
   DateTime selectedWeekStart = DateTime.now(); // get today
 
-  Map<String, List<Map<String, dynamic>>> plan =
-      {}; // use a JSON type format of string keys nested values
+  Map<String, List<Map<String, dynamic>>> plan = {}; // use JSON format
 
   @override
   void initState() {
     super.initState();
+    // set to the start of the current week
+    int initialOffsetToSunday = (selectedWeekStart.weekday) % 7;
+    selectedWeekStart =
+        selectedWeekStart.subtract(Duration(days: initialOffsetToSunday));
     // initialise Planner for the current week
     // this is just for testing - should read in data from firebase
     initialisePlanner();
@@ -248,8 +266,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
     );
     if (picked != null && picked != selectedWeekStart) {
       // adjust picked date to the closest Sunday - subtract the mod 7 days
-      final int offsetToSunday =
-          picked.weekday % 7; // 0 for Sunday, 1 for Monday
+      final int offsetToSunday = picked.weekday % 7; // 0 for Sun, 1 for Mon
       setState(() {
         // trigger user interface re-build with the new data
         selectedWeekStart = picked.subtract(Duration(days: offsetToSunday));
@@ -406,11 +423,26 @@ class _PlannerScreenState extends State<PlannerScreen> {
                         .transparent, // make sure not white so we can see it
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        recipe['thumbnail']!,
+                      child: CachedNetworkImage(
+                        imageUrl: recipe['thumbnail']!,
                         width: 80,
                         height: 80,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            color: Colors.white,
+                          ),
+                        ),
+                        // Error Placeholder (Broken Image Icon)
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.broken_image,
+                          size: 80,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
@@ -420,11 +452,26 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       opacity: 0.5, // change appearance of item when dragging
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          recipe['thumbnail']!,
+                        child: CachedNetworkImage(
+                          imageUrl: recipe['thumbnail']!,
                           width: 80,
                           height: 80,
                           fit: BoxFit.cover,
+                          placeholder: (context, url) => Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(
+                              width: 80,
+                              height: 80,
+                              color: Colors.white,
+                            ),
+                          ),
+                          // Error Placeholder (Broken Image Icon)
+                          errorWidget: (context, url, error) => Icon(
+                            Icons.broken_image,
+                            size: 80,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
@@ -433,11 +480,26 @@ class _PlannerScreenState extends State<PlannerScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        recipe['thumbnail']!,
+                      child: CachedNetworkImage(
+                        imageUrl: recipe['thumbnail']!,
                         width: 80,
                         height: 80,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            color: Colors.white,
+                          ),
+                        ),
+                        // Error Placeholder (Broken Image Icon)
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.broken_image,
+                          size: 80,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),

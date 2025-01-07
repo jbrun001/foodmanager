@@ -63,7 +63,7 @@ class LoginScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // For now, navigate to the planner screen
-                context.go('/planner');
+                context.go('/recipes');
               },
               child: Text('Login'),
               style: ElevatedButton.styleFrom(

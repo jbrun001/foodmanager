@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'menu_drawer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RecipesScreen extends StatefulWidget {
   @override
@@ -23,27 +25,28 @@ class _RecipesScreenState extends State<RecipesScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
-          'amount': 200,
+          'ingredient_name': 'Long Grain Rice',
+          'amount': 130,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
+          'ingredient_name': 'Chicken Breast',
+          'amount': 2,
           'unit': ''
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
-          'unit': 'g'
+          'ingredient_name': 'Pak Choi',
+          'amount': 2,
+          'unit': ''
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {
+          'step': 'put the rice in the pot with enough water to cover',
+          'image': ''
+        },
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
@@ -62,27 +65,30 @@ class _RecipesScreenState extends State<RecipesScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
-          'amount': 200,
+          'ingredient_name': 'Long Grain Rice',
+          'amount': 130,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
-          'unit': ''
+          'ingredient_name': 'Chicken Thighs',
+          'amount': 200,
+          'unit': 'g'
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
+          'ingredient_name': 'Thai Red Curry Paste',
+          'amount': 40,
           'unit': 'g'
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {'step': 'Chop the chicken into bite size pieces', 'image': ''},
+        {
+          'step': 'Add a little oil to a wide based pan, and heat on medium',
+          'image': 'https://via.placeholder.com/100'
+        },
+        {'step': 'Add chicken and cook for 3-4 mins until brown', 'image': ''},
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
@@ -103,27 +109,30 @@ class _RecipesScreenState extends State<RecipesScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
+          'ingredient_name': 'Haddock',
           'amount': 200,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
-          'unit': ''
+          'ingredient_name': 'Long Grain Rice',
+          'amount': 130,
+          'unit': 'g'
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
+          'ingredient_name': 'Sweet Potato',
+          'amount': 200,
           'unit': 'g'
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {'step': 'Add the rice to a pot', 'image': ''},
+        {
+          'step': 'Add cold water to rice',
+          'image': 'https://via.placeholder.com/100'
+        },
+        {'step': 'Cook on high until water is boiling', 'image': ''},
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
@@ -142,27 +151,31 @@ class _RecipesScreenState extends State<RecipesScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
+          'ingredient_name': 'Flat White Mushrooms',
           'amount': 200,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
-          'unit': ''
+          'ingredient_name': 'Linguine',
+          'amount': 180,
+          'unit': 'g'
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
+          'ingredient_name': 'Chopped Tomato',
+          'amount': 200,
           'unit': 'g'
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {'step': 'Cut mushrooms into thick slices', 'image': ''},
+        {
+          'step':
+              'Add to an oiled wide based pan and fry until starting to brown',
+          'image': 'https://via.placeholder.com/100'
+        },
+        {'step': 'Add chopped tomato', 'image': ''},
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
@@ -181,33 +194,45 @@ class _RecipesScreenState extends State<RecipesScreen> {
       'ingredients': [
         {
           'ingredient_id': 1,
-          'ingredient_name': 'Spaghetti',
+          'ingredient_name': 'Minced Beef',
           'amount': 200,
           'unit': 'g'
         },
         {
           'ingredient_id': 2,
-          'ingredient_name': 'Eggs',
-          'amount': 3,
-          'unit': ''
+          'ingredient_name': 'Soft Tortilla Wraps',
+          'amount': 200,
+          'unit': 'g'
         },
         {
           'ingredient_id': 3,
-          'ingredient_name': 'Pancetta',
-          'amount': 100,
+          'ingredient_name': 'Peanut Butter',
+          'amount': 25,
           'unit': 'g'
         },
       ],
       'method': [
-        {'step': 'Boil the spaghetti.', 'image': ''},
-        {'step': 'Fry pancetta.', 'image': 'https://via.placeholder.com/100'},
-        {'step': 'Mix eggs and cheese.', 'image': ''},
+        {'step': 'Add minced beef to an oiled wide based pan', 'image': ''},
+        {
+          'step':
+              'cook on medium, breaking up beef until beef starting to brown',
+          'image': 'https://via.placeholder.com/100'
+        },
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
   ];
 
   final List<Map<String, dynamic>> addedRecipes = [];
+  List<Map<String, dynamic>> filteredRecipes = [];
+  String searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // initially load 50 recipies - user can serch for more
+    filteredRecipes = recipes.take(50).toList();
+  }
 
   void addRecipe(Map<String, dynamic> recipe) {
     setState(() {
@@ -227,7 +252,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recipes - POC wireframes possible'),
+        title: Text('Recipe Search'),
       ),
       drawer: MenuDrawer(),
       body: Stack(
@@ -243,30 +268,51 @@ class _RecipesScreenState extends State<RecipesScreen> {
                     prefixIcon: Icon(Icons.search),
                   ),
                   onChanged: (query) {
-                    // Add search logic here
+                    setState(() {
+                      searchQuery = query.toLowerCase();
+                      filteredRecipes = recipes.where((recipe) {
+                        final title = recipe['title']?.toLowerCase() ?? '';
+                        final keywords =
+                            recipe['keywords']?.toLowerCase() ?? '';
+                        final ingredients = (recipe['ingredients'] as List)
+                            .map((i) =>
+                                i['ingredient_name'].toString().toLowerCase())
+                            .join(' ');
+                        return title.contains(searchQuery) ||
+                            keywords.contains(searchQuery) ||
+                            ingredients.contains(searchQuery);
+                      }).toList();
+                    });
                   },
                 ),
               ),
               Expanded(
                 child: ListView.builder(
-                  itemCount: recipes.length,
+                  itemCount: filteredRecipes.length,
                   itemBuilder: (context, index) {
-                    final recipe = recipes[index];
+                    final recipe = filteredRecipes[index];
                     return Card(
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: Row(
                         children: [
-                          Container(
-                            width: 100, // reduce this so more space on mobile
+                          // use cached image for speed
+                          CachedNetworkImage(
+                            imageUrl: recipe['thumbnail']!,
+                            width: 100,
                             height: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(recipe[
-                                    'thumbnail']!), // if thumbnail is null do nothing
-                                fit: BoxFit.cover,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                color: Colors.white,
                               ),
-                              borderRadius: BorderRadius.circular(8),
                             ),
+                            errorWidget: (context, url, error) => Icon(
+                                Icons.broken_image,
+                                size: 100), // Error placeholder
                           ),
                           SizedBox(
                               width:
@@ -360,11 +406,27 @@ class _RecipesScreenState extends State<RecipesScreen> {
                                 removeRecipe(recipe), // Remove recipe on tap
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                recipe['image']!,
+                              child: CachedNetworkImage(
+                                imageUrl: recipe['thumbnail']!,
                                 width: 80,
                                 height: 80,
                                 fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Container(
+                                    width: 80,
+                                    height: 80,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                // Error Placeholder (Broken Image Icon)
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.broken_image,
+                                  size: 80,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ),
                           ),
@@ -402,16 +464,30 @@ class RecipeDetailScreen extends StatelessWidget {
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  recipe['image']!,
+                child: CachedNetworkImage(
+                  imageUrl: recipe['image']!,
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      height: 200,
+                      width: double.infinity,
+                      color: Colors.white,
+                    ),
+                  ),
+                  // Error Placeholder (Broken Image Icon)
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.broken_image,
+                    size: 200,
+                    color: Colors.grey,
+                  ),
                 ),
               ),
             ),
             SizedBox(height: 16),
-
             // Title, cooktime, and Calories
             Text(
               recipe['title']!,
