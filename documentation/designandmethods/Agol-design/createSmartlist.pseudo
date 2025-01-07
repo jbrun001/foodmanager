@@ -1,0 +1,68 @@
+// outline for creating a smartlist (smart shopping list)
+function createSmartlist(userId, mealPlanId, storeId) {
+    // Initialize Smartlist
+    let listId = generateUniqueId();
+    addDocument('Smartlists', listId, {
+        'userId': userId,
+        'storeId': storeId,
+        'mealPlanId': mealPlanId,
+        'amount': 0.0
+    });
+
+    // get ingredients required from meal plan
+    let ingredientTotals = {};
+    let meals = getDocuments('Meals', { 'userId': userId, 'mealPlanId': mealPlanId });
+
+    // for every meal in the plan
+    for each meal in meals:
+        let recipeId = meal['recipeId'];
+        let portions = meal['portions'];
+        // get the ingredients required for this meal
+        let ingredients = getDocuments('RecipeIngredients', { 'recipeId': recipeId });
+
+        for each ingredient in ingredients:
+            let id = ingredient['ingredientId'];
+            let amountRequired = ingredient['amount'] * (portions / ingredient['portions']);
+            // update the running totals amount for this ingredient
+            ingredientTotals[id] = (ingredientTotals[id]) + amountRequired;
+
+    // get the current stock for this user
+    let stockItems = getDocuments('StockItems', { 'userId': userId });
+
+    // Calculate purchase requirements
+    let amountsToBuy = {};
+    let leftoverAmounts = {};
+
+    for each ingredientId in ingredientTotals:
+        let totalRequired = ingredientTotals[ingredientId];
+        let stockAvailable = stockItem[ingredientId];
+
+        // calculate difference between required and stock - don't go below 0
+        let toBuy = max(0, totalRequired - stockAvailable);
+
+        // get the minimum order quanities for the current store
+        let moq = getDocument('Moqs', { 'storeId': storeId, 'ingredientId': ingredientId });
+        if (moq exists):
+            let packSize = moq['amount'];
+            if (toBuy > 0):
+                // calculate the number of whole packs that are required to be enough
+                toBuy = ceil(toBuy / packSize) * packSize;
+
+        // calculate how much would be left over after all meals are cooked
+        let leftover = max(0, toBuy - (totalRequired - stockAvailable));
+        leftoverAmounts[ingredientId] = stockAvailable + leftover;
+        amountsToBuy[ingredientId] = toBuy;
+
+    // add the calculated items to the smartlist
+    for each ingredientId in amountsToBuy:
+        let amount = amountsToBuy[ingredientId];
+        addDocument('SmartlistItems', generateUniqueId(), {
+            'listId': listId,
+            'ingredientId': ingredientId,
+            'amount': amount,
+            'purchased': false,
+            'leftoverAmount': leftoverAmounts[ingredientId]
+        });
+
+    return listId;
+}
