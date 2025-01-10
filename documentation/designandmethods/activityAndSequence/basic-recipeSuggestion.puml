@@ -1,0 +1,18 @@
+@startuml
+Title Activity Diagram Recipe Suggestion - simple
+start
+:Fetch user's current smart list items (Firebase query);
+:Fetch user's stock items (Firebase query);
+:Combine smart list items and stock items to create available ingredient list;
+:Fetch recipes from recipe collection (Firebase query);
+repeat
+  :Check if recipe ingredients are available;
+  if (All ingredients available in required amounts?) then (yes)
+    :Add recipe to suggestions;
+  else (no)
+    :Skip recipe;
+  endif
+repeat while (More recipes to check);
+:Return list of suggested recipes;
+stop
+@enduml

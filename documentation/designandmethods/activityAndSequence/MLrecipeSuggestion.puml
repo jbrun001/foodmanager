@@ -1,0 +1,51 @@
+@startuml
+skinparam componentStyle rectangle
+
+package "Recipe Suggestion ML Model Training System" {
+    [RecipeNLG Dataset] --> [Data Preprocessor]
+    [User Ingredient Data (Firebase)] --> [Data Preprocessor]
+
+    component "Data Preprocessor (Python, Pandas, NumPy)" {
+        [Ingredient Standardisation]
+        [Unit Conversion]
+        [Data Filtering]
+    }
+
+    [Data Preprocessor] --> [Processed Training Data]
+
+    component "Training Data Preparation (TensorFlow, Keras)" {
+        [Ingredient Embedding]
+        [Recipe Vectorisation]
+    }
+
+    [Processed Training Data] --> [Training Data Preparation]
+    [Training Data Preparation] --> [Training Data]
+
+    component "ML Training Pipeline (TensorFlow, Keras)" {
+        [Feature Engineering]
+        [Model Trainer]
+        [Validation Engine]
+        [Hyperparameter Tuner (Optuna or TensorFlow Tuner)]
+    }
+
+    [Training Data] --> [Feature Engineering]
+    [Feature Engineering] --> [Model Trainer]
+    [Model Trainer] --> [Validation Engine]
+    [Validation Engine] --> [Evaluation Metrics]
+
+    component "Evaluation Metrics (Scikit-learn)" {
+        [Accuracy]
+        [Precision]
+        [Recall]
+        [F1 Score]
+        [Ranking Metrics]
+    }
+
+    [Evaluation Metrics] --> [Hyperparameter Tuner]
+    [Hyperparameter Tuner] --> [Model Trainer]
+    [Evaluation Metrics] --> [Model Exporter]
+
+    [Model Exporter (TensorFlow SavedModel)] --> [Trained Recipe ML Model]
+
+    [Trained Recipe ML Model] --> [Flutter App (TensorFlow Lite)]
+}

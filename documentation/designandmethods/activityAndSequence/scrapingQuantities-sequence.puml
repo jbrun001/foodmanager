@@ -1,0 +1,33 @@
+@startuml
+Title Sequence Diagram for Quantity Scraping
+actor Cron
+participant System
+participant Scraper
+participant SupermarketWebpage
+
+Cron -> System: Request minimum order quantity scraping
+activate System
+System -> Scraper: Fetch ingredient list with URLs and 'lastCollected'
+activate Scraper
+
+Scraper -> Scraper: Filter ingredients with missing or outdated 'lastCollected'
+
+loop For each valid ingredient
+  Scraper -> SupermarketWebpage: Open URL for ingredient
+  activate SupermarketWebpage
+  SupermarketWebpage --> Scraper: Return HTML content
+  deactivate SupermarketWebpage
+
+  Scraper -> Scraper: Parse HTML for title and description
+  alt MOQ found
+      Scraper -> System: Store MOQ in Moqs collection with updated 'lastCollected'
+  else MOQ not found
+      Scraper -> System: Log as 'not found'
+  end
+end
+
+Scraper -> System: Notify completion of scraping
+deactivate Scraper
+System -> Cron: Return results (completed)
+deactivate System
+@enduml

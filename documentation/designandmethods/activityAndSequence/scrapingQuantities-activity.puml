@@ -1,0 +1,24 @@
+@startuml
+Title Activity Diagram for Quantity Scraping
+start
+:Fetch ingredients from system;
+:For each ingredient, check 'lastCollected';
+while (More ingredients?) is (yes)
+  if (Is 'lastCollected' missing or > 4 weeks?) then (yes)
+    :Retrieve URL;
+    :Access supermarket webpage using URL;
+    :Extract title and description of ingredient;
+    if (MOQ found in title or description?) then (yes)
+      :Extract MOQ details (amount and units);
+      :Store extracted MOQ and update 'lastCollected' timestamp in Moqs collection;
+    else (no)
+      :Log missing MOQ or mark as 'not found';
+    endif
+  else (no)
+    :Skip ingredient;
+  endif
+endwhile (no)
+:Complete scraping process;
+stop
+@enduml
+

@@ -1,0 +1,68 @@
+@startgantt
+
+project starts the 2025-01-13
+
+-- MVP Milestones --
+[Authentication MVP] starts at 2025-01-10 and lasts 7 days
+[Ingredient Tracking MVP] starts at [Authentication MVP]'s end and lasts 7 days
+[Recipe Database MVP] starts at [Ingredient Tracking MVP]'s end and lasts 7 days
+[Meal Planning MVP] starts at [Recipe Database MVP]'s end and lasts 7 days
+[Smart Shopping Lists MVP] starts at [Meal Planning MVP]'s end and lasts 7 days
+[Preview Leftover Ingredients MVP] starts at [Smart Shopping Lists MVP]'s end and lasts 7 days
+[Food Waste Logging MVP] happens at [Preview Leftover Ingredients MVP]'s end and lasts 7 days
+
+-- Testing After MVP --
+[Initial Testing] starts at [Preview Leftover Ingredients MVP]'s end and lasts 3 days
+[Performance Testing (NFR.PE.01, NFR.PE.02)] starts at [Initial Testing]'s start and lasts 2 days
+[Security Testing (NFR.SE.01, NFR.SE.02, NFR.SE.03)] starts at [Initial Testing]'s start and lasts 2 days
+[Usability Testing (NFR.US.01, NFR.US.02)] starts at [Initial Testing]'s end and lasts 2 days
+
+@endgantt
+
+@startgantt
+
+project starts the 2025-02-28
+
+-- R1 Tasks --
+[Authentication R1] starts at 2025-02-23 and lasts 3 days
+[Ingredient Tracking R1] starts at [Authentication R1]'s end and lasts 3 days
+[Recipe Database R1] starts at [Ingredient Tracking R1]'s end and lasts 2 days
+[Meal Planning R1] starts at [Recipe Database R1]'s end and lasts 3 days
+[Smart Shopping Lists R1] starts at [Meal Planning R1]'s end and lasts 2 days
+[Preview Leftover Ingredients R1] starts at [Smart Shopping Lists R1]'s end and lasts 3 days
+[Food Waste Logging R1] starts at [Preview Leftover Ingredients R1]'s end and lasts 2 days
+[Minimum Order Quantity Scraping R1] starts at [Food Waste Logging R1]'s end and lasts 6 days
+
+-- Testing After R1 --
+[Regression Testing] starts at [Minimum Order Quantity Scraping R1]'s end and lasts 1 days
+[Reliability Testing (NFR.RE.01, NFR.RE.02)] starts at [Regression Testing]'s start and lasts 2 days
+[Privacy Testing (NFR.PR.01, NFR.PR.02, NFR.PR.03)] starts at [Regression Testing]'s start and lasts 2 days
+
+@endgantt
+
+@startgantt
+
+project starts the 2025-03-25
+
+-- R2 Tasks --
+[Authentication R2] starts at 2025-02-23 and lasts 0 days
+[Authentication Issue Resolution] starts at [Authentication R2]'s end and lasts 1 days
+[Ingredient Tracking R2] starts at [Authentication Issue Resolution]'s end and lasts 3 days
+[Ingredient Tracking Issue Resolution] starts at [Ingredient Tracking R2]'s end and lasts 1 days
+[Recipe Database R2] starts at [Ingredient Tracking Issue Resolution]'s end and lasts 3 days
+[Recipe Database Issue Resolution] starts at [Recipe Database R2]'s end and lasts 1 days
+[Meal Planning R2] starts at [Recipe Database Issue Resolution]'s end and lasts 3 days
+[Meal Planning Issue Resolution] starts at [Meal Planning R2]'s end and lasts 1 days
+[Smart Shopping Lists R2] starts at [Meal Planning Issue Resolution]'s end and lasts 3 days
+[Smart Shopping Lists Issue Resolution] starts at [Smart Shopping Lists R2]'s end and lasts 1 days
+[Preview Leftover Ingredients R2] starts at [Smart Shopping Lists Issue Resolution]'s end and lasts 3 days
+[Preview Leftover Ingredients Issue Resolution] starts at [Preview Leftover Ingredients R2]'s end and lasts 1 days
+[Food Waste Logging R2] starts at [Preview Leftover Ingredients Issue Resolution]'s end and lasts 3 days
+[Food Waste Logging Issue Resolution] starts at [Food Waste Logging R2]'s end and lasts 1 days
+[Minimum Order Quantity Scraping R2] starts at [Food Waste Logging Issue Resolution]'s end and lasts 1 days
+[Minimum Order Quantity Issue Resolution] starts at [Minimum Order Quantity Scraping R2]'s end and lasts 1 days
+
+-- Final Testing --
+[Final Testing and Validation] starts at [Minimum Order Quantity Issue Resolution]'s end and lasts 4 days
+
+@endgantt

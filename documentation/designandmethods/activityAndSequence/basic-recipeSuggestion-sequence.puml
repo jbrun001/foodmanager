@@ -1,0 +1,33 @@
+@startuml
+Title Sequence Diagram Recipe Suggestion - simple
+actor User
+participant FlutterApp
+participant FirebaseDatabase
+participant RecipeSuggestionLogic
+
+User -> FlutterApp: Request recipe suggestions
+activate FlutterApp
+
+FlutterApp -> FirebaseDatabase: Fetch smart list items
+FirebaseDatabase --> FlutterApp: Return smart list items
+
+FlutterApp -> FirebaseDatabase: Fetch stock items
+FirebaseDatabase --> FlutterApp: Return stock items
+
+FlutterApp -> RecipeSuggestionLogic: Combine smart list and stock items
+
+RecipeSuggestionLogic -> FirebaseDatabase: Fetch recipes from recipe collection
+FirebaseDatabase --> RecipeSuggestionLogic: Return recipe collection
+
+loop For each recipe
+  RecipeSuggestionLogic -> RecipeSuggestionLogic: Check ingredient availability
+  alt All ingredients available
+      RecipeSuggestionLogic -> FlutterApp: Add recipe to suggestions
+  else Missing ingredients
+      RecipeSuggestionLogic -> FlutterApp: Skip recipe
+  end
+end
+
+FlutterApp -> User: Display suggested recipes
+deactivate FlutterApp
+@enduml

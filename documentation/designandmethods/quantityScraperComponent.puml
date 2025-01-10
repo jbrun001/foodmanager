@@ -1,0 +1,27 @@
+@startuml
+package "Web Data Collector" {
+    [Cron] --> [Node.js Express Server]
+
+    component "Node.js Express Server" as ExpressServer {
+        [Router] --> [Controller]
+        [Controller] --> [Scraper Service]
+        [Scraper Service] --> [HTML Parser]
+        [HTML Parser] --> [Supermarket Website]
+        [Controller] --> [Firebase Database]
+    }
+
+    component "Supermarket Website" {
+        [HTML Pages]
+    }
+
+    component "Firebase Database" {
+        [Ingredients Collection]
+        [Moqs Collection]
+    }
+}
+
+' Relationships
+[Cron] --> [Node.js Express Server] : Scheduled HTTP Requests
+[Node.js Express Server] --> [Supermarket Website] : Fetch HTML
+[Node.js Express Server] --> [Firebase Database] : Store/Read Data
+[Supermarket Website] --> [Node.js Express Server] : Return HTML Content
