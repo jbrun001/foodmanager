@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'menu_drawer.dart';
 
 class IngredientSearchScreen extends StatefulWidget {
   @override
@@ -51,6 +52,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
       appBar: AppBar(
         title: Text('Ingredient Search'),
       ),
+      drawer: MenuDrawer(), // menu icon in top bar
       body: Column(
         children: [
           // Search Bar
