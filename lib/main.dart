@@ -8,8 +8,11 @@ import 'screens/ingredientsearch_screen.dart';
 import 'screens/previewleftovers_screen.dart';
 import 'screens/food_waste_log.dart';
 import 'screens/pocfirebase_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -60,7 +63,7 @@ final GoRouter _router = GoRouter(
     ),
     GoRoute(
       path: '/firebase',
-      builder: (context, state) => PocfirebaseScreen(),
+      builder: (context, state) => POCFirebaseScreen(),
     ),
   ],
 );
