@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'menu_drawer.dart';
 
-class PreviewLeftOverIngredientsScreen extends StatelessWidget {
+class PreviewleftoversScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,14 +14,7 @@ class PreviewLeftOverIngredientsScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                
-
-
-
-
-                
-              ],
+              children: [],
             ),
           ),
           Padding(
@@ -31,11 +24,13 @@ class PreviewLeftOverIngredientsScreen extends StatelessWidget {
               children: [
                 FloatingActionButton(
                   onPressed: () {
-                    context.go('/add_ingredients'); 
+                    context.go('/add_ingredients');
                   },
                   child: Text(
                     '+',
-                    style: TextStyle(fontSize: 30, color: const Color.fromARGB(255, 0, 0, 0)),
+                    style: TextStyle(
+                        fontSize: 30,
+                        color: const Color.fromARGB(255, 0, 0, 0)),
                   ),
                 ),
               ],

@@ -4,9 +4,10 @@ import 'screens/login_screen.dart';
 import 'screens/planner_screen.dart';
 import 'screens/recipes_screen.dart';
 import 'screens/smartlist_screen.dart';
-import 'screens/pocjsonapi_screen.dart';
+import 'screens/ingredientsearch_screen.dart';
+import 'screens/previewleftovers_screen.dart';
+import 'screens/food_waste_log.dart';
 import 'screens/pocfirebase_screen.dart';
-import 'screens/ingredientSearch_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -46,8 +47,16 @@ final GoRouter _router = GoRouter(
       builder: (context, state) => IngredientSearchScreen(),
     ),
     GoRoute(
-      path: '/jsonapi',
-      builder: (context, state) => PocjsonapiScreen(),
+      path: '/smartlist',
+      builder: (context, state) => SmartlistScreen(),
+    ),
+    GoRoute(
+      path: '/preview',
+      builder: (context, state) => PreviewleftoversScreen(),
+    ),
+    GoRoute(
+      path: '/waste',
+      builder: (context, state) => FoodWasteLogScreen(),
     ),
     GoRoute(
       path: '/firebase',
