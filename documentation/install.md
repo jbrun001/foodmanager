@@ -94,3 +94,17 @@ Add the flutter firebase modules
 Re run flutterfire configure every time you make a change to the firebase (like adding a service or a platform)
 
 > flutterfire configure
+
+---
+
+Create the database in firebase
+
+> Log into firebase
+
+> select foodmanager project
+
+> Click Cloud Firestore (to create the database)
+
+> Create database in the correct region
+
+> For this project: europe-west2 (London)
