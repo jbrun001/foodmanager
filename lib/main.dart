@@ -9,10 +9,13 @@ import 'screens/previewleftovers_screen.dart';
 import 'screens/food_waste_log.dart';
 import 'screens/pocfirebase_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // needed to support cross platform
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
