@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'menu_drawer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RecipesScreen extends StatefulWidget {
   @override
@@ -9,229 +10,39 @@ class RecipesScreen extends StatefulWidget {
 }
 
 class _RecipesScreenState extends State<RecipesScreen> {
-  final List<Map<String, dynamic>> recipes = [
-    {
-      'title': 'One-Pot Hainanese-Style Chicken & Rice with Pak Choi',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
-      'description': '',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 620,
-      'portions': 4,
-      'cusine': 'hainanese',
-      'category': 'meal',
-      'keywords': '',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Long Grain Rice',
-          'amount': 130,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Chicken Breast',
-          'amount': 2,
-          'unit': ''
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Pak Choi',
-          'amount': 2,
-          'unit': ''
-        },
-      ],
-      'method': [
-        {
-          'step': 'put the rice in the pot with enough water to cover',
-          'image': ''
-        },
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-    {
-      'title': 'Southern Thai-Style Chicken Panang Curry',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
-      'description': 'Description of recipe.',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 1000,
-      'portions': 4,
-      'cusine': 'thai',
-      'category': 'meal',
-      'keywords': 'spicy',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Long Grain Rice',
-          'amount': 130,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Chicken Thighs',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Thai Red Curry Paste',
-          'amount': 40,
-          'unit': 'g'
-        },
-      ],
-      'method': [
-        {'step': 'Chop the chicken into bite size pieces', 'image': ''},
-        {
-          'step': 'Add a little oil to a wide based pan, and heat on medium',
-          'image': 'https://via.placeholder.com/100'
-        },
-        {'step': 'Add chicken and cook for 3-4 mins until brown', 'image': ''},
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-    {
-      'title':
-          'Creole-Style Haddock & Sweet Potato Stew with Garlic Rice extra long title',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
-      'description':
-          'Longer description taking up more space that previous item and enough words to go onto a second line.',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 520,
-      'portions': 4,
-      'cusine': 'creole',
-      'category': 'meal',
-      'keywords': '',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Haddock',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Long Grain Rice',
-          'amount': 130,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Sweet Potato',
-          'amount': 200,
-          'unit': 'g'
-        },
-      ],
-      'method': [
-        {'step': 'Add the rice to a pot', 'image': ''},
-        {
-          'step': 'Add cold water to rice',
-          'image': 'https://via.placeholder.com/100'
-        },
-        {'step': 'Cook on high until water is boiling', 'image': ''},
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-    {
-      'title': 'Rich Mushroom Ragu Linguine (V)',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
-      'description': 'Description',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 520,
-      'portions': 4,
-      'cusine': 'vegan',
-      'category': 'meal',
-      'keywords': '',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Flat White Mushrooms',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Linguine',
-          'amount': 180,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Chopped Tomato',
-          'amount': 200,
-          'unit': 'g'
-        },
-      ],
-      'method': [
-        {'step': 'Cut mushrooms into thick slices', 'image': ''},
-        {
-          'step':
-              'Add to an oiled wide based pan and fry until starting to brown',
-          'image': 'https://via.placeholder.com/100'
-        },
-        {'step': 'Add chopped tomato', 'image': ''},
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-    {
-      'title': 'Beef Satay Wraps',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/100',
-      'description': 'description',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 520,
-      'portions': 4,
-      'cusine': 'hainanese',
-      'category': 'indonesian',
-      'keywords': '',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Minced Beef',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Soft Tortilla Wraps',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Peanut Butter',
-          'amount': 25,
-          'unit': 'g'
-        },
-      ],
-      'method': [
-        {'step': 'Add minced beef to an oiled wide based pan', 'image': ''},
-        {
-          'step':
-              'cook on medium, breaking up beef until beef starting to brown',
-          'image': 'https://via.placeholder.com/100'
-        },
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-  ];
-
-  final List<Map<String, dynamic>> addedRecipes = [];
+  List<Map<String, dynamic>> recipes = [];
+  List<Map<String, dynamic>> addedRecipes = [];
   List<Map<String, dynamic>> filteredRecipes = [];
   String searchQuery = '';
+  bool isLoading = true; // is the data loading from the database?
 
   @override
   void initState() {
     super.initState();
-    // initially load 50 recipies - user can serch for more
-    filteredRecipes = recipes.take(50).toList();
+    fetchRecipes(); // get all the recipes when the screen loads
+    // filteredRecipes = recipes.take(50).toList();
+  }
+
+  Future<void> fetchRecipes() async {
+    try {
+      setState(() => isLoading = true); // Start loading
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('recipes').get();
+
+      List<Map<String, dynamic>> fetchedRecipes = snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+
+      setState(() {
+        recipes = fetchedRecipes;
+        // initially load 50 recipies - user can serch for more
+        filteredRecipes = recipes.take(50).toList();
+        isLoading = false; // Stop loading
+      });
+    } catch (e) {
+      print("Error fetching recipes: $e");
+      setState(() => isLoading = false);
+    }
   }
 
   void addRecipe(Map<String, dynamic> recipe) {
