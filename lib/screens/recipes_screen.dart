@@ -98,51 +98,59 @@ class _RecipesScreenState extends State<RecipesScreen> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: filteredRecipes.length,
-                  itemBuilder: (context, index) {
-                    final recipe = filteredRecipes[index];
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        children: [
-                          // use cached image for speed
-                          CachedNetworkImage(
-                            imageUrl: recipe['thumbnail']!,
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                color: Colors.white,
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Icon(
-                                Icons.broken_image,
-                                size: 100), // Error placeholder
-                          ),
-                          SizedBox(
-                              width:
-                                  8), // reduce the gap between the image and the text for better mobile fit
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  recipe['title']!,
-                                  maxLines: 4, // on mobile could be 4 lines?
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize:
-                                        16, // make smaller to work with mobile
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
+                child: isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : filteredRecipes.isEmpty
+                        ? Center(child: Text("No recipes found"))
+                        : ListView.builder(
+                            itemCount: filteredRecipes.length,
+                            itemBuilder: (context, index) {
+                              final recipe = filteredRecipes[index];
+                              return Card(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                child: Row(
+                                  children: [
+                                    // use cached image for speed
+                                    CachedNetworkImage(
+                                      imageUrl: recipe['thumbnail']!,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          Shimmer.fromColors(
+                                        baseColor: Colors.grey[300]!,
+                                        highlightColor: Colors.grey[100]!,
+                                        child: Container(
+                                          width: 100,
+                                          height: 100,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.broken_image,
+                                              size: 100), // Error placeholder
+                                    ),
+                                    SizedBox(
+                                        width:
+                                            8), // reduce the gap between the image and the text for better mobile fit
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            recipe['title']!,
+                                            maxLines:
+                                                4, // on mobile could be 4 lines?
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize:
+                                                  16, // make smaller to work with mobile
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 8),
 // remove description - not enough space on mobile if title is long
 //                                Text(
 //                                  recipe['description']!,
@@ -151,50 +159,54 @@ class _RecipesScreenState extends State<RecipesScreen> {
 //                                  style: TextStyle(color: Colors.grey[600]),
 //                                ),
 //                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(Icons.schedule,
-                                        size: 14, color: Colors.grey),
-                                    SizedBox(width: 1),
-                                    Text('${recipe['cooktime']!.toString()}min',
-                                        style: TextStyle(color: Colors.grey)),
-                                    SizedBox(width: 3),
-                                    Icon(Icons.local_fire_department,
-                                        size: 14, color: Colors.grey),
-                                    SizedBox(width: 1),
-                                    Text(
-                                        '${recipe['calories']!.toString()}kcal',
-                                        style: TextStyle(color: Colors.grey)),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.schedule,
+                                                  size: 14, color: Colors.grey),
+                                              SizedBox(width: 1),
+                                              Text(
+                                                  '${recipe['cooktime']!.toString()}min',
+                                                  style: TextStyle(
+                                                      color: Colors.grey)),
+                                              SizedBox(width: 3),
+                                              Icon(Icons.local_fire_department,
+                                                  size: 14, color: Colors.grey),
+                                              SizedBox(width: 1),
+                                              Text(
+                                                  '${recipe['calories']!.toString()}kcal',
+                                                  style: TextStyle(
+                                                      color: Colors.grey)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Column(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () => addRecipe(recipe),
+                                          child: Text('Add'),
+                                        ),
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RecipeDetailScreen(
+                                                        recipe: recipe),
+                                              ),
+                                            );
+                                          },
+                                          child: Text('View'),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              );
+                            },
                           ),
-                          Column(
-                            children: [
-                              ElevatedButton(
-                                onPressed: () => addRecipe(recipe),
-                                child: Text('Add'),
-                              ),
-                              OutlinedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          RecipeDetailScreen(recipe: recipe),
-                                    ),
-                                  );
-                                },
-                                child: Text('View'),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
