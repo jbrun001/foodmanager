@@ -180,4 +180,16 @@ class FirebaseService {
       print('Error adding smartlist item: $error');
     });
   }
+
+  Future<List<Map<String, dynamic>>> getRecipes() async {
+    try {
+      QuerySnapshot snapshot = await firestore.collection('recipes').get();
+      return snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      print("Error fetching recipes: $e");
+      return [];
+    }
+  }
 }

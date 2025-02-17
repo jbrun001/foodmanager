@@ -14,6 +14,7 @@ class POCFirebaseScreen extends StatefulWidget {
 class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String _status = "Press the button to test Firebase";
+  final String userId = "1"; // Fixed user ID for testing
 
   // test recipe data
   final List<Map<String, dynamic>> recipes = [
@@ -277,6 +278,87 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     }
   }
 
+  // function to create User 1 with test data
+  Future<void> _createUserWithTestData() async {
+    try {
+      // check if user already exists
+      var userDoc = await widget.firebaseService.firestore
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      if (userDoc.exists) {
+        setState(() {
+          _status =
+              "User 1 already exists in Firestore. No new record created.";
+        });
+        return;
+      }
+
+      // create user with test data
+      await widget.firebaseService.createUser(
+        userId: userId,
+        firebaseId: "firebase_test_id",
+        passwordHash: "test_hashed_password",
+        preferredPortions: 2,
+        preferredStore: "Test Store",
+      );
+
+      // add a test meal plan
+      await widget.firebaseService.addMealPlan(
+        userId: userId,
+        mealPlanId: "test_meal_plan_1",
+        week: DateTime.now(),
+      );
+
+      // add a test meal
+      await widget.firebaseService.addMeal(
+        userId: userId,
+        mealPlanId: "test_meal_plan_1",
+        mealId: "test_meal_1",
+        recipeId: "test_recipe_1",
+        mealDate: DateTime.now(),
+        portions: 2,
+      );
+
+      // add a test stock item
+      await widget.firebaseService.addStockItem(
+        userId: userId,
+        stockItemId: "stock_1",
+        ingredientId: "ingr001",
+        ingredientAmount: 500.0,
+      );
+
+      // add a test waste log
+      await widget.firebaseService.addWasteLog(
+        userId: userId,
+        wasteId: "waste_1",
+        week: DateTime.now(),
+        logDate: DateTime.now(),
+        amount: 2.0,
+        composted: 1.0,
+        inedibleParts: 0.5,
+      );
+
+      // add a test smartlist
+      await widget.firebaseService.addSmartlist(
+        userId: userId,
+        listId: "smartlist_1",
+        storeId: "store_123",
+        mealPlanId: "test_meal_plan_1",
+        amount: 100.0,
+      );
+
+      setState(() {
+        _status = "User 1 created successfully with test data!";
+      });
+    } catch (e) {
+      setState(() {
+        _status = "Error creating user: $e";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -302,6 +384,11 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
             ElevatedButton(
               onPressed: _uploadRecipes,
               child: Text("Upload Recipes to Firestore"),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _createUserWithTestData,
+              child: Text("Create a test user with id 1"),
             ),
           ],
         ),

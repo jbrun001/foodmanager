@@ -30,18 +30,13 @@ class _RecipesScreenState extends State<RecipesScreen> {
   Future<void> fetchRecipes() async {
     try {
       setState(() => isLoading = true); // Start loading
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('recipes').get();
-
-      List<Map<String, dynamic>> fetchedRecipes = snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
+      List<Map<String, dynamic>> fetchedRecipes =
+          await widget.firebaseService.getRecipes();
 
       setState(() {
         recipes = fetchedRecipes;
-        // initially load 50 recipies - user can serch for more
         filteredRecipes = recipes.take(50).toList();
-        isLoading = false; // Stop loading
+        isLoading = false;
       });
     } catch (e) {
       print("Error fetching recipes: $e");
