@@ -10,6 +10,7 @@ import 'screens/food_waste_log.dart';
 import 'screens/pocfirebase_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // needed to support cross platform
+import 'services/firebase_service.dart'; // all the database interaction
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,53 +21,66 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  // create database object for use in the app
+  final FirebaseService firebaseService = FirebaseService();
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: _router,
+      routerConfig: _router(firebaseService),
     );
   }
 }
 
 // Define the GoRouter
-final GoRouter _router = GoRouter(
-  initialLocation: '/', // Start at the login screen
-  routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => LoginScreen(),
-    ),
-    GoRoute(
-      path: '/planner',
-      builder: (context, state) => PlannerScreen(),
-    ),
-    GoRoute(
-      path: '/recipes',
-      builder: (context, state) => RecipesScreen(),
-    ),
-    GoRoute(
-      path: '/smartlist',
-      builder: (context, state) => SmartlistScreen(),
-    ),
-    GoRoute(
-      path: '/ingredient',
-      builder: (context, state) => IngredientSearchScreen(),
-    ),
-    GoRoute(
-      path: '/smartlist',
-      builder: (context, state) => SmartlistScreen(),
-    ),
-    GoRoute(
-      path: '/preview',
-      builder: (context, state) => PreviewleftoversScreen(),
-    ),
-    GoRoute(
-      path: '/waste',
-      builder: (context, state) => FoodWasteLogScreen(),
-    ),
-    GoRoute(
-      path: '/firebase',
-      builder: (context, state) => POCFirebaseScreen(),
-    ),
-  ],
-);
+GoRouter _router(FirebaseService firebaseService) {
+  return GoRouter(
+    initialLocation: '/', // Start at the login screen
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (context, state) =>
+            LoginScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/planner',
+        builder: (context, state) =>
+            PlannerScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/recipes',
+        builder: (context, state) =>
+            RecipesScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/smartlist',
+        builder: (context, state) =>
+            SmartlistScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/ingredient',
+        builder: (context, state) =>
+            IngredientSearchScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/smartlist',
+        builder: (context, state) =>
+            SmartlistScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/preview',
+        builder: (context, state) =>
+            PreviewleftoversScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/waste',
+        builder: (context, state) =>
+            FoodWasteLogScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/firebase',
+        builder: (context, state) =>
+            POCFirebaseScreen(firebaseService: firebaseService),
+      ),
+    ],
+  );
+}

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/firebase_service.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FirebaseService firebaseService;
+  LoginScreen({required this.firebaseService});
 
   @override
   Widget build(BuildContext context) {

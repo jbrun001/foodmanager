@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'menu_drawer.dart';
+import '../services/firebase_service.dart';
 
 class FoodWasteLogScreen extends StatelessWidget {
+  final FirebaseService firebaseService;
+  FoodWasteLogScreen({required this.firebaseService});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

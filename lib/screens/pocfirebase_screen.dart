@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'menu_drawer.dart';
+import '../services/firebase_service.dart';
 
 class POCFirebaseScreen extends StatefulWidget {
+  final FirebaseService firebaseService;
+  POCFirebaseScreen({required this.firebaseService});
   @override
   _POCFirebaseScreenState createState() => _POCFirebaseScreenState();
 }

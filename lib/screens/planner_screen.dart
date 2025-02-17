@@ -3,10 +3,13 @@ import 'menu_drawer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart'; // for date formatting
+import '../services/firebase_service.dart';
 
 // use template of recipe_screen as that is a stateful widget
 
 class PlannerScreen extends StatefulWidget {
+  final FirebaseService firebaseService;
+  PlannerScreen({required this.firebaseService});
   @override
   _PlannerScreenState createState() => _PlannerScreenState();
 }

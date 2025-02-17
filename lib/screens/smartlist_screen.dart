@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'menu_drawer.dart';
 import 'package:intl/intl.dart';
+import '../services/firebase_service.dart';
 
 class SmartlistScreen extends StatefulWidget {
+  final FirebaseService firebaseService;
+  SmartlistScreen({required this.firebaseService});
+
   @override
   _SmartlistScreenState createState() => _SmartlistScreenState();
 }

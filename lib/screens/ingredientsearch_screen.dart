@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'menu_drawer.dart';
+import '../services/firebase_service.dart';
 
 class IngredientSearchScreen extends StatefulWidget {
+  final FirebaseService firebaseService;
+  IngredientSearchScreen({required this.firebaseService});
   @override
   _IngredientSearchScreenState createState() => _IngredientSearchScreenState();
 }

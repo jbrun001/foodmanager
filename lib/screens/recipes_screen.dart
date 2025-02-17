@@ -3,8 +3,12 @@ import 'menu_drawer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/firebase_service.dart';
 
 class RecipesScreen extends StatefulWidget {
+  final FirebaseService firebaseService;
+  RecipesScreen({required this.firebaseService});
+
   @override
   _RecipesScreenState createState() => _RecipesScreenState();
 }
