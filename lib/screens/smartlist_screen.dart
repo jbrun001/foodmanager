@@ -115,12 +115,15 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
             ),
             TextButton(
               child: Text("Add"),
-              onPressed: () {
+              // when the button is pressed the database must be
+              // updated before the UI is re-built so the new
+              // data displays. using async / await so this works
+              onPressed: () async {
                 if (_nameController.text.isNotEmpty &&
                     _amountController.text.isNotEmpty &&
                     _unitController.text.isNotEmpty &&
                     _typeController.text.isNotEmpty) {
-                  widget.firebaseService.addSmartlistItem(
+                  await widget.firebaseService.addSmartlistItem(
                     userId: userId,
                     name: _nameController.text,
                     amount: int.tryParse(_amountController.text) ?? 1,
@@ -128,7 +131,10 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                     type: _typeController.text,
                     date: selectedWeekStart,
                   );
-                  _loadSmartlist();
+
+                  await _loadSmartlist();
+                  // this only happens when the data has been saved AND
+                  // the new data is loaded
                   Navigator.pop(context);
                 }
               },
@@ -199,9 +205,21 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                           ),
                           title: Text(
                             "${item['name']} (${item['amount']} ${item['unit']})",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              decoration: item['purchased']
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                            ),
                           ),
-                          subtitle: Text("Category: ${item['type']}"),
+                          subtitle: Text(
+                            "Category: ${item['type']}",
+                            style: TextStyle(
+                              decoration: item['purchased']
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                            ),
+                          ),
                         ),
                       );
                     },
