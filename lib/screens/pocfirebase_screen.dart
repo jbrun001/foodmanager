@@ -322,12 +322,13 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
       );
 
       // add a test stock item
-      await widget.firebaseService.addStockItem(
-        userId: userId,
-        stockItemId: "stock_1",
-        ingredientId: "ingr001",
-        ingredientAmount: 500.0,
-      );
+      await widget.firebaseService.addUserStockItem(
+          userId: userId,
+          stockItemId: "stock_1",
+          ingredientId: "ingr001",
+          ingredientAmount: 500.0,
+          ingredientUnit: "g",
+          ingredientType: "baking");
 
       // add a test waste log
       await widget.firebaseService.addWasteLog(

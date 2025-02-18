@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:intl/intl.dart'; // for date formatting
 
 // this services file contains the class for all database activity
@@ -75,28 +74,6 @@ class FirebaseService {
       print('Meal added successfully');
     }).catchError((error) {
       print('Error adding meal: $error');
-    });
-  }
-
-  // add a stock item to a user
-  Future<void> addStockItem({
-    required String userId,
-    required String stockItemId,
-    required String ingredientId,
-    required double ingredientAmount,
-  }) async {
-    await firestore
-        .collection('Users')
-        .doc(userId)
-        .collection('StockItems')
-        .doc(stockItemId)
-        .set({
-      'ingredientId': ingredientId,
-      'ingredientAmount': ingredientAmount,
-    }).then((_) {
-      print('Stock Item added successfully');
-    }).catchError((error) {
-      print('Error adding stock item: $error');
     });
   }
 
@@ -179,6 +156,28 @@ class FirebaseService {
       print('Smartlist Item added successfully');
     }).catchError((error) {
       print('Error adding smartlist item: $error');
+    });
+  }
+
+  // add a stock item to a user
+  Future<void> addIngredient({
+    required String userId,
+    required String stockItemId,
+    required String ingredientId,
+    required double ingredientAmount,
+  }) async {
+    await firestore
+        .collection('Users')
+        .doc(userId)
+        .collection('StockItems')
+        .doc(stockItemId)
+        .set({
+      'ingredientId': ingredientId,
+      'ingredientAmount': ingredientAmount,
+    }).then((_) {
+      print('Stock Item added successfully');
+    }).catchError((error) {
+      print('Error adding stock item: $error');
     });
   }
 
@@ -304,5 +303,70 @@ class FirebaseService {
       'Saturday': 6,
     };
     return dayOffsets[day] ?? 0;
+  }
+
+  Future<List<Map<String, dynamic>>> getStockItems(String userId) async {
+    try {
+      QuerySnapshot snapshot = await firestore
+          .collection('Users')
+          .doc(userId)
+          .collection('StockItems')
+          .orderBy('ingredientId') // sort
+          .get();
+//debug
+      print(
+          "Stock Items Query Snapshot: ${snapshot.docs.map((d) => d.data())}");
+
+      return snapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>;
+//debug
+        print("Document ID: ${doc.id}, Data: $data");
+
+        return {
+          'id': doc.id,
+          'name': data['ingredientId'] ?? 'Unknown',
+          'amount': data['ingredientAmount'] ?? 0,
+          'unit':
+              data.containsKey('unit') ? data['unit'] : 'g', // default to grams
+          'type': data.containsKey('type')
+              ? data['type']
+              : 'Unknown', // default category
+        };
+      }).toList();
+    } catch (e) {
+      print("Error fetching stock items: $e");
+      return [];
+    }
+  }
+
+  Future<void> addUserStockItem(
+      {required String userId,
+      required String stockItemId,
+      required String ingredientId,
+      required double ingredientAmount,
+      required String ingredientUnit,
+      required String ingredientType}) async {
+//debug
+    print("Saving ingredient to Firestore...");
+    print(
+        "User ID: $userId, StockItem ID: $stockItemId, Ingredient ID: $ingredientId");
+    print(
+        "Amount: $ingredientAmount, Unit: $ingredientUnit, Type: $ingredientType");
+
+    try {
+      await firestore
+          .collection('Users')
+          .doc(userId)
+          .collection('StockItems')
+          .doc(stockItemId)
+          .set({
+        'ingredientId': ingredientId,
+        'ingredientAmount': ingredientAmount,
+        'unit': ingredientUnit,
+        'type': ingredientType,
+      });
+    } catch (e) {
+      print("Firestore save failed: $e");
+    }
   }
 }

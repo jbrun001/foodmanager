@@ -21,11 +21,30 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
   // Filtered list of ingredients for search
   List<Map<String, dynamic>> filteredIngredients = [];
   TextEditingController searchController = TextEditingController();
+  // sticky bar on add screen so multiple ingredients can be added at once
+  List<Map<String, dynamic>> selectedIngredients = [];
 
   @override
   void initState() {
     super.initState();
-    filteredIngredients = ingredients; // Initially show all ingredients
+    // fetch data after UI built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchStockItems();
+    });
+  }
+
+  void fetchStockItems() async {
+    String userId = '1'; // For testing
+    List<Map<String, dynamic>> stockItems =
+        await widget.firebaseService.getStockItems(userId);
+
+// debug
+    print("Fetched stock items from firebase: $stockItems");
+
+    setState(() {
+      ingredients = stockItems;
+      filteredIngredients = ingredients;
+    });
   }
 
   void filterIngredients(String query) {
@@ -41,12 +60,57 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
     });
   }
 
-  // Add ingredient to the list (from the add ingredient screen)
-  void addNewIngredient(Map<String, dynamic> newIngredient) {
+  // add ingredients to sticky area
+  void addToStickyArea(Map<String, dynamic> ingredient) {
     setState(() {
-      ingredients.add(newIngredient);
-      filteredIngredients = ingredients; // Refresh the search results
+      if (!selectedIngredients
+          .any((item) => item['name'] == ingredient['name'])) {
+        selectedIngredients
+            .add({...ingredient, 'amount': ingredient['amount'] ?? 0});
+      }
     });
+  }
+
+  // update ingredient amount in sticky area
+  void updateStickyAmount(int index, String value) {
+    setState(() {
+      selectedIngredients[index]['amount'] =
+          int.tryParse(value) ?? selectedIngredients[index]['amount'];
+    });
+  }
+
+  // clear all ingredients from sticky area
+  void clearStickyArea() {
+    setState(() {
+      selectedIngredients.clear();
+    });
+  }
+
+  // add ingredient to the list (from the add ingredient screen)
+  void addNewIngredient(Map<String, dynamic> newIngredient) async {
+    String userId = '1';
+//debug
+    print("Attempting to add ingredient: $newIngredient");
+
+    bool exists =
+        ingredients.any((item) => item['name'] == newIngredient['name']);
+    // only add if the ingredient isn't already there
+    if (!exists) {
+      try {
+        await widget.firebaseService.addUserStockItem(
+            userId: userId,
+            stockItemId: newIngredient['name'],
+            ingredientId: newIngredient['name'],
+            ingredientAmount: newIngredient['amount'].toDouble(),
+            ingredientUnit: newIngredient['unit'],
+            ingredientType: newIngredient['type']);
+        //debug
+        print("Attempting to add ingredient: $newIngredient");
+        fetchStockItems(); // refresh UI
+      } catch (e) {
+        print("Error adding ingredient: $e");
+      }
+    }
   }
 
   @override
@@ -98,7 +162,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
                             ),
                             onSubmitted: (value) {
                               setState(() {
-                                ingredient['amount'] =
+                                filteredIngredients[index]['amount'] =
                                     int.tryParse(value) ?? ingredient['amount'];
                               });
                             },
@@ -184,6 +248,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
 
   void submitSelectedIngredients() {
     for (var ingredient in selectedIngredients) {
+      print("Calling onAddIngredient for: $ingredient");
       widget.onAddIngredient(ingredient);
     }
     Navigator.pop(context);
@@ -219,24 +284,16 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 return Card(
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
-                    title: Text('${ingredient['name']}'),
+                    title: Text(ingredient['name']),
                     subtitle: Text('Type: ${ingredient['type']}'),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Adjustable Size for Amount TextField
                         SizedBox(
-                          width: 60, // Adjust width of the text box
-                          height: 40, // Optional: Adjust height of the text box
+                          width: 60,
                           child: TextField(
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(
-                                vertical:
-                                    8, // Adjust vertical padding inside the text box
-                                horizontal:
-                                    4, // Adjust horizontal padding inside the text box
-                              ),
                             ),
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.center,
@@ -245,25 +302,23 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                             ),
                             onSubmitted: (value) {
                               setState(() {
-                                ingredient['amount'] =
+                                filteredIngredients[index]['amount'] =
                                     int.tryParse(value) ?? ingredient['amount'];
                               });
                             },
                           ),
                         ),
-                        SizedBox(width: 8), // Spacing between amount and unit
-                        // Fixed Width for Units
-                        SizedBox(
-                          width: 40, // Fixed width for units
-                          child: Text(
-                            ingredient['unit'],
-                            textAlign: TextAlign.left, // Align text to the left
-                          ),
+                        SizedBox(width: 8),
+                        Text(ingredient['unit']),
+                        SizedBox(width: 8),
+                        IconButton(
+                          icon: Icon(Icons.add_circle, color: Colors.green),
+                          onPressed: () {
+                            addToStickyArea(ingredient);
+                          },
                         ),
                       ],
                     ),
-                    onTap: () =>
-                        addToStickyArea(ingredient), // Add to sticky area
                   ),
                 );
               },
