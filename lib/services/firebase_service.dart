@@ -130,35 +130,6 @@ class FirebaseService {
     });
   }
 
-  // add an item to a smartlist
-  Future<void> addSmartlistItem({
-    required String userId,
-    required String listId,
-    required String listItemId,
-    required String ingredientId,
-    required double amount,
-    required bool purchased,
-    required double leftoverAmount,
-  }) async {
-    await firestore
-        .collection('Users')
-        .doc(userId)
-        .collection('Smartlists')
-        .doc(listId)
-        .collection('SmartlistItems')
-        .doc(listItemId)
-        .set({
-      'ingredientId': ingredientId,
-      'amount': amount,
-      'purchased': purchased,
-      'leftoverAmount': leftoverAmount,
-    }).then((_) {
-      print('Smartlist Item added successfully');
-    }).catchError((error) {
-      print('Error adding smartlist item: $error');
-    });
-  }
-
   // add a stock item to a user
   Future<void> addIngredient({
     required String userId,
@@ -367,6 +338,142 @@ class FirebaseService {
       });
     } catch (e) {
       print("Firestore save failed: $e");
+    }
+  }
+
+  // fetch smartlist items for a specific user and date
+  Future<List<Map<String, dynamic>>> getSmartlist(
+      String userId, DateTime date) async {
+    try {
+      String dateKey = date.toIso8601String(); // Store date as ISO 8601
+// debug
+      print("Fetching smartlist for user $userId on date $dateKey");
+
+      QuerySnapshot querySnapshot = await firestore
+          .collection('Users')
+          .doc(userId)
+          .collection('SmartLists')
+          .where('date', isEqualTo: dateKey)
+          .get();
+
+// debug
+      print("Fetched ${querySnapshot.docs.length} items");
+
+      return querySnapshot.docs.map((doc) {
+// debug
+        print("Retrieved item: ${doc['name']}, purchased: ${doc['purchased']}");
+        return {
+          'id': doc.id,
+          'name': doc['name'],
+          'amount': doc['amount'],
+          'unit': doc['unit'],
+          'type': doc['type'],
+          'purchased': doc['purchased'],
+          'date': doc['date'],
+        };
+      }).toList();
+    } catch (e) {
+      print("Error fetching smartlist: $e");
+      return [];
+    }
+  }
+
+  // add a new item to the smartlist if it does not already exist
+  Future<void> addSmartlistItem({
+    required String userId,
+    required String name,
+    required int amount,
+    required String unit,
+    required String type,
+    required DateTime date,
+  }) async {
+    try {
+      String dateKey = date.toIso8601String(); // Convert date to ISO 8601
+      String docId = "${dateKey}_$name"; // Unique key: ISO date + item name
+
+// debug
+      print(
+          "Checking if item '$name' already exists for user $userId on date $dateKey");
+
+      DocumentSnapshot docSnapshot = await firestore
+          .collection('Users')
+          .doc(userId)
+          .collection('SmartLists')
+          .doc(docId)
+          .get();
+
+      if (!docSnapshot.exists) {
+// debug
+        print("Item '$name' does not exist, adding to Firestore.");
+
+        await firestore
+            .collection('Users')
+            .doc(userId)
+            .collection('SmartLists')
+            .doc(docId)
+            .set({
+          'name': name,
+          'amount': amount,
+          'unit': unit,
+          'type': type,
+          'purchased': false,
+          'date': dateKey,
+        });
+
+        print("Item '$name' successfully added to Firestore.");
+      } else {
+        print(
+            "Item '$name' already exists on '$dateKey', not adding duplicate.");
+      }
+    } catch (e) {
+      print("Error adding item: $e");
+    }
+  }
+
+  // update item status (toggle purchased state)
+  Future<void> updateSmartlistItem(
+      String userId, String name, DateTime date, bool purchased) async {
+    try {
+      String dateKey = date.toIso8601String();
+      String docId = "${dateKey}_$name";
+
+// debug
+      print(
+          "Updating item '$name' for user $userId on date $dateKey to purchased: $purchased");
+
+      await firestore
+          .collection('Users')
+          .doc(userId)
+          .collection('SmartLists')
+          .doc(docId)
+          .update({'purchased': purchased});
+
+      print("Successfully updated '$name' purchased status to: $purchased");
+    } catch (e) {
+      print("Error updating item: $e");
+    }
+  }
+
+  /// Delete an item from the smartlist
+  Future<void> deleteSmartlistItem(
+      String userId, String name, DateTime date) async {
+    try {
+      String dateKey = date.toIso8601String();
+      String docId = "${dateKey}_$name";
+
+// debug: Logging deletion attempt
+      print(
+          "Attempting to delete item '$name' for user $userId on date $dateKey");
+
+      await firestore
+          .collection('Users')
+          .doc(userId)
+          .collection('SmartLists')
+          .doc(docId)
+          .delete();
+      print("Successfully deleted '$name' from Firestore.");
+    } catch (e) {
+      print("Error deleting item: $e");
     }
   }
 }
