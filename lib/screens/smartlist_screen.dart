@@ -53,12 +53,102 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     }
   }
 
+  // fetches data from firebase
+  // updated to calculate required ingredients from the mealplan
   Future<void> _loadSmartlist() async {
-    List<Map<String, dynamic>> items =
+    // list of all the ingredients for the mealplan in the selected week
+    List<Map<String, dynamic>> mealPlanIngredients =
+        await _fetchMealPlanIngredients();
+    // list of all the items entered manually in the smart list
+    List<Map<String, dynamic>> manualItems =
         await widget.firebaseService.getSmartlist(userId, selectedWeekStart);
+
+    // list of unique ingredients and their total amounts based on
+    // meal plan ingredients and existing smartlist items
+    Map<String, Map<String, dynamic>> aggregatedItems = {};
+
+    // for every ingredient in the meal plan add it to agregatedItems
+    // if it exists already then increase the amount
+    for (var ingredient in mealPlanIngredients) {
+      // check that there is an ingredient name
+      String name = ingredient['ingredient_name'] ?? 'Unknown Ingredient';
+      // check units are strings
+      String unit = ingredient['unit'] ?? 'unit';
+      double amount = (ingredient['amount'] as num).toDouble();
+      // check there is a type - if not then create a type of general
+      String type = ingredient.containsKey('type') && ingredient['type'] != null
+          ? ingredient['type']
+          : 'General';
+
+      if (aggregatedItems.containsKey(name)) {
+        aggregatedItems[name]!['amount'] += amount;
+      } else {
+        aggregatedItems[name] = {
+          'name': name,
+          'amount': amount,
+          'unit': unit,
+          'type': type,
+          'purchased': false,
+          'isManual': false, // items from meal plan
+        };
+      }
+    }
+
+    // add manually entered items and merge duplicates
+    for (var item in manualItems) {
+      String name = item['name'] ?? 'Unknown Item';
+      String unit = item['unit'] ?? 'unit';
+      double amount = (item['amount'] as num).toDouble();
+      String type = item.containsKey('type') && item['type'] != null
+          ? item['type']
+          : 'General';
+
+      if (aggregatedItems.containsKey(name)) {
+        aggregatedItems[name]!['amount'] += amount;
+      } else {
+        aggregatedItems[name] = {
+          'name': name,
+          'amount': amount,
+          'unit': unit,
+          'type': type,
+          'purchased': item['purchased'] ?? false,
+          'isManual': true, // manually added items
+        };
+      }
+    }
     setState(() {
-      _smartlistItems = items;
+      _smartlistItems = aggregatedItems.values.toList();
     });
+  }
+
+  // get all of the meal plan ingredients for the selected week
+  // into a list for processing
+  Future<List<Map<String, dynamic>>> _fetchMealPlanIngredients() async {
+    Map<String, List<Map<String, dynamic>>> mealPlan = await widget
+        .firebaseService
+        .getMealPlan(userId, selectedWeekStart, selectedWeekStart);
+//debug
+    print("Fetched Meal Plan: $mealPlan");
+    List<Map<String, dynamic>> ingredientsList = [];
+
+    for (var meals in mealPlan.values) {
+      for (var meal in meals) {
+        // make ingredient exists and is a list
+        if (meal.containsKey('ingredients') && meal['ingredients'] is List) {
+          // make sure the data is
+          List<dynamic> rawIngredients = meal['ingredients'];
+          List<Map<String, dynamic>> mealIngredients = rawIngredients
+              .where((ingredient) => ingredient is Map<String, dynamic>)
+              .map((ingredient) => ingredient as Map<String, dynamic>)
+              .toList();
+
+          ingredientsList.addAll(mealIngredients);
+        }
+      }
+    }
+//debug
+    print("Extracted Ingredients: $ingredientsList");
+    return ingredientsList;
   }
 
   void _togglePurchased(String name, bool currentStatus) {
