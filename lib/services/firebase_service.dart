@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:intl/intl.dart'; // for date formatting
 
 // this services file contains the class for all database activity
 class FirebaseService {
@@ -191,5 +192,117 @@ class FirebaseService {
       print("Error fetching recipes: $e");
       return [];
     }
+  }
+
+  Future<Map<String, List<Map<String, dynamic>>>> getMealPlan(
+      String userId, DateTime startDate, DateTime endDate) async {
+    try {
+      QuerySnapshot snapshot = await firestore
+          .collection('Users') // reference the main users collection
+          .doc(userId) // target the specific user document
+          .collection('MealPlans') // uery inside their mealPlans subcollection
+          .where('date', isGreaterThanOrEqualTo: startDate.toIso8601String())
+          .where('date', isLessThanOrEqualTo: endDate.toIso8601String())
+          .get();
+
+      Map<String, List<Map<String, dynamic>>> plan = {};
+
+      for (var doc in snapshot.docs) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        DateTime mealDate = DateTime.parse(data['date']);
+        String day = DateFormat('EEEE').format(mealDate);
+
+        if (!plan.containsKey(day)) {
+          plan[day] = [];
+        }
+
+        plan[day]!.add({
+          'title': data['title'],
+          'thumbnail': data['thumbnail'],
+          'description': data['description'],
+          'ingredients': data['ingredients'],
+        });
+      }
+
+      return plan;
+    } catch (e) {
+      print("Error fetching meal plan: $e");
+      return {};
+    }
+  }
+
+  // saves current meal plan.
+  // checks for existing meals so it doesn't duplicate
+  // updates new ones
+  // deletes any that don't exist any more
+  Future<void> saveMealPlan(String userId, DateTime startDate,
+      Map<String, List<Map<String, dynamic>>> plan) async {
+    try {
+      CollectionReference mealPlansRef =
+          firestore.collection('Users').doc(userId).collection('MealPlans');
+
+      // fetch existing meal plans from Firestore for the selected week
+      QuerySnapshot existingMealsSnapshot = await mealPlansRef
+          .where('date', isGreaterThanOrEqualTo: startDate.toIso8601String())
+          .where('date',
+              isLessThanOrEqualTo:
+                  startDate.add(Duration(days: 6)).toIso8601String())
+          .get();
+
+      // convert existing meals into a set of document IDs
+      Set<String> existingMealIds =
+          existingMealsSnapshot.docs.map((doc) => doc.id).toSet();
+      Set<String> newMealIds =
+          {}; // track meal IDs that should exist after saving
+
+      for (var entry in plan.entries) {
+        String day = entry.key;
+        List<Map<String, dynamic>> meals = entry.value;
+
+        print('saveMealPlan: day is $day');
+
+        for (var meal in meals) {
+          String mealId =
+              '${startDate.add(Duration(days: _dayOffset(day))).toIso8601String()}-${meal['title']}';
+          newMealIds.add(mealId); // keep track of meals that should remain
+
+          print(' mealId: saving: $mealId');
+
+          await mealPlansRef.doc(mealId).set({
+            'userId': userId,
+            'date': startDate
+                .add(Duration(days: _dayOffset(day)))
+                .toIso8601String(),
+            'title': meal['title'],
+            'thumbnail': meal['thumbnail'] ?? '',
+            'description': meal['description'] ?? '',
+            'ingredients': meal['ingredients'] ?? [],
+          });
+        }
+      }
+
+      // find meals that were deleted and remove them from Firestore
+      Set<String> mealsToDelete = existingMealIds.difference(newMealIds);
+      for (String mealId in mealsToDelete) {
+        await mealPlansRef.doc(mealId).delete();
+      }
+
+      print("Meal plan updated successfully");
+    } catch (e) {
+      print("Error saving meal plan: $e");
+    }
+  }
+
+  int _dayOffset(String day) {
+    const dayOffsets = {
+      'Sunday': 0,
+      'Monday': 1,
+      'Tuesday': 2,
+      'Wednesday': 3,
+      'Thursday': 4,
+      'Friday': 5,
+      'Saturday': 6,
+    };
+    return dayOffsets[day] ?? 0;
   }
 }

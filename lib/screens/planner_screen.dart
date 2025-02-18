@@ -10,6 +10,7 @@ import '../services/firebase_service.dart';
 class PlannerScreen extends StatefulWidget {
   final FirebaseService firebaseService;
   PlannerScreen({required this.firebaseService});
+
   @override
   _PlannerScreenState createState() => _PlannerScreenState();
 }
@@ -231,34 +232,104 @@ class _PlannerScreenState extends State<PlannerScreen> {
     },
   ];
   DateTime selectedWeekStart = DateTime.now(); // get today
-
   Map<String, List<Map<String, dynamic>>> plan = {}; // use JSON format
+  bool isLoading = true; // for loading indicator
 
   @override
   void initState() {
     super.initState();
-    // set to the start of the current week
-    int initialOffsetToSunday = (selectedWeekStart.weekday) % 7;
-    selectedWeekStart =
-        selectedWeekStart.subtract(Duration(days: initialOffsetToSunday));
-    // initialise Planner for the current week
-    // this is just for testing - should read in data from firebase
     initialisePlanner();
   }
 
+  @override
+  void dispose() {
+    saveMealPlan();
+    super.dispose();
+  }
+
+  Future<void> saveMealPlan() async {
+    try {
+      String userId = "1";
+      await widget.firebaseService
+          .saveMealPlan(userId, selectedWeekStart, plan);
+    } catch (e) {
+      print("Error saving meal plan: $e");
+    }
+  }
+
   void initialisePlanner() {
-    plan = {};
-    // make sure every day has been initialised to nul
-    // this is just for testing, data should be read in from firebase/recipe screen
+    // default the date to the sunday of the current week
+    // create the date using only year, month, day
+    // so time stays at 00:00
+    // sunday = 0, .weekday gets the numerical value of the weekday
+    // so subtracting this from the current date will always get
+    // the previous sunday
+    selectedWeekStart = DateTime(selectedWeekStart.year,
+            selectedWeekStart.month, selectedWeekStart.day)
+        .subtract(Duration(days: selectedWeekStart.weekday % 7));
+
+    // https://blog.stackademic.com/how-to-flutter-running-functions-after-widget-initialization-7d7b4150b147
+    // wait for UI to be built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchPlannerData(); // fetch firebase data is fetched after UI is built
+    });
+  }
+
+  Future<void> fetchPlannerData() async {
+    setState(() => isLoading = true);
+    try {
+      String userId = "1"; // Test Firebase user ID
+      DateTime endDate =
+          selectedWeekStart.add(Duration(days: 6)); // End of the week
+      Map<String, List<Map<String, dynamic>>> fetchedPlan = await widget
+          .firebaseService
+          .getMealPlan(userId, selectedWeekStart, endDate);
+// debug what is the format of the stored data - does it match what's expected?
+      print("Fetched days from Firebase: ${fetchedPlan.keys.toList()}");
+      print("Expected days in planner: ${createEmptyPlanner().keys.toList()}");
+      // data from firebase only contains days in plan that have recipes
+      // create an empty plan with all days initialised
+      Map<String, List<Map<String, dynamic>>> fullWeekPlan =
+          createEmptyPlanner();
+      // add entries from firebase to the fullweekplan. now all days
+      // are initialised
+      fetchedPlan.forEach((day, recipes) {
+        fullWeekPlan[day] = recipes;
+      });
+      setState(() {
+        // use the fullweekplan which has firebase data and other days
+        // initialised even if no recipes in them
+        plan = fullWeekPlan;
+        isLoading = false;
+      });
+      print("Final plan after merging missing days: ${plan.keys.toList()}");
+    } catch (e) {
+      print("Error fetching meal plan: $e");
+      setState(() {
+        plan = createEmptyPlanner();
+        isLoading = false;
+      });
+    }
+  }
+
+  // create a empty week
+  Map<String, List<Map<String, dynamic>>> createEmptyPlanner() {
+    Map<String, List<Map<String, dynamic>>> emptyPlan = {};
     for (int i = 0; i < 7; i++) {
       final day =
-          DateFormat('EEEE').format(DateTime.now().add(Duration(days: i)));
-      plan[day] = []; // make sure every day has an empty list
+          DateFormat('EEEE').format(selectedWeekStart.add(Duration(days: i)));
+      emptyPlan[day] = []; // Initialize empty lists for each day
     }
+// debug - check format of empty plan
+    print("Creating planner for week starting: ${selectedWeekStart}");
+    print("Generated days: ${emptyPlan.keys.toList()}");
+    return emptyPlan;
   }
 
   // date picker
   void pickStartDate(BuildContext context) async {
+    // if using the date picker save the current meal plan
+    saveMealPlan();
     // get the result from showDatePicker as a datetime variable
     final DateTime? picked = await showDatePicker(
       context: context, // date picker to show at current context (the button)
@@ -271,9 +342,12 @@ class _PlannerScreenState extends State<PlannerScreen> {
       final int offsetToSunday = picked.weekday % 7; // 0 for Sun, 1 for Mon
       setState(() {
         // trigger user interface re-build with the new data
-        selectedWeekStart = picked.subtract(Duration(days: offsetToSunday));
-        // initialise the meal planner for the new week
-        initialisePlanner();
+        selectedWeekStart = DateTime(
+          picked.year,
+          picked.month,
+          picked.day, // reset time to midnight, by not including time
+        ).subtract(Duration(days: offsetToSunday));
+        fetchPlannerData();
       });
     }
   }
@@ -290,7 +364,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
     return Scaffold(
       appBar: AppBar(
         // top bar
-        title: Text('Meal Planner POC drag and drop'), // screen name
+        title: Text('Meal Planner'), // screen name
       ),
       drawer: MenuDrawer(), // menu icon in top bar
       body: Column(
@@ -335,12 +409,17 @@ class _PlannerScreenState extends State<PlannerScreen> {
                     // trigger for recipe dropped
                     final recipe = details.data; // extract the dragged recipe
                     setState(() {
+// degub - check if day matches any day in the plan
+                      print(
+                          "Checking if $day exists in plan: ${plan.containsKey(day)}");
                       // update the UI
                       plan[day]
                           ?.add(recipe); // Add the recipe to the selected day
-                    });
 // debug
-                    print('Added recipe to $day: ${recipe['title']}');
+// temp save meal plan here so can see what's happening
+                      saveMealPlan();
+                      print('Added recipe to $day: ${recipe['title']}');
+                    });
                   },
                   builder: (context, candidateData, rejectedData) {
                     return Card(
