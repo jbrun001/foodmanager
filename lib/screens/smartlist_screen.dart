@@ -63,10 +63,20 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     // list of all the items entered manually in the smart list
     List<Map<String, dynamic>> manualItems =
         await widget.firebaseService.getSmartlist(userId, selectedWeekStart);
+    // List of all the ingredients this user has
+    List<Map<String, dynamic>> stockItems =
+        await widget.firebaseService.getStockItems(userId); // Fetch stock items
 
     // list of unique ingredients and their total amounts based on
     // meal plan ingredients and existing smartlist items
     Map<String, Map<String, dynamic>> aggregatedItems = {};
+
+    // convert stock items into a map with ingredient name and amount
+    // Convert stock list into a lookup map (ingredient name -> amount)
+    Map<String, double> userStock = {};
+    for (var stockItem in stockItems) {
+      userStock[stockItem['name']] = (stockItem['amount'] as num).toDouble();
+    }
 
     // for every ingredient in the meal plan add it to agregatedItems
     // if it exists already then increase the amount
@@ -91,6 +101,8 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
           'type': type,
           'purchased': false,
           'isManual': false, // items from meal plan
+          'stock': userStock[name] ?? 0.0, // get the amount from StockItems
+          'needed': 0.0, // place to store how much is needed to be purchased
         };
       }
     }
@@ -114,9 +126,25 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
           'type': type,
           'purchased': item['purchased'] ?? false,
           'isManual': true, // manually added items
+          'stock': userStock[name] ?? 0.0, // get the amount from StockItems
+          'needed': 0.0, // place to store how much is needed to be purchased
         };
       }
     }
+
+    // go through smartlist and calculate needed amounts
+    aggregatedItems.forEach((key, value) {
+      double required = value['amount'];
+      double stock = value['stock'];
+      value['needed'] = required > stock ? required - stock : 0.0;
+      // if the item is requred by the meal plan and is not needed to
+      // purchase because it's already in stock then mark as already
+      // purchased
+      if (value['needed'] == 0.0 && value['amount'] > 0.0) {
+        value['purchased'] = true;
+      }
+    });
+
     setState(() {
       _smartlistItems = aggregatedItems.values.toList();
     });
@@ -295,7 +323,10 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                                 item['name'], item['purchased']),
                           ),
                           title: Text(
-                            "${item['name']} (Required: ${item['amount']} ${item['unit']})",
+                            // output all the data from the aggregated list
+                            // for testing
+                            "${item['name']} (Plan: ${item['amount']} ${item['unit']})\n"
+                            "Stock: ${item['stock']} ${item['unit']} | Needed: ${item['needed']} ${item['unit']}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               decoration: item['purchased']
