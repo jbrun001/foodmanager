@@ -124,9 +124,9 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   // get all of the meal plan ingredients for the selected week
   // into a list for processing
   Future<List<Map<String, dynamic>>> _fetchMealPlanIngredients() async {
-    Map<String, List<Map<String, dynamic>>> mealPlan = await widget
-        .firebaseService
-        .getMealPlan(userId, selectedWeekStart, selectedWeekStart);
+    Map<String, List<Map<String, dynamic>>> mealPlan =
+        await widget.firebaseService.getMealPlan(userId, selectedWeekStart,
+            selectedWeekStart.add(Duration(days: 6)));
 //debug
     print("Fetched Meal Plan: $mealPlan");
     List<Map<String, dynamic>> ingredientsList = [];
