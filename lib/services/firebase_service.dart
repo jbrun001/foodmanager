@@ -388,8 +388,8 @@ class FirebaseService {
     required DateTime date,
   }) async {
     try {
-      String dateKey = date.toIso8601String(); // Convert date to ISO 8601
-      String docId = "${dateKey}_$name"; // Unique key: ISO date + item name
+      String dateKey = date.toIso8601String(); // convert date to ISO 8601
+      String docId = "${dateKey}_$name"; // unique key: ISO date + item name
 
 // debug
       print(
@@ -454,7 +454,7 @@ class FirebaseService {
     }
   }
 
-  /// Delete an item from the smartlist
+  // delete an item from the smartlist
   Future<void> deleteSmartlistItem(
       String userId, String name, DateTime date) async {
     try {
@@ -496,6 +496,53 @@ class FirebaseService {
     } catch (e) {
       print("Error fetching ingredients: $e");
       return [];
+    }
+  }
+
+  // get the minimum order quantities for the passed storename
+  Future<Map<String, double>> getMoQsForStore(String storeName) async {
+    try {
+      QuerySnapshot snapshot = await firestore.collection('Ingredients').get();
+
+      Map<String, double> moqMap = {};
+
+      print(
+          "Fetched ${snapshot.docs.length} documents from Ingredients collection.");
+
+      for (var doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+
+        print(
+            "Document ID: ${doc.id}, Data: $data"); // Debug full document data
+
+        if (data.containsKey('Moqs') && data['Moqs'] is List) {
+          List<dynamic> moqList = data['Moqs']; // list
+
+          for (var moqData in moqList) {
+            if (moqData is Map<String, dynamic> &&
+                moqData.containsKey('storeName') &&
+                moqData['storeName'] == storeName &&
+                moqData.containsKey('amount')) {
+              String ingredientName = data['name'] ?? doc.id;
+              double moq = (moqData['amount'] as num).toDouble();
+              String moqUnit = moqData['units'] ?? 'unit';
+
+              print("Matched MOQ for Store: $storeName");
+              print("Ingredient: $ingredientName, MOQ: $moq $moqUnit");
+
+              moqMap[ingredientName] = moq;
+            }
+          }
+        } else {
+          print("No valid 'Moqs' field found for document ID: ${doc.id}");
+        }
+      }
+
+      print("Final MOQ Map: $moqMap");
+      return moqMap;
+    } catch (e) {
+      print("Error fetching MOQ data: $e");
+      return {};
     }
   }
 }

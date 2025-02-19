@@ -260,7 +260,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "storeName": "Tesco",
           "URL": "https://www.tesco.com/groceries/en-GB/products/290920510",
-          "amount": "250",
+          "amount": 250,
           "units": "g",
           "lastCollected": "2025-01-01T00:00:00.000"
         }
@@ -274,7 +274,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "storeName": "Tesco",
           "URL": "https://www.tesco.com/groceries/en-GB/products/259108442",
-          "amount": "56",
+          "amount": 56,
           "units": "g",
           "lastCollected": "2025-01-01T00:00:00.000"
         }
@@ -288,8 +288,8 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "storeName": "Tesco",
           "URL": "https://www.tesco.com/groceries/en-GB/products/254877356",
-          "amount": "1",
-          "units": "kg",
+          "amount": 1000,
+          "units": "g",
           "lastCollected": "2025-01-01T00:00:00.000"
         }
       ]
@@ -302,8 +302,8 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "storeName": "Tesco",
           "URL": "https://www.tesco.com/groceries/en-GB/products/285210252",
-          "amount": "2",
-          "units": "",
+          "amount": 2,
+          "units": "g",
           "lastCollected": "2025-01-01T00:00:00.000"
         }
       ]
@@ -316,7 +316,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "storeName": "Tesco",
           "URL": "https://www.tesco.com/groceries/en-GB/products/252895723",
-          "amount": "2",
+          "amount": 2,
           "units": "",
           "lastCollected": "2025-01-01T00:00:00.000"
         }
@@ -330,7 +330,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "storeName": "Tesco",
           "URL": "https://www.tesco.com/groceries/en-GB/products/308469037",
-          "amount": "600",
+          "amount": 600,
           "units": "",
           "lastCollected": "2025-01-01T00:00:00.000"
         }
@@ -344,7 +344,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "storeName": "Tesco",
           "URL": "https://www.tesco.com/groceries/en-GB/products/317207605",
-          "amount": "180",
+          "amount": 180,
           "units": "g",
           "lastCollected": "2025-01-01T00:00:00.000"
         }
@@ -358,7 +358,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "storeName": "Tesco",
           "URL": "https://www.tesco.com/groceries/en-GB/products/302286988",
-          "amount": "280",
+          "amount": 280,
           "units": "g",
           "lastCollected": "2025-01-01T00:00:00.000"
         }

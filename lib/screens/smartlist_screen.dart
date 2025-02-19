@@ -66,6 +66,10 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     // List of all the ingredients this user has
     List<Map<String, dynamic>> stockItems =
         await widget.firebaseService.getStockItems(userId); // Fetch stock items
+    // map of all of the moqs all ingredients in the currently selected store,
+    // if no store then default to tesco
+    Map<String, double> moqs =
+        await widget.firebaseService.getMoQsForStore(_selectedStore ?? 'Tesco');
 
     // list of unique ingredients and their total amounts based on
     // meal plan ingredients and existing smartlist items
@@ -103,6 +107,8 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
           'isManual': false, // items from meal plan
           'stock': userStock[name] ?? 0.0, // get the amount from StockItems
           'needed': 0.0, // place to store how much is needed to be purchased
+          'moq': moqs[name] ?? 0.0, // minimum order quantity
+          'purchase_amount': 0.0, // amount factoring MOQ and existing stock
         };
       }
     }
@@ -127,7 +133,9 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
           'purchased': item['purchased'] ?? false,
           'isManual': true, // manually added items
           'stock': userStock[name] ?? 0.0, // get the amount from StockItems
-          'needed': 0.0, // place to store how much is needed to be purchased
+          'needed': 0.0, // how much is needed after stock removed
+          'moq': moqs[name] ?? 0.0, // minimum order quantity
+          'purchase_amount': 0.0, // amount factoring MOQ and existing stock
         };
       }
     }
@@ -136,12 +144,28 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     aggregatedItems.forEach((key, value) {
       double required = value['amount'];
       double stock = value['stock'];
+      double moq = value['moq'];
       value['needed'] = required > stock ? required - stock : 0.0;
       // if the item is requred by the meal plan and is not needed to
       // purchase because it's already in stock then mark as already
       // purchased
       if (value['needed'] == 0.0 && value['amount'] > 0.0) {
         value['purchased'] = true;
+      }
+      // take account of minimum order quantities for each inggredient
+      if (value['needed'] > 0.0) {
+        if (moq > 0.0) {
+          // calculate purchase amount based on MOQ
+          // value[needed]/moq finds out how many packs we need
+          // the .ceil rounds this up to the nearest integer
+          // moq * gets you the amount in units
+          value['purchase_amount'] = moq * (value['needed'] / moq).ceil();
+        } else {
+          value['purchase_amount'] = value['needed'];
+        }
+      } else {
+        value['purchase_amount'] = 0.0;
+        value['purchased'] = required > 0.0;
       }
     });
 
@@ -325,8 +349,9 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                           title: Text(
                             // output all the data from the aggregated list
                             // for testing
-                            "${item['name']} (Plan: ${item['amount']} ${item['unit']})\n"
-                            "Stock: ${item['stock']} ${item['unit']} | Needed: ${item['needed']} ${item['unit']}",
+                            "${item['name']} to buy: ${item['purchase_amount']}${item['unit']}\n"
+                            "Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
+                            "MOQ: ${item['moq']}${item['unit']} | ",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               decoration: item['purchased']
