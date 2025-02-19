@@ -60,6 +60,29 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
     });
   }
 
+  // called on exit of the amnount field
+  // updates firebase with new amount.
+  void _updateIngredientAmount(
+      Map<String, dynamic> ingredient, int newAmount) async {
+    setState(() {
+      ingredient['amount'] = newAmount;
+    });
+    String userId = '1'; // for testing only
+    try {
+      await widget.firebaseService.addUserStockItem(
+        userId: userId,
+        stockItemId: ingredient['name'],
+        ingredientId: ingredient['name'],
+        ingredientAmount: newAmount.toDouble(),
+        ingredientUnit: ingredient['unit'],
+        ingredientType: ingredient['type'],
+      );
+      print("Updated ingredient in Firebase: ${ingredient['name']}");
+    } catch (e) {
+      print("Failed to update ingredient: $e");
+    }
+  }
+
   // add ingredients to sticky area
   void addToStickyArea(Map<String, dynamic> ingredient) {
     setState(() {
@@ -136,6 +159,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
             ),
           ),
           // Scrollable List of Ingredients
+
           Expanded(
             child: ListView.builder(
               itemCount: filteredIngredients.length,
@@ -145,32 +169,22 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
                     title: Text(ingredient['name']),
-                    subtitle: Text('Type: ${ingredient['type']}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 60,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            controller: TextEditingController(
-                              text: ingredient['amount'].toString(),
-                            ),
-                            onSubmitted: (value) {
-                              setState(() {
-                                filteredIngredients[index]['amount'] =
-                                    int.tryParse(value) ?? ingredient['amount'];
-                              });
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        Text(ingredient['unit']),
-                      ],
+                    subtitle: Text(
+                        'Type: ${ingredient['type']} - Unit: ${ingredient['unit']}'),
+                    trailing: SizedBox(
+                      width: 60,
+                      child: TextFormField(
+                        // Use initialValue instead of a controller.
+                        initialValue: ingredient['amount'].toString(),
+                        keyboardType: TextInputType.number,
+                        textAlign: TextAlign.center,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (value) {
+                          int newAmount =
+                              int.tryParse(value) ?? ingredient['amount'];
+                          _updateIngredientAmount(ingredient, newAmount);
+                        },
+                      ),
                     ),
                   ),
                 );
@@ -184,8 +198,9 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  AddIngredientScreen(onAddIngredient: addNewIngredient),
+              builder: (context) => AddIngredientScreen(
+                  onAddIngredient: addNewIngredient,
+                  firebaseService: widget.firebaseService),
             ),
           );
         },
@@ -198,8 +213,10 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
 // Add Ingredient Screen
 class AddIngredientScreen extends StatefulWidget {
   final Function(Map<String, dynamic>) onAddIngredient;
+  final FirebaseService firebaseService;
 
-  AddIngredientScreen({required this.onAddIngredient});
+  AddIngredientScreen(
+      {required this.onAddIngredient, required this.firebaseService});
 
   @override
   _AddIngredientScreenState createState() => _AddIngredientScreenState();
@@ -222,7 +239,15 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
   @override
   void initState() {
     super.initState();
+    fetchIngredients(); // fetch ingredients from database
     filteredIngredients = availableIngredients;
+  }
+
+  void fetchIngredients() async {
+    availableIngredients = await widget.firebaseService.getIngredients();
+    setState(() {
+      filteredIngredients = availableIngredients;
+    });
   }
 
   void filterIngredients(String query) {

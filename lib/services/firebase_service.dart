@@ -476,4 +476,26 @@ class FirebaseService {
       print("Error deleting item: $e");
     }
   }
+
+  // fetch all ingredients from firestore
+  // used when adding a new ingredient to user stock items
+  Future<List<Map<String, dynamic>>> getIngredients() async {
+    try {
+      QuerySnapshot snapshot = await firestore.collection('Ingredients').get();
+
+      // map Firebase data to a list of maps
+      return snapshot.docs.map((doc) {
+        var data = doc.data() as Map<String, dynamic>;
+        return {
+          'name': data['name'] ?? '',
+          'unit': data['unit'] ?? '',
+          'type': data['type'] ?? '',
+          'Moqs': data['Moqs'] ?? [],
+        };
+      }).toList();
+    } catch (e) {
+      print("Error fetching ingredients: $e");
+      return [];
+    }
+  }
 }
