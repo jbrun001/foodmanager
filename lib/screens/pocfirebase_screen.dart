@@ -250,6 +250,142 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     }
   }
 
+  // test ingredient and Moq data
+  final List<Map<String, dynamic>> ingredients = [
+    {
+      "name": "Butter",
+      "unit": "g",
+      "type": "Dairy",
+      "Moqs": [
+        {
+          "storeName": "Tesco",
+          "URL": "https://www.tesco.com/groceries/en-GB/products/290920510",
+          "amount": "250",
+          "units": "g",
+          "lastCollected": "2025-01-01T00:00:00.000"
+        }
+      ]
+    },
+    {
+      "name": "Yeast",
+      "unit": "g",
+      "type": "Baking",
+      "Moqs": [
+        {
+          "storeName": "Tesco",
+          "URL": "https://www.tesco.com/groceries/en-GB/products/259108442",
+          "amount": "56",
+          "units": "g",
+          "lastCollected": "2025-01-01T00:00:00.000"
+        }
+      ]
+    },
+    {
+      "name": "Long Grain Rice",
+      "unit": "g",
+      "type": "world goods",
+      "Moqs": [
+        {
+          "storeName": "Tesco",
+          "URL": "https://www.tesco.com/groceries/en-GB/products/254877356",
+          "amount": "1",
+          "units": "kg",
+          "lastCollected": "2025-01-01T00:00:00.000"
+        }
+      ]
+    },
+    {
+      "name": "Chicken Breast",
+      "unit": "",
+      "type": "meat",
+      "Moqs": [
+        {
+          "storeName": "Tesco",
+          "URL": "https://www.tesco.com/groceries/en-GB/products/285210252",
+          "amount": "2",
+          "units": "",
+          "lastCollected": "2025-01-01T00:00:00.000"
+        }
+      ]
+    },
+    {
+      "name": "Pak Choi",
+      "unit": "",
+      "type": "vegetable",
+      "Moqs": [
+        {
+          "storeName": "Tesco",
+          "URL": "https://www.tesco.com/groceries/en-GB/products/252895723",
+          "amount": "2",
+          "units": "",
+          "lastCollected": "2025-01-01T00:00:00.000"
+        }
+      ]
+    },
+    {
+      "name": "Chicken Thigh Fillets",
+      "unit": "g",
+      "type": "meat",
+      "Moqs": [
+        {
+          "storeName": "Tesco",
+          "URL": "https://www.tesco.com/groceries/en-GB/products/308469037",
+          "amount": "600",
+          "units": "",
+          "lastCollected": "2025-01-01T00:00:00.000"
+        }
+      ]
+    },
+    {
+      "name": "Thai Red Curry Paste",
+      "unit": "g",
+      "type": "spices & pastes",
+      "Moqs": [
+        {
+          "storeName": "Tesco",
+          "URL": "https://www.tesco.com/groceries/en-GB/products/317207605",
+          "amount": "180",
+          "units": "g",
+          "lastCollected": "2025-01-01T00:00:00.000"
+        }
+      ]
+    },
+    {
+      "name": "Haddock",
+      "unit": "g",
+      "type": "fish",
+      "Moqs": [
+        {
+          "storeName": "Tesco",
+          "URL": "https://www.tesco.com/groceries/en-GB/products/302286988",
+          "amount": "280",
+          "units": "g",
+          "lastCollected": "2025-01-01T00:00:00.000"
+        }
+      ]
+    }
+  ];
+
+  // upload test data ingredients to Firestore with Moqs
+  Future<void> _uploadIngredients() async {
+    try {
+      CollectionReference ingredientsCollection =
+          _firestore.collection("Ingredients");
+
+      for (var ingredient in ingredients) {
+        await ingredientsCollection.add(ingredient);
+      }
+
+      setState(() {
+        _status = "Ingredients (with embedded Moqs) uploaded successfully!";
+      });
+    } catch (e) {
+      setState(() {
+        _status = "Error uploading ingredients: $e";
+      });
+    }
+  }
+
   Future<void> _testFirestore() async {
     try {
       // Write test data to Firestore
@@ -390,6 +526,11 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
             ElevatedButton(
               onPressed: _createUserWithTestData,
               child: Text("Create a test user with id 1"),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _uploadIngredients,
+              child: Text("Upload test Ingredients to Firestore"),
             ),
           ],
         ),

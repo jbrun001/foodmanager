@@ -22,7 +22,8 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   String? _selectedStore;
   List<Map<String, dynamic>> _smartlistItems = [];
 
-  final List<String> _stores = ['Store A', 'Store B', 'Store C'];
+  // testing - just use tesco - add read from \Stores collection later
+  final List<String> _stores = ['Tesco'];
 
   @override
   void initState() {
@@ -294,7 +295,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                                 item['name'], item['purchased']),
                           ),
                           title: Text(
-                            "${item['name']} (${item['amount']} ${item['unit']})",
+                            "${item['name']} (Required: ${item['amount']} ${item['unit']})",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               decoration: item['purchased']
