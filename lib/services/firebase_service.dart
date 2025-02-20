@@ -1,12 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // for authentication
+import 'package:google_sign_in/google_sign_in.dart'; // for oauth2 authentication
 import 'package:intl/intl.dart'; // for date formatting
 
 // this services file contains the class for all database activity
 class FirebaseService {
+  // firebase database object
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  // firebase authentication object
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   // create a new user document in Firestore
-  Future<void> createUser({
+  Future<void> createUserPOC({
     required String userId,
     required String firebaseId,
     required String passwordHash,
@@ -543,6 +548,97 @@ class FirebaseService {
     } catch (e) {
       print("Error fetching MOQ data: $e");
       return {};
+    }
+  }
+
+  // authentication methods
+  // Email & Password Sign-Up
+  Future<User?> signUpWithEmail(
+      String email, String password, int portions, String store) async {
+    try {
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      User? user = userCredential.user;
+      if (user != null) {
+        print('User signed up: ${user.uid}');
+        await createUserSignUp(user.uid, email, portions, store);
+      }
+      return user;
+    } catch (e) {
+      print('Error signing up: $e');
+      return null;
+    }
+  }
+
+  // Email & Password Login
+  Future<User?> signInWithEmail(String email, String password) async {
+    try {
+      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      print('User logged in: ${userCredential.user?.uid}');
+      return userCredential.user;
+    } catch (e) {
+      print('Error signing in: $e');
+      return null;
+    }
+  }
+
+  // Google Sign-In
+  Future<User?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        print('Google sign-in cancelled');
+        return null;
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+      User? user = userCredential.user;
+
+      if (user != null) {
+        print('User signed in with Google: ${user.uid}');
+        await createUserSignUp(
+            user.uid, user.email ?? '', 2, "Tesco"); // Default values
+      }
+      return user;
+    } catch (e) {
+      print('Error signing in with Google: $e');
+      return null;
+    }
+  }
+
+  // Create or Update User in Firebase
+  Future<void> createUserSignUp(
+      String userId, String email, int portions, String store) async {
+    try {
+      DocumentReference userDoc = firestore.collection('Users').doc(userId);
+      DocumentSnapshot doc = await userDoc.get();
+
+      if (!doc.exists) {
+        print('Creating new user in Firestore: $userId');
+        await userDoc.set({
+          'email': email,
+          'preferredPortions': portions,
+          'preferredStore': store,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      } else {
+        print('User already exists in Firestore: $userId');
+      }
+    } catch (e) {
+      print('Error creating user in Firestore: $e');
     }
   }
 }

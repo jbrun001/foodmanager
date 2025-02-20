@@ -432,7 +432,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
       }
 
       // create user with test data
-      await widget.firebaseService.createUser(
+      await widget.firebaseService.createUserPOC(
         userId: userId,
         firebaseId: "firebase_test_id",
         passwordHash: "test_hashed_password",

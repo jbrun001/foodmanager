@@ -8,6 +8,7 @@ import 'screens/ingredientsearch_screen.dart';
 import 'screens/previewleftovers_screen.dart';
 import 'screens/food_waste_log.dart';
 import 'screens/pocfirebase_screen.dart';
+import 'screens/signup_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // needed to support cross platform
 import 'services/firebase_service.dart'; // all the database interaction
@@ -81,6 +82,10 @@ GoRouter _router(FirebaseService firebaseService) {
         builder: (context, state) =>
             POCFirebaseScreen(firebaseService: firebaseService),
       ),
+      GoRoute(
+          path: '/signup',
+          builder: (context, state) =>
+              SignupScreen(firebaseService: firebaseService)),
     ],
   );
 }
