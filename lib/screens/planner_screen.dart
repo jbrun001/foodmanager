@@ -21,8 +21,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
   final List<Map<String, dynamic>> addedRecipes = [
     {
       'title': 'One-Pot Hainanese-Style Chicken & Rice with Pak Choi',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description': '',
       'cooktime': 25,
       'preptime': 5,
@@ -61,8 +61,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
     },
     {
       'title': 'Southern Thai-Style Chicken Panang Curry',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description': 'Description of recipe.',
       'cooktime': 25,
       'preptime': 5,
@@ -95,7 +95,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
         {'step': 'Chop the chicken into bite size pieces', 'image': ''},
         {
           'step': 'Add a little oil to a wide based pan, and heat on medium',
-          'image': 'https://via.placeholder.com/100'
+          'image': 'https://dummyimage.com/100'
         },
         {'step': 'Add chicken and cook for 3-4 mins until brown', 'image': ''},
       ],
@@ -104,8 +104,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
     {
       'title':
           'Creole-Style Haddock & Sweet Potato Stew with Garlic Rice extra long title',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description':
           'Longer description taking up more space that previous item and enough words to go onto a second line.',
       'cooktime': 25,
@@ -139,7 +139,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
         {'step': 'Add the rice to a pot', 'image': ''},
         {
           'step': 'Add cold water to rice',
-          'image': 'https://via.placeholder.com/100'
+          'image': 'https://dummyimage.com/100'
         },
         {'step': 'Cook on high until water is boiling', 'image': ''},
       ],
@@ -147,8 +147,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
     },
     {
       'title': 'Rich Mushroom Ragu Linguine (V)',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description': 'Description',
       'cooktime': 25,
       'preptime': 5,
@@ -182,7 +182,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
         {
           'step':
               'Add to an oiled wide based pan and fry until starting to brown',
-          'image': 'https://via.placeholder.com/100'
+          'image': 'https://dummyimage.com/100'
         },
         {'step': 'Add chopped tomato', 'image': ''},
       ],
@@ -190,8 +190,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
     },
     {
       'title': 'Beef Satay Wraps',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/100',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description': 'description',
       'cooktime': 25,
       'preptime': 5,
@@ -225,7 +225,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
         {
           'step':
               'cook on medium, breaking up beef until beef starting to brown',
-          'image': 'https://via.placeholder.com/100'
+          'image': 'https://dummyimage.com/100'
         },
       ],
       'additional_ingredients': ['Salt', 'Pepper'],

@@ -20,8 +20,8 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
   final List<Map<String, dynamic>> recipes = [
     {
       'title': 'One-Pot Hainanese-Style Chicken & Rice with Pak Choi',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description': '',
       'cooktime': 25,
       'preptime': 5,
@@ -60,8 +60,8 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     },
     {
       'title': 'Southern Thai-Style Chicken Panang Curry',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description': 'Description of recipe.',
       'cooktime': 25,
       'preptime': 5,
@@ -94,7 +94,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {'step': 'Chop the chicken into bite size pieces', 'image': ''},
         {
           'step': 'Add a little oil to a wide based pan, and heat on medium',
-          'image': 'https://via.placeholder.com/100'
+          'image': 'https://dummyimage.com/100'
         },
         {'step': 'Add chicken and cook for 3-4 mins until brown', 'image': ''},
       ],
@@ -103,8 +103,8 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     {
       'title':
           'Creole-Style Haddock & Sweet Potato Stew with Garlic Rice extra long title',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description':
           'Longer description taking up more space that previous item and enough words to go onto a second line.',
       'cooktime': 25,
@@ -138,7 +138,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {'step': 'Add the rice to a pot', 'image': ''},
         {
           'step': 'Add cold water to rice',
-          'image': 'https://via.placeholder.com/100'
+          'image': 'https://dummyimage.com/100'
         },
         {'step': 'Cook on high until water is boiling', 'image': ''},
       ],
@@ -146,8 +146,8 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     },
     {
       'title': 'Rich Mushroom Ragu Linguine (V)',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/200',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description': 'Description',
       'cooktime': 25,
       'preptime': 5,
@@ -181,7 +181,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           'step':
               'Add to an oiled wide based pan and fry until starting to brown',
-          'image': 'https://via.placeholder.com/100'
+          'image': 'https://dummyimage.com/100'
         },
         {'step': 'Add chopped tomato', 'image': ''},
       ],
@@ -189,8 +189,8 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     },
     {
       'title': 'Beef Satay Wraps',
-      'thumbnail': 'https://via.placeholder.com/100',
-      'image': 'https://via.placeholder.com/100',
+      'thumbnail': 'https://dummyimage.com/100',
+      'image': 'https://dummyimage.com/200',
       'description': 'description',
       'cooktime': 25,
       'preptime': 5,
@@ -224,7 +224,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           'step':
               'cook on medium, breaking up beef until beef starting to brown',
-          'image': 'https://via.placeholder.com/100'
+          'image': 'https://dummyimage.com/100'
         },
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
