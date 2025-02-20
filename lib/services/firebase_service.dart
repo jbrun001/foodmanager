@@ -641,4 +641,17 @@ class FirebaseService {
       print('Error creating user in Firestore: $e');
     }
   }
+
+  // function to get the currently logged in userId
+  // returns the userId or returns '' if not logged in.
+  String getCurrentUserId() {
+    User? user = auth.currentUser; // get the current user
+    if (user != null) {
+      print('Current User ID: ${user.uid}');
+      return user.uid;
+    } else {
+      print('No user is currently logged in.');
+      return '';
+    }
+  }
 }

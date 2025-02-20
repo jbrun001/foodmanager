@@ -4,11 +4,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart'; // for date formatting
 import '../services/firebase_service.dart';
+import 'package:go_router/go_router.dart'; // required for login redirect
 
 // use template of recipe_screen as that is a stateful widget
 
 class PlannerScreen extends StatefulWidget {
   final FirebaseService firebaseService;
+
   PlannerScreen({required this.firebaseService});
 
   @override
@@ -16,6 +18,9 @@ class PlannerScreen extends StatefulWidget {
 }
 
 class _PlannerScreenState extends State<PlannerScreen> {
+  // holds the current userId
+  String userId = '';
+
   // test data based on work in recipes_screen
   // this data should be replaced by data passed from the recipes_screen
   final List<Map<String, dynamic>> addedRecipes = [
@@ -238,6 +243,12 @@ class _PlannerScreenState extends State<PlannerScreen> {
   @override
   void initState() {
     super.initState();
+    // get the current userId and redirect to login if no current user
+    userId = FirebaseService().getCurrentUserId();
+    if (userId == '') {
+      print("No user logged in. Redirecting to login page...");
+      context.go('/');
+    }
     initialisePlanner();
   }
 
@@ -249,7 +260,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
   Future<void> saveMealPlan() async {
     try {
-      String userId = "1";
+      // used for testing
+      // String userId = "1";
       await widget.firebaseService
           .saveMealPlan(userId, selectedWeekStart, plan);
     } catch (e) {
@@ -278,7 +290,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
   Future<void> fetchPlannerData() async {
     setState(() => isLoading = true);
     try {
-      String userId = "1"; // Test Firebase user ID
+      //String userId = "1"; // Test Firebase user ID
       DateTime endDate =
           selectedWeekStart.add(Duration(days: 6)); // End of the week
       Map<String, List<Map<String, dynamic>>> fetchedPlan = await widget

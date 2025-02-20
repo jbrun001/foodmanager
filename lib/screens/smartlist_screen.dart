@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'menu_drawer.dart';
 import 'package:intl/intl.dart';
 import '../services/firebase_service.dart';
+import 'package:go_router/go_router.dart'; // required for login redirect
 
 class SmartlistScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -16,8 +17,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   DateTime selectedWeekStart =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
           .subtract(Duration(days: DateTime.now().weekday % 7));
-  // set the user to user "1" for testing - replace with auth code later
-  String userId = "1";
+  String userId = ''; // used to hold the current user
 
   String? _selectedStore;
   List<Map<String, dynamic>> _smartlistItems = [];
@@ -28,6 +28,11 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   @override
   void initState() {
     super.initState();
+    userId = FirebaseService().getCurrentUserId();
+    if (userId == '') {
+      print("No user logged in. Redirecting to login page...");
+      context.go('/');
+    }
     _selectedStore = _stores[0];
     _loadSmartlist();
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'menu_drawer.dart';
 import '../services/firebase_service.dart';
+import 'package:go_router/go_router.dart'; // required for login redirect
 
 class IngredientSearchScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -10,6 +11,8 @@ class IngredientSearchScreen extends StatefulWidget {
 }
 
 class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
+  // holds the current userId
+  String userId = '';
   // Ingredients in stock
   List<Map<String, dynamic>> ingredients = [
     {'name': 'Flour', 'amount': 500, 'unit': 'g', 'type': 'Baking'},
@@ -27,6 +30,13 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
   @override
   void initState() {
     super.initState();
+    // get the current userId and redirect to login if no current user
+    userId = FirebaseService().getCurrentUserId();
+    if (userId == '') {
+      print("No user logged in. Redirecting to login page...");
+      context.go('/');
+    }
+
     // fetch data after UI built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchStockItems();
@@ -34,7 +44,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
   }
 
   void fetchStockItems() async {
-    String userId = '1'; // For testing
+    // String userId = '1'; // For testing
     List<Map<String, dynamic>> stockItems =
         await widget.firebaseService.getStockItems(userId);
 
@@ -67,7 +77,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
     setState(() {
       ingredient['amount'] = newAmount;
     });
-    String userId = '1'; // for testing only
+    // String userId = '1'; // for testing only
     try {
       await widget.firebaseService.addUserStockItem(
         userId: userId,
@@ -111,7 +121,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
 
   // add ingredient to the list (from the add ingredient screen)
   void addNewIngredient(Map<String, dynamic> newIngredient) async {
-    String userId = '1';
+    // String userId = '1';
 //debug
     print("Attempting to add ingredient: $newIngredient");
 

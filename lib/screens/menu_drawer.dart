@@ -37,6 +37,10 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => context.go('/waste'),
           ),
           ListTile(
+            title: Text('User Profile'),
+            onTap: () => context.go('/profile'),
+          ),
+          ListTile(
             title: Text('POC firebase'),
             onTap: () => context.go('/firebase'),
           ),

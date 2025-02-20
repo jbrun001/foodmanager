@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'menu_drawer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/firebase_service.dart';
+import 'package:go_router/go_router.dart'; // required for login redirect
 
 class RecipesScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -14,6 +14,7 @@ class RecipesScreen extends StatefulWidget {
 }
 
 class _RecipesScreenState extends State<RecipesScreen> {
+  String userId = ''; // holds the current userId
   List<Map<String, dynamic>> recipes = [];
   List<Map<String, dynamic>> addedRecipes = [];
   List<Map<String, dynamic>> filteredRecipes = [];
@@ -23,6 +24,12 @@ class _RecipesScreenState extends State<RecipesScreen> {
   @override
   void initState() {
     super.initState();
+    // get the current userId - if '' then redirect to login screen
+    userId = FirebaseService().getCurrentUserId();
+    if (userId == '') {
+      print("No user logged in. Redirecting to login page...");
+      context.go('/');
+    }
     fetchRecipes(); // get all the recipes when the screen loads
     // filteredRecipes = recipes.take(50).toList();
   }
