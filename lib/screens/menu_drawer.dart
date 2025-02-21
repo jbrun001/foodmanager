@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // for authentication'
 
 class MenuDrawer extends StatelessWidget {
   @override
@@ -39,6 +40,13 @@ class MenuDrawer extends StatelessWidget {
           ListTile(
             title: Text('User Profile'),
             onTap: () => context.go('/profile'),
+          ),
+          ListTile(
+            title: Text('Logout'),
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              context.go('/'); // redirect to login screen
+            },
           ),
           ListTile(
             title: Text('POC firebase'),
