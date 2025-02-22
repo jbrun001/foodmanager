@@ -654,4 +654,57 @@ class FirebaseService {
       return '';
     }
   }
+
+  // setches the user document from Firestore and returns its data as a map
+  Future<Map<String, dynamic>?> getUserDetails(String userId) async {
+    try {
+      DocumentSnapshot doc =
+          await firestore.collection('Users').doc(userId).get();
+      return doc.data() as Map<String, dynamic>?;
+    } catch (e) {
+      print('Error fetching user details: $e');
+      return null;
+    }
+  }
+
+  // updates the user's profile details in Firestore.
+  Future<void> updateUserProfile({
+    required String userId,
+    required String email,
+    required int preferredPortions,
+    required String preferredStore,
+  }) async {
+    try {
+      await firestore.collection('Users').doc(userId).update({
+        'email': email,
+        'preferredPortions': preferredPortions,
+        'preferredStore': preferredStore,
+        'lastUpdated': FieldValue.serverTimestamp(),
+      });
+      print('User profile updated successfully');
+    } catch (e) {
+      print('Error updating user profile: $e');
+    }
+  }
+
+  // fetches the list of store names from the "Stores" collection.
+  // If no store is found, it creates one with the name "Tesco" and returns it
+  Future<List<String>> getStores() async {
+    try {
+      QuerySnapshot snapshot = await firestore.collection('Stores').get();
+      if (snapshot.docs.isEmpty) {
+        // No stores found – create a default store "Tesco"
+        await firestore.collection('Store').add({'name': 'Tesco'});
+        return ['Tesco'];
+      } else {
+        return snapshot.docs.map((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          return data['name'] as String;
+        }).toList();
+      }
+    } catch (e) {
+      print("Error fetching stores: $e");
+      return [];
+    }
+  }
 }

@@ -20,10 +20,8 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   String userId = ''; // used to hold the current user
 
   String? _selectedStore;
+  List<String> _stores = []; // stored list of available stores
   List<Map<String, dynamic>> _smartlistItems = [];
-
-  // testing - just use tesco - add read from \Stores collection later
-  final List<String> _stores = ['Tesco'];
 
   @override
   void initState() {
@@ -33,7 +31,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
       print("No user logged in. Redirecting to login page...");
       context.go('/');
     }
-    _selectedStore = _stores[0];
+    _loadStores(); // load stores from \Stores collection
     _loadSmartlist();
   }
 
@@ -57,6 +55,15 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
         _loadSmartlist();
       });
     }
+  }
+
+  // fetches stores from Stores collections and selects first one
+  Future<void> _loadStores() async {
+    List<String> stores = await widget.firebaseService.getStores();
+    setState(() {
+      _stores = stores;
+      _selectedStore = stores.isNotEmpty ? stores.first : null;
+    });
   }
 
   // fetches data from firebase
@@ -318,6 +325,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                   onChanged: (String? newValue) {
                     setState(() {
                       _selectedStore = newValue;
+                      _loadSmartlist(); // reload smartlist for new store
                     });
                   },
                 ),
