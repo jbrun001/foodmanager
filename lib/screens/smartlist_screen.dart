@@ -121,6 +121,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
           'needed': 0.0, // place to store how much is needed to be purchased
           'moq': moqs[name] ?? 0.0, // minimum order quantity
           'purchase_amount': 0.0, // amount factoring MOQ and existing stock
+          'left_over_amount': 0.0, // stock level after cooking this meal
         };
       }
     }
@@ -148,15 +149,21 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
           'needed': 0.0, // how much is needed after stock removed
           'moq': moqs[name] ?? 0.0, // minimum order quantity
           'purchase_amount': 0.0, // amount factoring MOQ and existing stock
+          'left_over_amount': 0.0, // stock level after cooking this meal
         };
       }
     }
 
-    // go through smartlist and calculate needed amounts
+    // go through smartlist and calculate needed amounts,
+    // and what the stock level will be when the meal
+    // has been cooked - left_over_amount
     aggregatedItems.forEach((key, value) {
       double required = value['amount'];
       double stock = value['stock'];
       double moq = value['moq'];
+      // find out how much more is needed
+      // if required > stock then we need required-stock
+      // else we don't need any more so 0.0
       value['needed'] = required > stock ? required - stock : 0.0;
       // if the item is requred by the meal plan and is not needed to
       // purchase because it's already in stock then mark as already
@@ -165,6 +172,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
         value['purchased'] = true;
       }
       // take account of minimum order quantities for each inggredient
+      // only if we need to buy more
       if (value['needed'] > 0.0) {
         if (moq > 0.0) {
           // calculate purchase amount based on MOQ
@@ -179,6 +187,8 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
         value['purchase_amount'] = 0.0;
         value['purchased'] = required > 0.0;
       }
+      // calculate what the stock level will be after the meal is cooked
+      value['left_over_amount'] = stock + value['purchase_amount'] - required;
     });
 
     setState(() {
@@ -229,6 +239,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     });
   }
 
+  // input to allow a user to add an item to the smart list manually
   void _addItem() {
     TextEditingController _nameController = TextEditingController();
     TextEditingController _amountController = TextEditingController();
@@ -286,7 +297,6 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                     type: _typeController.text,
                     date: selectedWeekStart,
                   );
-
                   await _loadSmartlist();
                   // this only happens when the data has been saved AND
                   // the new data is loaded
@@ -364,7 +374,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                             // for testing
                             "${item['name']} to buy: ${item['purchase_amount']}${item['unit']}\n"
                             "Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
-                            "MOQ: ${item['moq']}${item['unit']} | ",
+                            "MOQ: ${item['moq']}${item['unit']} | stock after cooking:  ${item['left_over_amount']}${item['unit']}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               decoration: item['purchased']
