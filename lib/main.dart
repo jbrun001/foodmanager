@@ -69,11 +69,11 @@ GoRouter _router(FirebaseService firebaseService) {
         builder: (context, state) =>
             SmartlistScreen(firebaseService: firebaseService),
       ),
-      GoRoute(
-        path: '/preview',
-        builder: (context, state) =>
-            PreviewleftoversScreen(firebaseService: firebaseService),
-      ),
+//      GoRoute(
+//        path: '/preview',
+//        builder: (context, state) =>
+//            PreviewLeftoversScreen(firebaseService: firebaseService),
+//      ),
       GoRoute(
         path: '/waste',
         builder: (context, state) =>

@@ -29,10 +29,10 @@ class MenuDrawer extends StatelessWidget {
             title: Text('Smart List'),
             onTap: () => context.go('/smartlist'),
           ),
-          ListTile(
-            title: Text('Preview Left Over Ingredients'),
-            onTap: () => context.go('/preview'),
-          ),
+//          ListTile(
+//            title: Text('Preview Left Over Ingredients'),
+//            onTap: () => context.go('/preview'),
+//          ),
           ListTile(
             title: Text('Food Waste Log'),
             onTap: () => context.go('/waste'),

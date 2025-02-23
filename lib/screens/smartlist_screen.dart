@@ -3,6 +3,7 @@ import 'menu_drawer.dart';
 import 'package:intl/intl.dart';
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
+import 'previewleftovers_screen.dart';
 
 class SmartlistScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -313,7 +314,26 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Smartlist')),
+      appBar: AppBar(
+        title: Text('Smartlist'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.preview),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PreviewLeftoversScreen(
+                    firebaseService: widget.firebaseService,
+                    aggregatedItems:
+                        _smartlistItems, // your aggregated smartlist data
+                  ),
+                ),
+              );
+            },
+          )
+        ],
+      ),
       drawer: MenuDrawer(),
       body: Column(
         children: [

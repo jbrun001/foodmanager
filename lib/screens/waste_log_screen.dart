@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart'; // if you use go_router
 import '../services/firebase_service.dart';
+import 'menu_drawer.dart';
 
 class WasteLogScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -105,6 +106,7 @@ class _WasteLogScreenState extends State<WasteLogScreen> {
       appBar: AppBar(
         title: const Text('Log Food Waste'),
       ),
+      drawer: MenuDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
