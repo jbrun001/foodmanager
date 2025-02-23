@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'menu_drawer.dart';
 import '../services/firebase_service.dart';
+import 'dart:math'; // for randomising test data
 
 class POCFirebaseScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -13,7 +14,7 @@ class POCFirebaseScreen extends StatefulWidget {
 class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String _status = "Press the button to test Firebase";
-  final String userId = "1"; // Fixed user ID for testing
+  String userId = "1"; // Fixed user ID for testing
 
   // test recipe data
   final List<Map<String, dynamic>> recipes = [
@@ -495,6 +496,86 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     }
   }
 
+  // generates food waste test data by first removing all existing waste logs
+  // for the user and then adding one log per day for the last 6 weeks.
+  Future<void> _generateFoodWasteTestData() async {
+    setState(() {
+      _status = "Generating Food Waste Test Data...";
+    });
+    // do this for the current userid
+    userId = FirebaseService().getCurrentUserId();
+    try {
+      // Step 1: Delete existing waste logs for the user.
+      QuerySnapshot snapshot = await _firestore
+          .collection("Users")
+          .doc(userId)
+          .collection("WasteLogs")
+          .get();
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // Step 2: Generate one waste log per day for the last 6 weeks.
+      final random = Random();
+      DateTime today = DateTime.now();
+      DateTime startDate = today.subtract(Duration(days: 6 * 7)); // 42 days
+
+      for (int i = 0; i <= 6 * 7; i++) {
+        DateTime currentDate = startDate.add(Duration(days: i));
+
+        // Generate a random time for logDate on the current day.
+        int randomHour = random.nextInt(24);
+        int randomMinute = random.nextInt(60);
+        int randomSecond = random.nextInt(60);
+        DateTime logDate = DateTime(
+          currentDate.year,
+          currentDate.month,
+          currentDate.day,
+          randomHour,
+          randomMinute,
+          randomSecond,
+        );
+
+        // Compute the week date as the most recent Sunday at midnight.
+        int daysToSubtract = currentDate.weekday % 7;
+        DateTime weekStart = DateTime(
+          currentDate.year,
+          currentDate.month,
+          currentDate.day,
+        ).subtract(Duration(days: daysToSubtract));
+        weekStart = DateTime(weekStart.year, weekStart.month, weekStart.day);
+
+        // Generate random waste amounts such that total waste <= 400.
+        double totalWaste = random.nextDouble() * 400;
+        double composted = random.nextDouble() * totalWaste;
+        double inedible = totalWaste - composted;
+
+        // Create a wasteId based on the log date.
+        String wasteId =
+            "waste_${currentDate.year}${currentDate.month.toString().padLeft(2, '0')}${currentDate.day.toString().padLeft(2, '0')}";
+
+        // Use the firebaseService to add the waste log.
+        await widget.firebaseService.addWasteLog(
+          userId: userId,
+          wasteId: wasteId,
+          week: weekStart,
+          logDate: logDate,
+          amount: totalWaste,
+          composted: composted,
+          inedibleParts: inedible,
+        );
+      }
+      userId = "1"; // set back to 1 so other buttons work
+      setState(() {
+        _status = "Food Waste Test Data generated successfully!";
+      });
+    } catch (e) {
+      setState(() {
+        _status = "Error generating food waste test data: $e";
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -530,6 +611,12 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
             ElevatedButton(
               onPressed: _uploadIngredients,
               child: Text("Upload test Ingredients to Firestore"),
+            ),
+            SizedBox(height: 10),
+            // button for generating food waste test data.
+            ElevatedButton(
+              onPressed: _generateFoodWasteTestData,
+              child: Text("Generate Food Waste Test Data for current user"),
             ),
           ],
         ),

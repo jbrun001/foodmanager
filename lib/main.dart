@@ -11,6 +11,7 @@ import 'screens/pocfirebase_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/user_profile_screen.dart';
 import 'screens/waste_log_screen.dart';
+import 'screens/wasteloganalysis_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // needed to support cross platform
 import 'services/firebase_service.dart'; // all the database interaction
@@ -78,6 +79,11 @@ GoRouter _router(FirebaseService firebaseService) {
         path: '/waste',
         builder: (context, state) =>
             WasteLogScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/analysis',
+        builder: (context, state) =>
+            WasteLogAnalysisScreen(firebaseService: firebaseService),
       ),
       GoRoute(
         path: '/firebase',

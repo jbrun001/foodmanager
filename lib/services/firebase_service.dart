@@ -707,4 +707,23 @@ class FirebaseService {
       return [];
     }
   }
+
+  // retrieves waste log records for a week
+  // used in the waste log analytics graphs
+  Future<List<Map<String, dynamic>>> getWasteLogsForWeek({
+    required String userId,
+    required DateTime weekStart,
+  }) async {
+    final weekEnd = weekStart.add(const Duration(days: 6));
+    QuerySnapshot snapshot = await firestore
+        .collection('Users')
+        .doc(userId)
+        .collection('WasteLogs')
+        .where('logdate', isGreaterThanOrEqualTo: weekStart)
+        .where('logdate', isLessThanOrEqualTo: weekEnd)
+        .get();
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
+  }
 }
