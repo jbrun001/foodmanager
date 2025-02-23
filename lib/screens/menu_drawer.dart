@@ -38,6 +38,10 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => context.go('/waste'),
           ),
           ListTile(
+            title: Text('Waste Analysis'),
+            onTap: () => context.go('/analysis'),
+          ),
+          ListTile(
             title: Text('User Profile'),
             onTap: () => context.go('/profile'),
           ),
