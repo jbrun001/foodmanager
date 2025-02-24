@@ -1,0 +1,2 @@
+C:/Projects/FinalYearProject/food_manager/android/app/.cxx/RelWithDebInfo/446mt502/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Projects/FinalYearProject/food_manager/android/app/.cxx/RelWithDebInfo/446mt502/armeabi-v7a/CMakeFiles/rebuild_cache.dir
