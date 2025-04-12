@@ -726,4 +726,44 @@ class FirebaseService {
         .map((doc) => doc.data() as Map<String, dynamic>)
         .toList();
   }
+
+  // save recipes on the recipes screen so they can be retrieved
+  // on the planner screen
+  Future<void> saveUserRecipes(
+      String userId, List<Map<String, dynamic>> recipes) async {
+    try {
+      final batch = FirebaseFirestore.instance.batch();
+      final collectionRef = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('AddedRecipes');
+
+      // clear existing recipes first
+      final snapshot = await collectionRef.get();
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+
+      // add all recipes
+      for (final recipe in recipes) {
+        final docRef = collectionRef.doc(); // auto generated id
+        batch.set(docRef, recipe);
+      }
+
+      await batch.commit();
+    } catch (e) {
+      print('Error saving user recipes: $e');
+    }
+  }
+
+  // get user recipes - used on the planner_screen to get saved recipes into
+  // the sticky bar
+  Future<List<Map<String, dynamic>>> getUserRecipes(String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('AddedRecipes')
+        .get();
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
 }

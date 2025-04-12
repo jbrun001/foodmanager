@@ -21,9 +21,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
   // holds the current userId
   String userId = '';
 
+  List<Map<String, dynamic>> addedRecipes = [];
   // test data based on work in recipes_screen
   // this data should be replaced by data passed from the recipes_screen
-  final List<Map<String, dynamic>> addedRecipes = [
+  /*
+  List<Map<String, dynamic>> addedRecipes = [
     {
       'title': 'One-Pot Hainanese-Style Chicken & Rice with Pak Choi',
       'thumbnail': 'https://dummyimage.com/100',
@@ -235,7 +237,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
       ],
       'additional_ingredients': ['Salt', 'Pepper'],
     },
-  ];
+  ];*/
+
   DateTime selectedWeekStart = DateTime.now(); // get today
   Map<String, List<Map<String, dynamic>>> plan = {}; // use JSON format
   bool isLoading = true; // for loading indicator
@@ -256,6 +259,13 @@ class _PlannerScreenState extends State<PlannerScreen> {
   void dispose() {
     saveMealPlan();
     super.dispose();
+  }
+
+  void loadUserRecipes() async {
+    final saved = await widget.firebaseService.getUserRecipes(userId);
+    setState(() {
+      addedRecipes = saved;
+    });
   }
 
   Future<void> saveMealPlan() async {
@@ -284,6 +294,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
     // wait for UI to be built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchPlannerData(); // fetch firebase data is fetched after UI is built
+      // get recipes saved on recipe screen
+      loadUserRecipes();
     });
   }
 

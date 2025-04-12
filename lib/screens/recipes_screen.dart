@@ -52,17 +52,23 @@ class _RecipesScreenState extends State<RecipesScreen> {
   }
 
   void addRecipe(Map<String, dynamic> recipe) {
-    setState(() {
-      if (!addedRecipes.contains(recipe)) {
+    if (!addedRecipes.contains(recipe)) {
+      setState(() {
         addedRecipes.add(recipe);
-      }
-    });
+      });
+      // save recipes here so database is up to date
+      // was doing in dispose but planner screen
+      // displayed before database operation was finished
+      // so recipes didn't display - see also below
+      widget.firebaseService.saveUserRecipes(userId, addedRecipes);
+    }
   }
 
   void removeRecipe(Map<String, dynamic> recipe) {
     setState(() {
       addedRecipes.remove(recipe);
     });
+    widget.firebaseService.saveUserRecipes(userId, addedRecipes);
   }
 
   @override
