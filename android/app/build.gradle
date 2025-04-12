@@ -29,7 +29,7 @@ android {
 
     defaultConfig {
         applicationId = "com.jbrun001.food_manager"
-        minSdk = 23
+        minSdk = 29             // changed this to 29 (android 10) to remove security issue
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
