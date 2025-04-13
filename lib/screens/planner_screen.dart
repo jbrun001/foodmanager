@@ -414,7 +414,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
           ),
 
           // weekdays display with drop zones for dragging the recipes
-          Expanded(
+          /* Expanded(
             child: GridView.builder(
               padding: EdgeInsets.all(8.0),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -480,13 +480,52 @@ class _PlannerScreenState extends State<PlannerScreen> {
 //                                            fit: BoxFit.cover,
 //                                          ),
 //                                        ),
-                                        title: Text(
+// remove title to provide deete and potions
+/*                                        title: Text(
                                           recipe['title']!,
                                           style: TextStyle(
                                             fontSize:
                                                 recipe['titleFontSize'] ?? 12.0,
                                             fontWeight: FontWeight.normal,
                                           ),
+                                        ), */
+                                        title: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                                child: Text(recipe['title']!,
+                                                    overflow:
+                                                        TextOverflow.ellipsis)),
+                                            DropdownButton<int>(
+                                              value:
+                                                  recipe['plannedPortions'] ??
+                                                      recipe['portions'] ??
+                                                      1,
+                                              items: List.generate(
+                                                      10, (i) => i + 1)
+                                                  .map((val) =>
+                                                      DropdownMenuItem(
+                                                          value: val,
+                                                          child: Text('$val')))
+                                                  .toList(),
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  recipe['plannedPortions'] =
+                                                      val;
+                                                });
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: Icon(Icons.delete,
+                                                  color: Colors.red),
+                                              onPressed: () {
+                                                setState(() {
+                                                  plan[day]!.remove(recipe);
+                                                });
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       );
                                     }).toList(),
@@ -499,8 +538,96 @@ class _PlannerScreenState extends State<PlannerScreen> {
                 );
               },
             ),
+          ), */
+          Expanded(
+            child: ListView.builder(
+                itemCount: 7,
+                itemBuilder: (context, index) {
+                  final day = DateFormat('EEEE').format(weekDays[index]);
+                  return DragTarget<Map<String, dynamic>>(
+                    onAcceptWithDetails: (details) {
+                      final recipe = Map<String, dynamic>.from(details.data);
+                      recipe['plannedPortions'] = recipe['portions'] ?? 1;
+                      setState(() {
+// degub - check if day matches any day in the plan
+                        print(
+                            "Checking if $day exists in plan: ${plan.containsKey(day)}");
+                        // update the UI
+                        plan[day]?.add(recipe); // add recipe to selected day
+// debug
+                        saveMealPlan();
+                      });
+                    },
+                    builder: (context, candidateData, rejectedData) {
+                      return Card(
+                        margin: EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 8.0),
+                        elevation: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                '${day}, ${DateFormat('yMMMd').format(weekDays[index])}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            ...(plan[day] ?? []).map((recipe) {
+                              return ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    DropdownButton<int>(
+                                      value: recipe['plannedPortions'] ??
+                                          recipe['portions'] ??
+                                          1,
+                                      items: List.generate(8, (i) => i + 1)
+                                          .map((val) => DropdownMenuItem(
+                                              value: val, child: Text('$val')))
+                                          .toList(),
+                                      onChanged: (val) {
+                                        setState(() {
+                                          recipe['plannedPortions'] = val;
+                                        });
+                                      },
+                                    ),
+                                    Expanded(
+                                      // add "x" to indicate how many portions
+                                      child: Text(
+                                          recipe['title'] != null
+                                              ? 'x ${recipe['title']}'
+                                              : 'Untitled',
+                                          overflow: TextOverflow.ellipsis),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {
+                                        setState(() {
+                                          plan[day]!.remove(recipe);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            if ((plan[day]?.isEmpty ?? true))
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  'Press and hold recipes below and drag them here',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }),
           ),
-
           // sticky bar for recipes that can be added to the plan
           Container(
             height: 100,
@@ -523,32 +650,64 @@ class _PlannerScreenState extends State<PlannerScreen> {
                     print('Dragging ended for: ${recipe['title']}');
                   },
 // end debug
+                  // styling of dragged recipe
                   feedback: Material(
-                    color: Colors
-                        .transparent, // make sure not white so we can see it
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: CachedNetworkImage(
-                        imageUrl: recipe['thumbnail']!,
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Shimmer.fromColors(
-                          baseColor: Colors.grey[300]!,
-                          highlightColor: Colors.grey[100]!,
-                          child: Container(
+                    color: Colors.transparent,
+                    // row with two columns
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // icon for the recipe
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: CachedNetworkImage(
+                            imageUrl: recipe['thumbnail'] ?? '',
                             width: 80,
                             height: 80,
-                            color: Colors.white,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => Shimmer.fromColors(
+                              baseColor: Colors.grey[300]!,
+                              highlightColor: Colors.grey[100]!,
+                              child: Container(
+                                width: 80,
+                                height: 80,
+                                color: Colors.white,
+                              ),
+                            ),
+                            // manage broken url for the image
+                            errorWidget: (context, url, error) => Icon(
+                              Icons.broken_image,
+                              size: 80,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
-                        // Error Placeholder (Broken Image Icon)
-                        errorWidget: (context, url, error) => Icon(
-                          Icons.broken_image,
-                          size: 80,
-                          color: Colors.grey,
+                        SizedBox(width: 8),
+                        // MVP.UAT.002 - add title of recipe to the
+                        // draggable object to help users understand
+                        // what is being dragged
+                        Container(
+                          width: 160,
+                          height: 80,
+                          padding: EdgeInsets.all(8),
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(6),
+                            boxShadow: [
+                              BoxShadow(color: Colors.black26, blurRadius: 4)
+                            ],
+                          ),
+                          child: Text(
+                            recipe['title'] ?? '',
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                   childWhenDragging: Padding(
