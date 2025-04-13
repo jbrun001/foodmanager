@@ -344,7 +344,8 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
               children: [
                 OutlinedButton(
                   onPressed: () => pickStartDate(context),
-                  child: Text(DateFormat('yMMMd').format(selectedWeekStart)),
+                  child:
+                      Text('${DateFormat('yMMMd').format(selectedWeekStart)}'),
                 ),
                 DropdownButton<String>(
                   value: _selectedStore,

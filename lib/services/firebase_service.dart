@@ -655,7 +655,7 @@ class FirebaseService {
     }
   }
 
-  // setches the user document from Firestore and returns its data as a map
+  // fetches the user document from Firestore and returns its data as a map
   Future<Map<String, dynamic>?> getUserDetails(String userId) async {
     try {
       DocumentSnapshot doc =

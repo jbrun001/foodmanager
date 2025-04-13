@@ -406,145 +406,21 @@ class _PlannerScreenState extends State<PlannerScreen> {
 //                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
 //                ),
                 OutlinedButton(
-                  onPressed: () => pickStartDate(context),
-                  child: Text(DateFormat('yMMMd').format(selectedWeekStart)),
-                ),
+                    onPressed: () => pickStartDate(context),
+                    child: Text(
+                        '${DateFormat('yMMMd').format(selectedWeekStart)}')),
               ],
             ),
           ),
-
-          // weekdays display with drop zones for dragging the recipes
-          /* Expanded(
-            child: GridView.builder(
-              padding: EdgeInsets.all(8.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                // use a different component for this?
-                crossAxisCount: 1,
-                childAspectRatio: 3 / 0.8, // this controls how deep box is
-                crossAxisSpacing: 1,
-                mainAxisSpacing: 1,
-              ),
-              itemCount: 7,
-              itemBuilder: (context, index) {
-                final day = DateFormat('EEEE')
-                    .format(weekDays[index]); // day of the week
-                return DragTarget<Map<String, dynamic>>(
-                  onAcceptWithDetails: (details) {
-                    // trigger for recipe dropped
-                    final recipe = details.data; // extract the dragged recipe
-                    setState(() {
-// degub - check if day matches any day in the plan
-                      print(
-                          "Checking if $day exists in plan: ${plan.containsKey(day)}");
-                      // update the UI
-                      plan[day]
-                          ?.add(recipe); // Add the recipe to the selected day
-// debug
-// temp save meal plan here so can see what's happening
-                      saveMealPlan();
-                      print('Added recipe to $day: ${recipe['title']}');
-                    });
-                  },
-                  builder: (context, candidateData, rejectedData) {
-                    return Card(
-                      elevation: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              '${day}, ${DateFormat('yMMMd').format(weekDays[index])}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(
-                            child: plan[day]?.isEmpty ?? true
-                                ? Center(
-                                    child: Text(
-                                      'Drag recipes here',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  )
-                                : ListView(
-                                    children: plan[day]!.map((recipe) {
-                                      return ListTile(
-// remove thumbnail? need more space on screen
-//                                        leading: ClipRRect(
-//                                          borderRadius:
-//                                              BorderRadius.circular(8),
-//                                          child: Image.network(
-//                                            recipe['thumbnail']!,
-//                                           width: 50,
-//                                            height: 50,
-//                                            fit: BoxFit.cover,
-//                                          ),
-//                                        ),
-// remove title to provide deete and potions
-/*                                        title: Text(
-                                          recipe['title']!,
-                                          style: TextStyle(
-                                            fontSize:
-                                                recipe['titleFontSize'] ?? 12.0,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ), */
-                                        title: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                                child: Text(recipe['title']!,
-                                                    overflow:
-                                                        TextOverflow.ellipsis)),
-                                            DropdownButton<int>(
-                                              value:
-                                                  recipe['plannedPortions'] ??
-                                                      recipe['portions'] ??
-                                                      1,
-                                              items: List.generate(
-                                                      10, (i) => i + 1)
-                                                  .map((val) =>
-                                                      DropdownMenuItem(
-                                                          value: val,
-                                                          child: Text('$val')))
-                                                  .toList(),
-                                              onChanged: (val) {
-                                                setState(() {
-                                                  recipe['plannedPortions'] =
-                                                      val;
-                                                });
-                                              },
-                                            ),
-                                            IconButton(
-                                              icon: Icon(Icons.delete,
-                                                  color: Colors.red),
-                                              onPressed: () {
-                                                setState(() {
-                                                  plan[day]!.remove(recipe);
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ), */
+          // main screen - draggable target areas for each of the days in the
+          // week starting date is the sunday from the date picker
           Expanded(
             child: ListView.builder(
                 itemCount: 7,
                 itemBuilder: (context, index) {
                   final day = DateFormat('EEEE').format(weekDays[index]);
                   return DragTarget<Map<String, dynamic>>(
+                    // trigger if a recipe is dropped in the drag target
                     onAcceptWithDetails: (details) {
                       final recipe = Map<String, dynamic>.from(details.data);
                       recipe['plannedPortions'] = recipe['portions'] ?? 1;
@@ -558,70 +434,108 @@ class _PlannerScreenState extends State<PlannerScreen> {
                         saveMealPlan();
                       });
                     },
+                    // styling and UI for the dragable area
                     builder: (context, candidateData, rejectedData) {
-                      return Card(
-                        margin: EdgeInsets.symmetric(
-                            vertical: 4.0, horizontal: 8.0),
-                        elevation: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
+                      // true if dragged item is above this dragable area
+                      final isHovering = candidateData.isNotEmpty;
+                      // use AnimatedScale to animate the drag target
+                      // when dragging recipe over it
+                      // https://medium.com/easy-flutter/animatedscale-in-flutter-simple-scaling-animations-5719a7230f0f
+                      return AnimatedScale(
+                        scale: isHovering ? 1.02 : 1.0,
+                        duration: Duration(milliseconds: 150),
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 150),
+                          margin: EdgeInsets.symmetric(
+                              vertical: 4.0, horizontal: 8.0),
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: isHovering ? Colors.green[50] : Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              if (isHovering)
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 12,
+                                  offset: Offset(0, 4),
+                                ),
+                            ],
+                            border: Border.all(
+                              color: isHovering
+                                  ? Colors.green
+                                  : Colors.grey.shade300,
+                              width: isHovering ? 2 : 1,
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
                                 '${day}, ${DateFormat('yMMMd').format(weekDays[index])}',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                            ),
-                            ...(plan[day] ?? []).map((recipe) {
-                              return ListTile(
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    DropdownButton<int>(
-                                      value: recipe['plannedPortions'] ??
-                                          recipe['portions'] ??
-                                          1,
-                                      items: List.generate(8, (i) => i + 1)
-                                          .map((val) => DropdownMenuItem(
-                                              value: val, child: Text('$val')))
-                                          .toList(),
-                                      onChanged: (val) {
-                                        setState(() {
-                                          recipe['plannedPortions'] = val;
-                                        });
-                                      },
-                                    ),
-                                    Expanded(
-                                      // add "x" to indicate how many portions
-                                      child: Text(
+                              SizedBox(height: 4),
+                              // for the current day if there are any recipes
+                              // in the plan (not null ?? []) generate a ListTile for
+                              // each one and insert them into the UI widget
+                              // tree ... allows multiple items to be inserted
+                              // .map(recipe) converts recipe into ListTile
+                              ...(plan[day] ?? []).map((recipe) {
+                                return ListTile(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 4.0),
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      DropdownButton<int>(
+                                        value: recipe['plannedPortions'] ??
+                                            recipe['portions'] ??
+                                            1,
+                                        items: List.generate(8, (i) => i + 1)
+                                            .map((val) => DropdownMenuItem(
+                                                value: val,
+                                                child: Text('$val')))
+                                            .toList(),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            recipe['plannedPortions'] = val;
+                                          });
+                                        },
+                                      ),
+                                      Expanded(
+                                        child: Text(
                                           recipe['title'] != null
                                               ? 'x ${recipe['title']}'
                                               : 'Untitled',
-                                          overflow: TextOverflow.ellipsis),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () {
+                                          setState(() {
+                                            plan[day]!.remove(recipe);
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                              if ((plan[day]?.isEmpty ?? true))
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 24.0),
+                                  child: Center(
+                                    child: Text(
+                                      'Press and hold a recipe below & drag it to a day',
+                                      style: TextStyle(color: Colors.grey),
                                     ),
-                                    IconButton(
-                                      icon: Icon(Icons.delete),
-                                      onPressed: () {
-                                        setState(() {
-                                          plan[day]!.remove(recipe);
-                                        });
-                                      },
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              );
-                            }).toList(),
-                            if ((plan[day]?.isEmpty ?? true))
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Text(
-                                  'Press and hold recipes below and drag them here',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },
