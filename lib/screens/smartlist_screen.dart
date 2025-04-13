@@ -393,9 +393,10 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                           title: Text(
                             // output all the data from the aggregated list
                             // for testing
-                            "${item['name']} to buy: ${item['purchase_amount']}${item['unit']}\n"
-                            "Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
-                            "MOQ: ${item['moq']}${item['unit']} | stock after cooking:  ${item['left_over_amount']}${item['unit']}",
+                            "${item['purchase_amount']}${item['unit']} ${item['name']}",
+                            // uncomment this for testing
+                            //"Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
+                            //"MOQ: ${item['moq']}${item['unit']} | stock after cooking: ${item['stock']}${item['unit']} already in stock ${item['left_over_amount']}${item['unit']}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               decoration: item['purchased']
