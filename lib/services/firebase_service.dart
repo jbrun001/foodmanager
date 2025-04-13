@@ -196,6 +196,10 @@ class FirebaseService {
           'thumbnail': data['thumbnail'],
           'description': data['description'],
           'ingredients': data['ingredients'],
+          'ingredientsOriginal':
+              List<Map<String, dynamic>>.from(data['ingredients']),
+          'plannedPortions': data['plannedPortions'] ?? data['portions'] ?? 1,
+          'portions': data['portions'] ?? 1,
         });
       }
 
@@ -252,6 +256,10 @@ class FirebaseService {
             'thumbnail': meal['thumbnail'] ?? '',
             'description': meal['description'] ?? '',
             'ingredients': meal['ingredients'] ?? [],
+            'ingredientsOriginal': meal['ingredientsOriginal'] ?? [],
+            // add in plannedPortions
+            'plannedPortions': meal['plannedPortions'] ?? meal['portions'] ?? 1,
+            'portions': meal['portions'] ?? 1,
           });
         }
       }

@@ -242,6 +242,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
   DateTime selectedWeekStart = DateTime.now(); // get today
   Map<String, List<Map<String, dynamic>>> plan = {}; // use JSON format
   bool isLoading = true; // for loading indicator
+  int preferredPortions = 2; // set to 2 incase no data in user profile
 
   @override
   void initState() {
@@ -292,7 +293,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
     // https://blog.stackademic.com/how-to-flutter-running-functions-after-widget-initialization-7d7b4150b147
     // wait for UI to be built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // added preferred portions use async to all data is recieved before continuing
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await fetchPreferredPortions();
       fetchPlannerData(); // fetch firebase data is fetched after UI is built
       // get recipes saved on recipe screen
       loadUserRecipes();
@@ -336,7 +339,17 @@ class _PlannerScreenState extends State<PlannerScreen> {
     }
   }
 
-  // create a empty week
+  // get the user profile info and the preferredPortions from that
+  Future<void> fetchPreferredPortions() async {
+    final userData = await widget.firebaseService.getUserDetails(userId);
+    if (userData != null && userData.containsKey('preferredPortions')) {
+      setState(() {
+        preferredPortions = userData['preferredPortions'];
+      });
+    }
+  }
+
+  // create an empty week
   Map<String, List<Map<String, dynamic>>> createEmptyPlanner() {
     Map<String, List<Map<String, dynamic>>> emptyPlan = {};
     for (int i = 0; i < 7; i++) {
@@ -374,6 +387,35 @@ class _PlannerScreenState extends State<PlannerScreen> {
         fetchPlannerData();
       });
     }
+  }
+
+  // function to scale ingredients used onchange of portions
+  // and also in onAcceptWithDetails when recipe dropped in drag area
+  // returns list of scaled ingredients
+  List<Map<String, dynamic>> scaleIngredients({
+    required List<Map<String, dynamic>> originalIngredients,
+    required int originalPortions,
+    required int targetPortions,
+  }) {
+    List<Map<String, dynamic>> scaledIngredients = [];
+    print('scale ingredients: from $originalPortions to $targetPortions');
+
+    for (var ingredient in originalIngredients) {
+      // create copy of ingredients
+      Map<String, dynamic> scaled = Map<String, dynamic>.from(ingredient);
+      // force amount to double
+      final double originalAmount = (scaled['amount'] ?? 0).toDouble();
+      // scale ingredient
+      final double scaledAmount =
+          (originalAmount / originalPortions) * targetPortions;
+      // round up to nearest whole number
+      scaled['amount'] = scaledAmount.ceil();
+      scaledIngredients.add(scaled);
+      print(
+          "Scale: ${scaled['ingredient_name']} orginal: ${ingredient['amount']} scaled: ${scaled['amount']}");
+    }
+    print("end scaling");
+    return scaledIngredients;
   }
 
   @override
@@ -422,15 +464,34 @@ class _PlannerScreenState extends State<PlannerScreen> {
                   return DragTarget<Map<String, dynamic>>(
                     // trigger if a recipe is dropped in the drag target
                     onAcceptWithDetails: (details) {
-                      final recipe = Map<String, dynamic>.from(details.data);
-                      recipe['plannedPortions'] = recipe['portions'] ?? 1;
+                      final originalRecipe =
+                          Map<String, dynamic>.from(details.data);
+                      final int originalPortions =
+                          originalRecipe['portions'] ?? 1;
+                      final int userPortions = preferredPortions;
+
+                      final scaledRecipe =
+                          Map<String, dynamic>.from(originalRecipe);
+                      // store a copy of original ingredients
+                      final originalIngredients =
+                          List<Map<String, dynamic>>.from(
+                              originalRecipe['ingredients'] ?? []);
+                      scaledRecipe['ingredientsOriginal'] = originalIngredients;
+                      // scale from the original
+                      scaledRecipe['ingredients'] = scaleIngredients(
+                        originalIngredients: originalIngredients,
+                        originalPortions: originalPortions,
+                        targetPortions: userPortions,
+                      );
+
+                      scaledRecipe['plannedPortions'] = userPortions;
                       setState(() {
 // degub - check if day matches any day in the plan
                         print(
                             "Checking if $day exists in plan: ${plan.containsKey(day)}");
                         // update the UI
-                        plan[day]?.add(recipe); // add recipe to selected day
-// debug
+                        plan[day]
+                            ?.add(scaledRecipe); // add recipe to selected day
                         saveMealPlan();
                       });
                     },
@@ -489,20 +550,44 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       DropdownButton<int>(
-                                        value: recipe['plannedPortions'] ??
-                                            recipe['portions'] ??
-                                            1,
-                                        items: List.generate(8, (i) => i + 1)
-                                            .map((val) => DropdownMenuItem(
-                                                value: val,
-                                                child: Text('$val')))
-                                            .toList(),
-                                        onChanged: (val) {
-                                          setState(() {
-                                            recipe['plannedPortions'] = val;
-                                          });
-                                        },
-                                      ),
+                                          value: recipe['plannedPortions'] ??
+                                              recipe['portions'] ??
+                                              1,
+                                          items: List.generate(8, (i) => i + 1)
+                                              .map((val) => DropdownMenuItem(
+                                                  value: val,
+                                                  child: Text('$val')))
+                                              .toList(),
+                                          // if user changes portions
+                                          // recalculate the ingredient amounts
+                                          onChanged: (val) {
+                                            setState(() {
+                                              final int newPortions = val ?? 1;
+                                              final int originalPortions =
+                                                  recipe['portions'] ?? 1;
+                                              // make sure ingredientsOriginal exists
+                                              recipe['ingredientsOriginal'] ??=
+                                                  List<
+                                                          Map<String,
+                                                              dynamic>>.from(
+                                                      recipe['ingredients']);
+                                              final originalIngredients = List<
+                                                  Map<String,
+                                                      dynamic>>.from(recipe[
+                                                  'ingredientsOriginal']);
+                                              recipe['ingredients'] =
+                                                  scaleIngredients(
+                                                originalIngredients:
+                                                    originalIngredients,
+                                                originalPortions:
+                                                    originalPortions,
+                                                targetPortions: newPortions,
+                                              );
+                                              recipe['plannedPortions'] =
+                                                  newPortions;
+                                              saveMealPlan();
+                                            });
+                                          }),
                                       Expanded(
                                         child: Text(
                                           recipe['title'] != null
