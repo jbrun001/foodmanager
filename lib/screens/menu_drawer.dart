@@ -22,6 +22,10 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => context.go('/planner'),
           ),
           ListTile(
+            title: Text('Preview leftovers'),
+            onTap: () => context.go('/preview'),
+          ),
+          ListTile(
             title: Text('Ingredient Stock'),
             onTap: () => context.go('/ingredient'),
           ),

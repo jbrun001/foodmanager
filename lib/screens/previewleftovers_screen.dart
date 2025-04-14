@@ -7,11 +7,9 @@ import 'package:shimmer/shimmer.dart';
 
 class PreviewLeftoversScreen extends StatefulWidget {
   final FirebaseService firebaseService;
-  final List<Map<String, dynamic>> aggregatedItems;
 
   PreviewLeftoversScreen({
     required this.firebaseService,
-    required this.aggregatedItems,
   });
 
   @override
@@ -26,6 +24,7 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
   List<Map<String, dynamic>> scoredRecipes = [];
   // R1.LO.02 add recipes to user recipes for use in meal planning screen
   List<Map<String, dynamic>> addedRecipes = [];
+  List<Map<String, dynamic>> aggregatedItems = [];
 
   @override
   void initState() {
@@ -42,8 +41,20 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
   }
 
   Future<void> _initData() async {
+    await _loadAggregatedSmartlist();
     await _loadCombinedStock();
     await _loadRecipes();
+  }
+
+  Future<void> _loadAggregatedSmartlist() async {
+    final DateTime now = DateTime.now();
+    final DateTime weekStart =
+        now.subtract(Duration(days: now.weekday % 7)); // current week Sunday
+
+    aggregatedItems = await widget.firebaseService.getSmartlistForWeek(
+      userId,
+      weekStart,
+    );
   }
 
   Future<void> _loadCombinedStock() async {
@@ -55,7 +66,7 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
       combinedStock[item['name']] = (item['amount'] as num).toDouble();
     }
     // Merge in leftover amounts from aggregatedItems.
-    for (var item in widget.aggregatedItems) {
+    for (var item in aggregatedItems) {
       String name = item['name'];
       double leftover = (item['left_over_amount'] as num).toDouble();
       combinedStock[name] = (combinedStock[name] ?? 0) + leftover;
@@ -127,7 +138,7 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
   String getLeftoverSummary() {
     // take each item in aggregated items and if there are
     // missing fields create the fields with default values
-    final leftovers = widget.aggregatedItems
+    final leftovers = aggregatedItems
         .map((item) {
           return {
             'name': item['name'] ?? '',

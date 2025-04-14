@@ -6,7 +6,6 @@ import 'screens/recipes_screen.dart';
 import 'screens/smartlist_screen.dart';
 import 'screens/ingredientsearch_screen.dart';
 import 'screens/previewleftovers_screen.dart';
-import 'screens/food_waste_log.dart';
 import 'screens/pocfirebase_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/user_profile_screen.dart';
@@ -56,6 +55,11 @@ GoRouter _router(FirebaseService firebaseService) {
             RecipesScreen(firebaseService: firebaseService),
       ),
       GoRoute(
+        path: '/preview',
+        builder: (context, state) =>
+            PreviewLeftoversScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
         path: '/smartlist',
         builder: (context, state) =>
             SmartlistScreen(firebaseService: firebaseService),
@@ -70,11 +74,6 @@ GoRouter _router(FirebaseService firebaseService) {
         builder: (context, state) =>
             SmartlistScreen(firebaseService: firebaseService),
       ),
-//      GoRoute(
-//        path: '/preview',
-//        builder: (context, state) =>
-//            PreviewLeftoversScreen(firebaseService: firebaseService),
-//      ),
       GoRoute(
         path: '/waste',
         builder: (context, state) =>

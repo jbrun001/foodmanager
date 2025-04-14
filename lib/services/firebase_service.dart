@@ -492,6 +492,47 @@ class FirebaseService {
     }
   }
 
+  // save the full smartlist for one week
+  Future<void> saveSmartlistForWeek({
+    required String userId,
+    required DateTime weekStart,
+    required List<Map<String, dynamic>> items,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('SmartLists')
+        .doc(DateFormat('yyyy-MM-dd').format(weekStart))
+        .set({
+      'weekStart': weekStart,
+      'items': items,
+    });
+  }
+
+  // load the full smartlist for one week
+  Future<List<Map<String, dynamic>>> getSmartlistForWeek(
+      String userId, DateTime weekStart) async {
+    final doc = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('SmartLists')
+        .doc(DateFormat('yyyy-MM-dd').format(weekStart))
+        .get();
+
+    if (doc.exists) {
+      final data = doc.data();
+      return List<Map<String, dynamic>>.from(data?['items'] ?? []);
+    }
+    return [];
+  }
+
+  // retrieve only the manual items from the smartlist
+  Future<List<Map<String, dynamic>>> getManualSmartlistItems(
+      String userId, DateTime weekStart) async {
+    final allItems = await getSmartlistForWeek(userId, weekStart);
+    return allItems.where((item) => item['isManual'] == true).toList();
+  }
+
   // fetch all ingredients from firestore
   // used when adding a new ingredient to user stock items
   Future<List<Map<String, dynamic>>> getIngredients() async {

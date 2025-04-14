@@ -74,8 +74,8 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     List<Map<String, dynamic>> mealPlanIngredients =
         await _fetchMealPlanIngredients();
     // list of all the items entered manually in the smart list
-    List<Map<String, dynamic>> manualItems =
-        await widget.firebaseService.getSmartlist(userId, selectedWeekStart);
+    List<Map<String, dynamic>> manualItems = await widget.firebaseService
+        .getManualSmartlistItems(userId, selectedWeekStart);
     // List of all the ingredients this user has
     List<Map<String, dynamic>> stockItems =
         await widget.firebaseService.getStockItems(userId); // Fetch stock items
@@ -245,20 +245,23 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     return ingredientsList;
   }
 
-  void _togglePurchased(String name, bool currentStatus) {
-    widget.firebaseService
-        .updateSmartlistItem(userId, name, selectedWeekStart, !currentStatus);
+  void _togglePurchased(String name, bool currentStatus) async {
     setState(() {
-      // update: to sort list R1.SL.01
-      List<Map<String, dynamic>> updatedItems = _smartlistItems.map((item) {
-        if (item['name'] == name) {
+      for (var item in _smartlistItems) {
+        if (item['name'] == name && item['isManual'] == true) {
           item['purchased'] = !currentStatus;
         }
-        return item;
-      }).toList();
-      updatedItems.sort(_smartlistSort);
-      _smartlistItems = updatedItems;
+      }
+      // update: to sort list R1.SL.01
+      _smartlistItems.sort(_smartlistSort);
     });
+
+    // Save full smartlist for tracking and analytics
+    await widget.firebaseService.saveSmartlistForWeek(
+      userId: userId,
+      weekStart: selectedWeekStart,
+      items: _smartlistItems,
+    );
   }
 
   // input to allow a user to add an item to the smart list manually
@@ -302,30 +305,44 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
               onPressed: () => Navigator.pop(context),
             ),
             TextButton(
-              child: Text("Add"),
-              // when the button is pressed the database must be
-              // updated before the UI is re-built so the new
-              // data displays. using async / await so this works
-              onPressed: () async {
-                if (_nameController.text.isNotEmpty &&
-                    _amountController.text.isNotEmpty &&
-                    _unitController.text.isNotEmpty &&
-                    _typeController.text.isNotEmpty) {
-                  await widget.firebaseService.addSmartlistItem(
-                    userId: userId,
-                    name: _nameController.text,
-                    amount: int.tryParse(_amountController.text) ?? 1,
-                    unit: _unitController.text,
-                    type: _typeController.text,
-                    date: selectedWeekStart,
-                  );
-                  await _loadSmartlist();
-                  // this only happens when the data has been saved AND
-                  // the new data is loaded
-                  Navigator.pop(context);
-                }
-              },
-            ),
+                child: Text("Add"),
+                // when the button is pressed the database must be
+                // updated before the UI is re-built so the new
+                // data displays. using async / await so this works
+                onPressed: () async {
+                  if (_nameController.text.isNotEmpty &&
+                      _amountController.text.isNotEmpty &&
+                      _unitController.text.isNotEmpty &&
+                      _typeController.text.isNotEmpty) {
+                    // Add the manual item into _smartlistItems directly
+                    setState(() {
+                      _smartlistItems.add({
+                        'name': _nameController.text,
+                        'amount':
+                            double.tryParse(_amountController.text) ?? 1.0,
+                        'unit': _unitController.text,
+                        'type': _typeController.text,
+                        'purchased': false,
+                        'isManual': true,
+                        'stock': 0.0,
+                        'needed': 0.0,
+                        'moq': 0.0,
+                        'purchase_amount': 0.0,
+                        'left_over_amount': 0.0,
+                      });
+                      _smartlistItems.sort(_smartlistSort);
+                    });
+
+                    // Save full smartlist (including manual item)
+                    await widget.firebaseService.saveSmartlistForWeek(
+                      userId: userId,
+                      weekStart: selectedWeekStart,
+                      items: _smartlistItems,
+                    );
+
+                    Navigator.pop(context);
+                  }
+                }),
           ],
         );
       },
@@ -345,10 +362,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => PreviewLeftoversScreen(
-                    firebaseService: widget.firebaseService,
-                    aggregatedItems:
-                        _smartlistItems, // your aggregated smartlist data
-                  ),
+                      firebaseService: widget.firebaseService),
                 ),
               );
             },
@@ -391,51 +405,77 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                     itemCount: _smartlistItems.length,
                     itemBuilder: (context, index) {
                       final item = _smartlistItems[index];
-                      return Dismissible(
-                        key: Key(item['name']),
-                        background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(right: 20),
-                            child: Icon(Icons.delete, color: Colors.white)),
-                        onDismissed: (direction) {
-                          widget.firebaseService.deleteSmartlistItem(
-                              userId, item['name'], selectedWeekStart);
-                          setState(() {
-                            _smartlistItems.removeAt(index);
-                          });
-                        },
-                        child: ListTile(
-                          leading: Checkbox(
-                            value: item['purchased'],
-                            onChanged: (bool? value) => _togglePurchased(
-                                item['name'], item['purchased']),
+
+                      final listTile = ListTile(
+                        leading: Checkbox(
+                          value: item['purchased'],
+                          onChanged: (bool? value) {
+                            setState(() {
+                              item['purchased'] = value ?? false;
+                              _smartlistItems.sort(_smartlistSort);
+                            });
+
+                            // Only persist purchased status for manual items
+                            if (item['isManual'] == true) {
+                              final manualItems = _smartlistItems
+                                  .where((i) => i['isManual'] == true)
+                                  .toList();
+
+                              widget.firebaseService.saveSmartlistForWeek(
+                                userId: userId,
+                                weekStart: selectedWeekStart,
+                                items: manualItems,
+                              );
+                            }
+                          },
+                        ),
+                        title: Text(
+                          "${item['purchase_amount']}${item['unit']} ${item['name']}",
+                          // "Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
+                          // "MOQ: ${item['moq']}${item['unit']} | stock after cooking: ${item['stock']}${item['unit']} already in stock ${item['left_over_amount']}${item['unit']}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            decoration: item['purchased'] == true
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
                           ),
-                          title: Text(
-                            // output all the data from the aggregated list
-                            // for testing
-                            "${item['purchase_amount']}${item['unit']} ${item['name']}"
-                            "Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
-                            "MOQ: ${item['moq']}${item['unit']} | stock after cooking: ${item['stock']}${item['unit']} already in stock ${item['left_over_amount']}${item['unit']}",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              decoration: item['purchased']
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "Category: ${item['type']}",
-                            style: TextStyle(
-                              decoration: item['purchased']
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
-                            ),
+                        ),
+                        subtitle: Text(
+                          "Category: ${item['type']}",
+                          style: TextStyle(
+                            decoration: item['purchased'] == true
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
                           ),
                         ),
                       );
-                    },
-                  ),
+
+                      if (item['isManual'] == true) {
+                        return Dismissible(
+                          key: Key(item['name']),
+                          background: Container(
+                            color: Colors.red,
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(right: 20),
+                            child: Icon(Icons.delete, color: Colors.white),
+                          ),
+                          onDismissed: (direction) async {
+                            setState(() {
+                              _smartlistItems.removeAt(index);
+                            });
+
+                            await widget.firebaseService.saveSmartlistForWeek(
+                              userId: userId,
+                              weekStart: selectedWeekStart,
+                              items: _smartlistItems,
+                            );
+                          },
+                          child: listTile,
+                        );
+                      } else {
+                        return listTile; // no dismiss swipe
+                      }
+                    }),
           ),
         ],
       ),
