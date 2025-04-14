@@ -89,6 +89,7 @@ class FirebaseService {
     required DateTime week,
     required DateTime logDate,
     required double amount,
+    required double recycled,
     required double composted,
     required double inedibleParts,
   }) async {
@@ -101,6 +102,7 @@ class FirebaseService {
       'week': week,
       'logdate': logDate,
       'amount': amount,
+      'recycled': recycled,
       'composted': composted,
       'inedibleParts': inedibleParts,
     }).then((_) {

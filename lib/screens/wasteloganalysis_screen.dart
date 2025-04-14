@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
 import 'menu_drawer.dart';
+// f1_charts reference https://clay-atlas.com/us/blog/2021/10/14/flutter-en-flchart-pie-chart/
 
 class WasteLogAnalysisScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -53,20 +54,108 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
       double totalWaste = 0;
       double totalComposted = 0;
       double totalInedible = 0;
+      double totalRecycled = 0;
 
       for (var log in logs) {
         totalWaste += (log['amount'] ?? 0) as double;
         totalComposted += (log['composted'] ?? 0) as double;
         totalInedible += (log['inedibleParts'] ?? 0) as double;
+        totalRecycled += (log['recycled'] ?? 0) as double;
       }
       String label = DateFormat.MMMd().format(weekStart);
       weeklyStats[label] = {
         'totalWaste': totalWaste,
+        'totalRecycled': totalRecycled,
         'totalComposted': totalComposted,
-        'totalInedible': totalInedible,
+        // 'totalInedible': totalInedible, don't want to show inedible
       };
     }
     return weeklyStats;
+  }
+
+  double _getMaxWaste(Map<String, Map<String, double>> weeklyStats) {
+    double max = 0;
+    weeklyStats.forEach((key, stats) {
+      final total = (stats['totalWaste'] as double?) ?? 0.0;
+      if (total > max) max = total;
+    });
+    return max > 0 ? max + 20 : 100; // use 100 if everything is 0
+  }
+
+  Widget _buildLegendItem({required Color color, required String label}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 6),
+        Text(label),
+      ],
+    );
+  }
+
+  List<PieChartSectionData> _buildPieChartSections(
+      Map<String, Map<String, double>> weeklyStats) {
+    // assume the latest week is the first week in _weekStarts.
+    String latestWeekLabel = DateFormat.MMMd().format(_weekStarts.first);
+    Map<String, double> latestStats = weeklyStats[latestWeekLabel] ??
+        {'totalRecycled': 0, 'totalComposted': 0, 'totalInedible': 0};
+
+    double recycled = latestStats['totalRecycled']!;
+    double composted = latestStats['totalComposted']!;
+    double totalWaste = latestStats['totalWaste']!;
+//    double inedible = latestStats['totalInedible']!;  don't show inedible
+//    double other = totalWaste - (composted + recycled);
+
+    List<PieChartSectionData> sections = [];
+
+    if (totalWaste > 0) {
+      sections.add(
+        PieChartSectionData(
+          value: composted,
+          color: Colors.green,
+          title: '${((composted / totalWaste) * 100).toStringAsFixed(1)}%',
+          titleStyle: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+          titlePositionPercentageOffset: 0.6,
+        ),
+      );
+/*      sections.add(
+        PieChartSectionData(
+          value: inedible,
+          color: Colors.red,
+          title: '${((inedible / totalWaste) * 100).toStringAsFixed(1)}%',
+          titleStyle: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+          titlePositionPercentageOffset: 0.6,
+        ),
+      ); */
+      sections.add(
+        PieChartSectionData(
+          value: recycled,
+          color: Colors.blue,
+          title: '${((recycled / totalWaste) * 100).toStringAsFixed(1)}%',
+          titleStyle: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+          titlePositionPercentageOffset: 0.6,
+        ),
+      );
+    } else {
+      sections.add(
+        PieChartSectionData(
+          value: 1,
+          color: Colors.grey,
+          title: 'No Data',
+          titleStyle: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      );
+    }
+
+    return sections;
   }
 
   @override
@@ -104,15 +193,37 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                         alignment: BarChartAlignment.spaceAround,
                         maxY: _getMaxWaste(weeklyStats),
                         barGroups: weeklyStats.entries.map((entry) {
-                          double totalWaste = entry.value['totalWaste']!;
-                          int index =
+                          final index =
                               weeklyStats.keys.toList().indexOf(entry.key);
+
+                          final total =
+                              (entry.value['totalWaste'] as double?) ?? 0.0;
+                          final composted =
+                              (entry.value['totalComposted'] as double?) ?? 0.0;
+                          final inedible =
+                              (entry.value['totalInedible'] as double?) ?? 0.0;
+
+                          final recycled = total - (composted + inedible);
+
+                          // Skip bar if total is zero (avoids invisible bars)
+                          if (total == 0) {
+                            return BarChartGroupData(x: index, barRods: []);
+                          }
+
                           return BarChartGroupData(
                             x: index,
                             barRods: [
                               BarChartRodData(
-                                toY: totalWaste,
-                                color: Colors.blue,
+                                toY: total,
+                                rodStackItems: [
+                                  BarChartRodStackItem(0, recycled,
+                                      Colors.blue), // Recycled (base)
+                                  BarChartRodStackItem(
+                                      recycled,
+                                      recycled + composted,
+                                      Colors.green), // Composted (on top)
+                                ],
+                                width: 22,
                               ),
                             ],
                           );
@@ -149,6 +260,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                     'Waste Composition (Latest Week)',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
+
                   const SizedBox(height: 16),
                   SizedBox(
                     height: 200,
@@ -160,6 +272,14 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildLegendItem(color: Colors.green, label: 'Composted'),
+                      _buildLegendItem(color: Colors.blue, label: 'Recycled'),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -167,59 +287,5 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
         },
       ),
     );
-  }
-
-  double _getMaxWaste(Map<String, Map<String, double>> weeklyStats) {
-    double max = 0;
-    weeklyStats.forEach((key, stats) {
-      if (stats['totalWaste']! > max) max = stats['totalWaste']!;
-    });
-    return max + (max * 0.1);
-  }
-
-  List<PieChartSectionData> _buildPieChartSections(
-      Map<String, Map<String, double>> weeklyStats) {
-    // Assume the latest week is the first week in _weekStarts.
-    String latestWeekLabel = DateFormat.MMMd().format(_weekStarts.first);
-    Map<String, double> latestStats = weeklyStats[latestWeekLabel] ??
-        {'totalWaste': 0, 'totalComposted': 0, 'totalInedible': 0};
-    double totalWaste = latestStats['totalWaste']!;
-    double composted = latestStats['totalComposted']!;
-    double inedible = latestStats['totalInedible']!;
-    double other = totalWaste - (composted + inedible);
-
-    List<PieChartSectionData> sections = [];
-    if (totalWaste > 0) {
-      sections.add(
-        PieChartSectionData(
-          value: composted,
-          color: Colors.green,
-          title: '${((composted / totalWaste) * 100).toStringAsFixed(1)}%',
-        ),
-      );
-      sections.add(
-        PieChartSectionData(
-          value: inedible,
-          color: Colors.red,
-          title: '${((inedible / totalWaste) * 100).toStringAsFixed(1)}%',
-        ),
-      );
-      sections.add(
-        PieChartSectionData(
-          value: other,
-          color: Colors.blue,
-          title: '${((other / totalWaste) * 100).toStringAsFixed(1)}%',
-        ),
-      );
-    } else {
-      sections.add(
-        PieChartSectionData(
-          value: 1,
-          color: Colors.grey,
-          title: 'No Data',
-        ),
-      );
-    }
-    return sections;
   }
 }

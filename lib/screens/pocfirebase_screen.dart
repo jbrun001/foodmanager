@@ -924,6 +924,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         amount: 2.0,
         composted: 1.0,
         inedibleParts: 0.5,
+        recycled: 0.5,
       );
 
       // add a test smartlist
@@ -951,7 +952,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     setState(() {
       _status = "Generating Food Waste Test Data...";
     });
-    // do this for the current userid
+
     userId = FirebaseService().getCurrentUserId();
     try {
       // Step 1: Delete existing waste logs for the user.
@@ -972,20 +973,17 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
       for (int i = 0; i <= 6 * 7; i++) {
         DateTime currentDate = startDate.add(Duration(days: i));
 
-        // Generate a random time for logDate on the current day.
-        int randomHour = random.nextInt(24);
-        int randomMinute = random.nextInt(60);
-        int randomSecond = random.nextInt(60);
+        // Generate a random log time.
         DateTime logDate = DateTime(
           currentDate.year,
           currentDate.month,
           currentDate.day,
-          randomHour,
-          randomMinute,
-          randomSecond,
+          random.nextInt(24),
+          random.nextInt(60),
+          random.nextInt(60),
         );
 
-        // Compute the week date as the most recent Sunday at midnight.
+        // Compute start of the week (Sunday).
         int daysToSubtract = currentDate.weekday % 7;
         DateTime weekStart = DateTime(
           currentDate.year,
@@ -994,27 +992,41 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         ).subtract(Duration(days: daysToSubtract));
         weekStart = DateTime(weekStart.year, weekStart.month, weekStart.day);
 
-        // Generate random waste amounts such that total waste <= 400.
-        double totalWaste = random.nextDouble() * 400;
-        double composted = random.nextDouble() * totalWaste;
-        double inedible = totalWaste - composted;
+        // Generate total waste (max ~250g realistic cap).
+        double totalWaste = 100 + random.nextDouble() * 150; // 100–250g
 
-        // Create a wasteId based on the log date.
+        // Generate percentages and convert to grams.
+        double compostedPct = random.nextDouble() * 0.6; // up to 60%
+        double inediblePct = random.nextDouble() * 0.3; // up to 30%
+
+        // Ensure composted + inedible ≤ totalWaste
+        double composted = totalWaste * compostedPct;
+        double inedible = totalWaste * inediblePct;
+
+        // Limit to ensure recycled is always ≥ 0
+        if (composted + inedible > totalWaste) {
+          composted = totalWaste * 0.3;
+          inedible = totalWaste * 0.2;
+        }
+
+        // Create a unique ID based on the date.
         String wasteId =
             "waste_${currentDate.year}${currentDate.month.toString().padLeft(2, '0')}${currentDate.day.toString().padLeft(2, '0')}";
 
-        // Use the firebaseService to add the waste log.
         await widget.firebaseService.addWasteLog(
           userId: userId,
           wasteId: wasteId,
           week: weekStart,
           logDate: logDate,
-          amount: totalWaste,
-          composted: composted,
-          inedibleParts: inedible,
+          amount: double.parse(totalWaste.toStringAsFixed(1)),
+          recycled: double.parse(
+              (totalWaste - composted - inedible).toStringAsFixed(1)),
+          composted: double.parse(composted.toStringAsFixed(1)),
+          inedibleParts: double.parse(inedible.toStringAsFixed(1)),
         );
       }
-      userId = "1"; // set back to 1 so other buttons work
+
+      userId = "1"; // reset for UI test case compatibility
       setState(() {
         _status = "Food Waste Test Data generated successfully!";
       });

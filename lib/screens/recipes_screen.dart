@@ -165,7 +165,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
                         );
                       }).toList(),
                     ),
-                    SizedBox(width: 8),
+/*                    SizedBox(width: 8),
                     Text("Max Cals:", style: TextStyle(fontSize: 16)),
                     SizedBox(width: 8),
                     DropdownButton<int?>(
@@ -182,7 +182,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
                           child: Text(cal == null ? 'Any' : '$cal kcal'),
                         );
                       }).toList(),
-                    ),
+                    ), */
                   ],
                 ),
               ),
