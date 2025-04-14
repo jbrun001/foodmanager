@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'menu_drawer.dart';
 import '../services/firebase_service.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PreviewLeftoversScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -22,6 +24,8 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
   Map<String, double> combinedStock = {};
   // List of recipes augmented with a match score and match fraction.
   List<Map<String, dynamic>> scoredRecipes = [];
+  // R1.LO.02 add recipes to user recipes for use in meal planning screen
+  List<Map<String, dynamic>> addedRecipes = [];
 
   @override
   void initState() {
@@ -102,6 +106,50 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
     });
   }
 
+  // add one recipe to existing meal plan sticky bar (AddedRecipes)
+  void addRecipe(Map<String, dynamic> recipe) {
+    if (!addedRecipes.contains(recipe)) {
+      setState(() {
+        addedRecipes.add(recipe);
+      });
+      widget.firebaseService.appendUserRecipe(userId, recipe);
+    }
+  }
+
+  // remove recipe from sticky var
+  void removeRecipe(Map<String, dynamic> recipe) {
+    setState(() {
+      addedRecipes.remove(recipe);
+    });
+    widget.firebaseService.removeUserRecipe(userId, recipe);
+  }
+
+  String getLeftoverSummary() {
+    // take each item in aggregated items and if there are
+    // missing fields create the fields with default values
+    final leftovers = widget.aggregatedItems
+        .map((item) {
+          return {
+            'name': item['name'] ?? '',
+            'amount': (item['left_over_amount'] as num?)?.toDouble() ?? 0.0,
+            'unit': item['unit'] ?? '',
+          };
+        })
+        .where((item) => item['amount'] > 0) // filter out items with 0 amounts
+        .toList();
+
+    leftovers.sort((a, b) => b['amount'].compareTo(a['amount']));
+
+    final formatted = leftovers.map((item) {
+      final amount = item['amount'];
+      final unit = item['unit'];
+      final name = item['name'];
+      return '${amount}${unit} $name';
+    }).toList();
+
+    return formatted.isEmpty ? 'None' : formatted.join(', ');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,38 +157,160 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
         title: Text('Preview Leftovers'),
       ),
       drawer: MenuDrawer(),
-      body: Column(
+      body: Stack(
         children: [
-          // Optionally display combined stock information.
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "Recipes matching stock after cooking",
-              style: TextStyle(fontSize: 14),
-            ),
-          ),
-          Expanded(
-            child: scoredRecipes.isEmpty
-                ? Center(
-                    child: Text(
-                      "No recipes available with current leftovers and stock.",
-                      style: TextStyle(fontSize: 16),
+          Column(
+            children: [
+/*
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Ingredients left at end of the week',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                  )
-                : ListView.builder(
-                    itemCount: scoredRecipes.length,
-                    itemBuilder: (context, index) {
-                      final recipe = scoredRecipes[index];
-                      final score = recipe['matchScore'] as double;
-                      final fraction = recipe['matchFraction'] as String;
-                      return ListTile(
-                        title: Text(recipe['title'] ?? 'Untitled Recipe'),
-                        subtitle: Text(
-                          "Match Score: ${score.toStringAsFixed(1)}% ($fraction)",
-                        ),
-                      );
-                    },
+                    SizedBox(height: 4),
+                    Text(
+                      getLeftoverSummary(),
+                      style: TextStyle(fontSize: 14, color: Colors.black87),
+                    ),
+                  ],
+                ),
+              ),
+*/
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Recipes matching leftover stock",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
+                ),
+              ),
+              Expanded(
+                child: scoredRecipes.isEmpty
+                    ? Center(
+                        child: Text(
+                          "No recipes available with current leftovers and stock.",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: scoredRecipes.length,
+                        itemBuilder: (context, index) {
+                          final recipe = scoredRecipes[index];
+                          final score = recipe['matchScore'] as double;
+                          final fraction = recipe['matchFraction'] as String;
+                          return Card(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            child: Row(
+                              children: [
+                                CachedNetworkImage(
+                                  imageUrl: recipe['thumbnail'] ??
+                                      'https://via.placeholder.com/100',
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                      Shimmer.fromColors(
+                                    baseColor: Colors.grey[300]!,
+                                    highlightColor: Colors.grey[100]!,
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.broken_image, size: 100),
+                                ),
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        recipe['title'] ?? 'Untitled',
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                          "Match: ${score.toStringAsFixed(1)}% ($fraction)",
+                                          style: TextStyle(color: Colors.grey)),
+                                    ],
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () => addRecipe(recipe),
+                                  child: Text('Add'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 100,
+              color: Colors.white,
+              child: addedRecipes.isNotEmpty
+                  ? ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: addedRecipes.length,
+                      itemBuilder: (context, index) {
+                        final recipe = addedRecipes[index];
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () => removeRecipe(recipe),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: CachedNetworkImage(
+                                imageUrl: recipe['thumbnail'] ??
+                                    'https://via.placeholder.com/100',
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    Shimmer.fromColors(
+                                  baseColor: Colors.grey[300]!,
+                                  highlightColor: Colors.grey[100]!,
+                                  child: Container(
+                                    width: 80,
+                                    height: 80,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Icon(
+                                    Icons.broken_image,
+                                    size: 80,
+                                    color: Colors.grey),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Center(
+                      child: Text('No recipes added yet',
+                          style: TextStyle(color: Colors.grey))),
+            ),
           ),
         ],
       ),

@@ -736,7 +736,7 @@ class FirebaseService {
   }
 
   // save recipes on the recipes screen so they can be retrieved
-  // on the planner screen
+  // on the planner screen, this replaces all recipes saved
   Future<void> saveUserRecipes(
       String userId, List<Map<String, dynamic>> recipes) async {
     try {
@@ -761,6 +761,44 @@ class FirebaseService {
       await batch.commit();
     } catch (e) {
       print('Error saving user recipes: $e');
+    }
+  }
+
+  // add one recipe to the MealPlan sticky bar
+  Future<void> appendUserRecipe(
+      String userId, Map<String, dynamic> recipe) async {
+    try {
+      final collectionRef = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('AddedRecipes');
+
+      await collectionRef.add(recipe); // adds one document
+    } catch (e) {
+      print('Error appending recipe: $e');
+    }
+  }
+
+  // remove one recipe to the MealPlan sticky bar
+  // uses title as the unique key
+  Future<void> removeUserRecipe(
+      String userId, Map<String, dynamic> recipe) async {
+    try {
+      final collectionRef = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('AddedRecipes');
+
+      final query = await collectionRef
+          .where('title', isEqualTo: recipe['title'])
+          .limit(1)
+          .get();
+
+      for (final doc in query.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      print('Error removing recipe: $e');
     }
   }
 
