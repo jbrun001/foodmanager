@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
 import 'menu_drawer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // needed for Timestamp
 // f1_charts reference https://clay-atlas.com/us/blog/2021/10/14/flutter-en-flchart-pie-chart/
+import '../widgets/wastesummary_card.dart';
 
 class WasteLogAnalysisScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -35,8 +37,11 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
     DateTime now = DateTime.now();
     // Get the current week start (assuming week starts on Sunday)
     DateTime currentWeekStart = now.subtract(Duration(days: now.weekday % 7));
-    _weekStarts = List.generate(
-        4, (index) => currentWeekStart.subtract(Duration(days: 7 * index)));
+    // get the data oldest last
+    _weekStarts = [];
+    for (int i = 3; i >= 0; i--) {
+      _weekStarts.add(currentWeekStart.subtract(Duration(days: 7 * i)));
+    }
   }
 
   /// Aggregates the waste logs for each week into a map
@@ -71,6 +76,93 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
       };
     }
     return weeklyStats;
+  }
+
+  Future<Map<String, dynamic>> _getWeeklyData() async {
+    try {
+      final stats = await _getWeeklyStats();
+      final weekStart = _weekStarts.first;
+
+      final smartlistItems =
+          await widget.firebaseService.getSmartlistForWeek(userId, weekStart);
+      final allLogs = await widget.firebaseService.getAllWasteLogsRaw(userId);
+      final allSmartlists =
+          await widget.firebaseService.getAllSmartlistDocuments(userId);
+      final currentWeekId = DateFormat('yyyy-MM-dd').format(weekStart);
+
+      double convertToGrams(double amount, String unit) {
+        switch (unit.toLowerCase()) {
+          case 'kg':
+            return amount * 1000;
+          case 'g':
+            return amount;
+          case 'l':
+            return amount * 1000;
+          case 'ml':
+            return amount;
+          case 'tbsp':
+            return amount * 15;
+          case 'tsp':
+            return amount * 5;
+          case '':
+            return 100;
+          default:
+            return amount;
+        }
+      }
+
+      double lifetimeWaste = 0.0;
+      for (var log in allLogs) {
+        final dynamic ts = log['timestamp'] ?? log['date'];
+        late DateTime date;
+
+        if (ts is Timestamp) {
+          date = ts.toDate();
+        } else if (ts is String) {
+          date = DateTime.tryParse(ts) ?? DateTime(2000);
+        } else {
+          date = DateTime(2000);
+        }
+
+        final logWeekStart = date.subtract(Duration(days: date.weekday % 7));
+        if (DateFormat('yyyy-MM-dd').format(logWeekStart) == currentWeekId)
+          continue;
+
+        lifetimeWaste += (log['amount'] ?? 0.0) as double;
+      }
+
+      double lifetimeBought = 0.0;
+      for (var doc in allSmartlists) {
+        if (doc['weekId'] == currentWeekId) continue;
+
+        final items =
+            doc['items'] as List<dynamic>; // cast to dynamic list first
+
+        for (var rawItem in items) {
+          final item = Map<String, dynamic>.from(rawItem);
+          double amount = (item['purchase_amount'] ?? 0.0) as double;
+          if (amount == 0.0) continue;
+// debug
+          print(
+              'smartlist: ${item['name']} ${item['purchase_amount']}${item['unit']} = ${convertToGrams(amount, item['unit'] ?? '')}g');
+          lifetimeBought += convertToGrams(amount, item['unit'] ?? '');
+        }
+      }
+// debug
+      print(
+          'weekstart: $weekStart | lifetimeWaste: $lifetimeWaste | lifetimeBought: $lifetimeBought');
+      return {
+        'weeklyStats': stats,
+        'smartlistItems': smartlistItems,
+        'weekStart': weekStart,
+        'lifetimeWaste': lifetimeWaste,
+        'lifetimeBought': lifetimeBought,
+      };
+    } catch (e, stacktrace) {
+      print('Error in _getWeeklyData: $e');
+      print(stacktrace);
+      rethrow;
+    }
   }
 
   double _getMaxWaste(Map<String, Map<String, double>> weeklyStats) {
@@ -123,16 +215,6 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           titlePositionPercentageOffset: 0.6,
         ),
       );
-/*      sections.add(
-        PieChartSectionData(
-          value: inedible,
-          color: Colors.red,
-          title: '${((inedible / totalWaste) * 100).toStringAsFixed(1)}%',
-          titleStyle: TextStyle(
-              fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-          titlePositionPercentageOffset: 0.6,
-        ),
-      ); */
       sections.add(
         PieChartSectionData(
           value: recycled,
@@ -165,8 +247,8 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
         title: const Text('Waste Log Analysis'),
       ),
       drawer: MenuDrawer(),
-      body: FutureBuilder<Map<String, Map<String, double>>>(
-        future: _getWeeklyStats(),
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: _getWeeklyData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -174,12 +256,30 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           if (snapshot.hasError || !snapshot.hasData) {
             return const Center(child: Text('Error loading analysis.'));
           }
-          final weeklyStats = snapshot.data!;
+
+          final weeklyStats =
+              snapshot.data!['weeklyStats'] as Map<String, Map<String, double>>;
+          final smartlistItems =
+              snapshot.data!['smartlistItems'] as List<Map<String, dynamic>>;
+          final weekStart = snapshot.data!['weekStart'] as DateTime;
+          final lifetimeWaste = snapshot.data!['lifetimeWaste'] as double;
+          final lifetimeBought = snapshot.data!['lifetimeBought'] as double;
+
+          final latestWeekLabel = DateFormat.MMMd().format(weekStart);
+          final double totalWaste =
+              weeklyStats[latestWeekLabel]?['totalWaste'] ?? 0.0;
+
           return SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  WasteSummary_Card(
+                    totalWaste: totalWaste,
+                    smartlistItems: smartlistItems,
+                    lifetimeWaste: lifetimeWaste,
+                    lifetimeBought: lifetimeBought,
+                  ),
                   // Graph 1: Bar chart of total waste per week
                   Text(
                     'Weekly Total Waste',
@@ -192,7 +292,8 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                       BarChartData(
                         alignment: BarChartAlignment.spaceAround,
                         maxY: _getMaxWaste(weeklyStats),
-                        barGroups: weeklyStats.entries.map((entry) {
+                        barGroups:
+                            weeklyStats.entries.toList().reversed.map((entry) {
                           final index =
                               weeklyStats.keys.toList().indexOf(entry.key);
 
@@ -242,7 +343,8 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                               showTitles: true,
                               getTitlesWidget: (double value, TitleMeta meta) {
                                 int index = value.toInt();
-                                List<String> labels = weeklyStats.keys.toList();
+                                List<String> labels =
+                                    weeklyStats.keys.toList().reversed.toList();
                                 if (index >= 0 && index < labels.length) {
                                   return Text(labels[index]);
                                 }

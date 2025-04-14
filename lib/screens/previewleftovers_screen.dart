@@ -172,7 +172,6 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
         children: [
           Column(
             children: [
-/*
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -192,14 +191,13 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
                   ],
                 ),
               ),
-*/
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Recipes matching leftover stock",
+                    "Recipes that you will have all or some of the ingredients to make.",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -258,8 +256,10 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
                                       ),
                                       SizedBox(height: 8),
                                       Text(
-                                          "Match: ${score.toStringAsFixed(1)}% ($fraction)",
-                                          style: TextStyle(color: Colors.grey)),
+                                          //                                        "Match: ${score.toStringAsFixed(1)}% ($fraction ingredients)",
+                                          "$fraction ingredients",
+                                          style:
+                                              TextStyle(color: Colors.black)),
                                     ],
                                   ),
                                 ),

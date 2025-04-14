@@ -855,4 +855,31 @@ class FirebaseService {
         .get();
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
+
+  Future<List<Map<String, dynamic>>> getAllWasteLogsRaw(String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('WasteLogs')
+        .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getAllSmartlistDocuments(
+      String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('SmartLists')
+        .get();
+
+    return snapshot.docs
+        .map((doc) => {
+              'weekId': doc.id,
+              'items':
+                  List<Map<String, dynamic>>.from(doc.data()['items'] ?? []),
+            })
+        .toList();
+  }
 }
