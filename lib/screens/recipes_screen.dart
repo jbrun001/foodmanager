@@ -20,6 +20,19 @@ class _RecipesScreenState extends State<RecipesScreen> {
   List<Map<String, dynamic>> filteredRecipes = [];
   String searchQuery = '';
   bool isLoading = true; // is the data loading from the database?
+  final List<int?> cookTimeOptions = [
+    null,
+    10,
+    20,
+    30,
+    40,
+    50,
+    60,
+    70
+  ]; // R1.RD.02
+  int? selectedCookTime; // null = no filter R1.RD.02
+  final List<int?> caloriesOptions = [null, 500, 600, 700, 800, 900, 1000];
+  int? selectedCalories;
 
   @override
   void initState() {
@@ -71,6 +84,37 @@ class _RecipesScreenState extends State<RecipesScreen> {
     widget.firebaseService.saveUserRecipes(userId, addedRecipes);
   }
 
+  // filter recipes
+  void applyFilters() {
+    filteredRecipes = recipes.where((recipe) {
+      final title = recipe['title']?.toLowerCase() ?? '';
+      final keywords = recipe['keywords']?.toLowerCase() ?? '';
+      final ingredients = (recipe['ingredients'] as List)
+          .map((i) => i['ingredient_name'].toString().toLowerCase())
+          .join(' ');
+
+      final matchQuery = title.contains(searchQuery) ||
+          keywords.contains(searchQuery) ||
+          ingredients.contains(searchQuery);
+
+      bool matchTime;
+      if (selectedCookTime == null) {
+        matchTime = true; // no filtering
+      } else {
+        matchTime = recipe['cooktime'] <= selectedCookTime!;
+      }
+
+      bool matchCalories;
+      if (selectedCalories == null) {
+        matchCalories = true;
+      } else {
+        matchCalories = recipe['calories'] <= selectedCalories!;
+      }
+
+      return matchQuery && matchTime && matchCalories;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,27 +130,60 @@ class _RecipesScreenState extends State<RecipesScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: 'Search Recipes',
+                    labelText: 'Search by Ingredient, Cusine or Keyword',
                     border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.search),
                   ),
                   onChanged: (query) {
                     setState(() {
                       searchQuery = query.toLowerCase();
-                      filteredRecipes = recipes.where((recipe) {
-                        final title = recipe['title']?.toLowerCase() ?? '';
-                        final keywords =
-                            recipe['keywords']?.toLowerCase() ?? '';
-                        final ingredients = (recipe['ingredients'] as List)
-                            .map((i) =>
-                                i['ingredient_name'].toString().toLowerCase())
-                            .join(' ');
-                        return title.contains(searchQuery) ||
-                            keywords.contains(searchQuery) ||
-                            ingredients.contains(searchQuery);
-                      }).toList();
+                      applyFilters();
                     });
                   },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  children: [
+                    Icon(Icons.filter_alt, size: 20, color: Colors.grey),
+                    SizedBox(width: 8),
+                    Text("Max Time:", style: TextStyle(fontSize: 16)),
+                    SizedBox(width: 8),
+                    DropdownButton<int?>(
+                      value: selectedCookTime,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCookTime = value;
+                          applyFilters();
+                        });
+                      },
+                      items: cookTimeOptions.map((time) {
+                        return DropdownMenuItem<int?>(
+                          value: time,
+                          child: Text(time == null ? 'Any' : '$time min'),
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(width: 8),
+                    Text("Max Cals:", style: TextStyle(fontSize: 16)),
+                    SizedBox(width: 8),
+                    DropdownButton<int?>(
+                      value: selectedCalories,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCalories = value;
+                          applyFilters();
+                        });
+                      },
+                      items: caloriesOptions.map((cal) {
+                        return DropdownMenuItem<int?>(
+                          value: cal,
+                          child: Text(cal == null ? 'Any' : '$cal kcal'),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
