@@ -193,8 +193,26 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     });
 
     setState(() {
-      _smartlistItems = aggregatedItems.values.toList();
+      List<Map<String, dynamic>> sortedItems = aggregatedItems.values.toList();
+      sortedItems.sort(_smartlistSort);
+      _smartlistItems = sortedItems;
     });
+  }
+
+  // R1.SL.01
+  // list sorting, purchased items last
+  // within purchased/unpurchased sort by ingredient type
+  // becuase when shopping these items will be near each other
+  int _smartlistSort(Map<String, dynamic> a, Map<String, dynamic> b) {
+    // put ticked (purchased items) last
+    if (a['purchased'] != b['purchased']) {
+      return a['purchased'] ? 1 : -1;
+    }
+    // force string to lowercase before sorting
+    return a['type']
+        .toString()
+        .toLowerCase()
+        .compareTo(b['type'].toString().toLowerCase());
   }
 
   // get all of the meal plan ingredients for the selected week
@@ -231,12 +249,15 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     widget.firebaseService
         .updateSmartlistItem(userId, name, selectedWeekStart, !currentStatus);
     setState(() {
-      _smartlistItems = _smartlistItems.map((item) {
+      // update: to sort list R1.SL.01
+      List<Map<String, dynamic>> updatedItems = _smartlistItems.map((item) {
         if (item['name'] == name) {
           item['purchased'] = !currentStatus;
         }
         return item;
       }).toList();
+      updatedItems.sort(_smartlistSort);
+      _smartlistItems = updatedItems;
     });
   }
 
@@ -393,10 +414,9 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
                           title: Text(
                             // output all the data from the aggregated list
                             // for testing
-                            "${item['purchase_amount']}${item['unit']} ${item['name']}",
-                            // uncomment this for testing
-                            //"Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
-                            //"MOQ: ${item['moq']}${item['unit']} | stock after cooking: ${item['stock']}${item['unit']} already in stock ${item['left_over_amount']}${item['unit']}",
+                            "${item['purchase_amount']}${item['unit']} ${item['name']}"
+                            "Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
+                            "MOQ: ${item['moq']}${item['unit']} | stock after cooking: ${item['stock']}${item['unit']} already in stock ${item['left_over_amount']}${item['unit']}",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               decoration: item['purchased']
