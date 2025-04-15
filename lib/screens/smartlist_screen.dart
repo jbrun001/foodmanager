@@ -23,6 +23,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   String? _selectedStore;
   List<String> _stores = []; // stored list of available stores
   List<Map<String, dynamic>> _smartlistItems = [];
+  bool _isLoading = true; // to indicate when the smart list has loaded
 
   @override
   void initState() {
@@ -70,6 +71,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   // fetches data from firebase
   // updated to calculate required ingredients from the mealplan
   Future<void> _loadSmartlist() async {
+    setState(() => _isLoading = true); // start loading
     // list of all the ingredients for the mealplan in the selected week
     List<Map<String, dynamic>> mealPlanIngredients =
         await _fetchMealPlanIngredients();
@@ -196,7 +198,15 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
       List<Map<String, dynamic>> sortedItems = aggregatedItems.values.toList();
       sortedItems.sort(_smartlistSort);
       _smartlistItems = sortedItems;
+      _isLoading = false; // finished loading
     });
+
+    // save smart list after creation
+    await widget.firebaseService.saveSmartlistForWeek(
+      userId: userId,
+      weekStart: selectedWeekStart,
+      items: _smartlistItems,
+    );
   }
 
   // R1.SL.01
@@ -353,7 +363,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Smartlist'),
+        title: Text('Smart Shopping List'),
         actions: [
           IconButton(
             icon: Icon(Icons.preview),
@@ -399,83 +409,91 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
             ),
           ),
           Expanded(
-            child: _smartlistItems.isEmpty
-                ? Center(child: Text("No items in the smartlist"))
-                : ListView.builder(
-                    itemCount: _smartlistItems.length,
-                    itemBuilder: (context, index) {
-                      final item = _smartlistItems[index];
+            child: _isLoading
+                ? Center(
+                    child:
+                        CircularProgressIndicator()) // loading indicator if _isLoading
+                : _smartlistItems.isEmpty // else if smartlist is empty
+                    ? Center(
+                        child: Text(
+                            "There are no items in this week's Smart List.\nPut some recipes in the meal plan for this week\nand then the smartlist will\nautomatically calculate how much of each\ningredent you need to buy"))
+                    : ListView.builder(
+                        // else display list
+                        itemCount: _smartlistItems.length,
+                        itemBuilder: (context, index) {
+                          final item = _smartlistItems[index];
 
-                      final listTile = ListTile(
-                        leading: Checkbox(
-                          value: item['purchased'],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              item['purchased'] = value ?? false;
-                              _smartlistItems.sort(_smartlistSort);
-                            });
+                          final listTile = ListTile(
+                            leading: Checkbox(
+                              value: item['purchased'],
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  item['purchased'] = value ?? false;
+                                  _smartlistItems.sort(_smartlistSort);
+                                });
 
-                            // Only persist purchased status for manual items
-                            if (item['isManual'] == true) {
-                              final manualItems = _smartlistItems
-                                  .where((i) => i['isManual'] == true)
-                                  .toList();
+                                // Only persist purchased status for manual items
+                                if (item['isManual'] == true) {
+                                  final manualItems = _smartlistItems
+                                      .where((i) => i['isManual'] == true)
+                                      .toList();
 
-                              widget.firebaseService.saveSmartlistForWeek(
-                                userId: userId,
-                                weekStart: selectedWeekStart,
-                                items: manualItems,
-                              );
-                            }
-                          },
-                        ),
-                        title: Text(
-                          "${item['purchase_amount']}${item['unit']} ${item['name']}",
-                          // "Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
-                          // "MOQ: ${item['moq']}${item['unit']} | stock after cooking: ${item['stock']}${item['unit']} already in stock ${item['left_over_amount']}${item['unit']}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            decoration: item['purchased'] == true
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                          ),
-                        ),
-                        subtitle: Text(
-                          "Category: ${item['type']}",
-                          style: TextStyle(
-                            decoration: item['purchased'] == true
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none,
-                          ),
-                        ),
-                      );
+                                  widget.firebaseService.saveSmartlistForWeek(
+                                    userId: userId,
+                                    weekStart: selectedWeekStart,
+                                    items: manualItems,
+                                  );
+                                }
+                              },
+                            ),
+                            title: Text(
+                              "${item['purchase_amount']}${item['unit']} ${item['name']}",
+                              // "Plan amount: ${item['amount']}${item['unit']} | Stock: ${item['stock']}${item['unit']} | Needed: ${item['needed']}${item['unit']} | "
+                              // "MOQ: ${item['moq']}${item['unit']} | stock after cooking: ${item['stock']}${item['unit']} already in stock ${item['left_over_amount']}${item['unit']}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                decoration: item['purchased'] == true
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                            ),
+                            subtitle: Text(
+                              "Category: ${item['type']}",
+                              style: TextStyle(
+                                decoration: item['purchased'] == true
+                                    ? TextDecoration.lineThrough
+                                    : TextDecoration.none,
+                              ),
+                            ),
+                          );
 
-                      if (item['isManual'] == true) {
-                        return Dismissible(
-                          key: Key(item['name']),
-                          background: Container(
-                            color: Colors.red,
-                            alignment: Alignment.centerRight,
-                            padding: EdgeInsets.only(right: 20),
-                            child: Icon(Icons.delete, color: Colors.white),
-                          ),
-                          onDismissed: (direction) async {
-                            setState(() {
-                              _smartlistItems.removeAt(index);
-                            });
+                          if (item['isManual'] == true) {
+                            return Dismissible(
+                              key: Key(item['name']),
+                              background: Container(
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.only(right: 20),
+                                child: Icon(Icons.delete, color: Colors.white),
+                              ),
+                              onDismissed: (direction) async {
+                                setState(() {
+                                  _smartlistItems.removeAt(index);
+                                });
 
-                            await widget.firebaseService.saveSmartlistForWeek(
-                              userId: userId,
-                              weekStart: selectedWeekStart,
-                              items: _smartlistItems,
+                                await widget.firebaseService
+                                    .saveSmartlistForWeek(
+                                  userId: userId,
+                                  weekStart: selectedWeekStart,
+                                  items: _smartlistItems,
+                                );
+                              },
+                              child: listTile,
                             );
-                          },
-                          child: listTile,
-                        );
-                      } else {
-                        return listTile; // no dismiss swipe
-                      }
-                    }),
+                          } else {
+                            return listTile; // no dismiss swipe
+                          }
+                        }),
           ),
         ],
       ),

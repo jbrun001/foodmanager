@@ -35,8 +35,13 @@ class WasteSummary_Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double totalBought = 0.0;
+    print('WasteSummary_Card Inputs');
+    print('  totalWaste (this week): $totalWaste');
+    print('  smartlistItems (count): ${smartlistItems.length}');
+    print('  lifetimeWaste: $lifetimeWaste');
+    print('  lifetimeBought: $lifetimeBought');
 
+    double totalBought = 0.0;
     for (var item in smartlistItems) {
       double purchaseAmount = (item['purchase_amount'] ?? 0.0) as double;
       if (purchaseAmount == 0.0) continue;
@@ -44,9 +49,18 @@ class WasteSummary_Card extends StatelessWidget {
       totalBought += convertToGrams(purchaseAmount, unit);
     }
 
-    double percent = totalBought > 0 ? (totalWaste / totalBought) * 100 : 0.0;
-    double lifetimePercent =
+    double wastePct = totalBought > 0 ? (totalWaste / totalBought) * 100 : 0.0;
+    double lifetimeWastePct =
         lifetimeBought > 0 ? (lifetimeWaste / lifetimeBought) * 100 : 0.0;
+
+    double efficiency = 100 - wastePct;
+    double lifetimeEfficiency = 100 - lifetimeWastePct;
+
+    Color efficiencyColor(double value) {
+      if (value >= 84) return Colors.green; // Better than UK avg
+      if (value >= 70) return Colors.orange;
+      return Colors.red;
+    }
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 16),
@@ -56,24 +70,58 @@ class WasteSummary_Card extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Waste Efficiency",
-                style: Theme.of(context).textTheme.titleMedium),
-            SizedBox(height: 8),
-            Text(
-              "${percent.toStringAsFixed(1)}% of food bought was wasted\n(the UK avg: is 16%)",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+// Headings row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text("This Week",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                Text("Lifetime", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text("UK Average",
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+              ],
             ),
-            Text(
-              "Your food waste was ${totalWaste.toStringAsFixed(1)}g out of ${totalBought.toStringAsFixed(1)}g bought.",
-              style: TextStyle(fontSize: 14),
+            const SizedBox(height: 4),
+// Percentages row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "${efficiency.toStringAsFixed(1)}%",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: efficiencyColor(efficiency),
+                  ),
+                ),
+                Text(
+                  "${lifetimeEfficiency.toStringAsFixed(1)}%",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: efficiencyColor(lifetimeEfficiency),
+                  ),
+                ),
+                const Text(
+                  "84%",
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 12),
+            // Explanatory text (full width)
             Text(
-              "Since you have been using this app your waste efficiency is ${lifetimePercent.toStringAsFixed(1)}%",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              "This week ${totalWaste.toStringAsFixed(1)}g out of ${totalBought.toStringAsFixed(1)}g bought.",
+              style: const TextStyle(fontSize: 14),
             ),
-            Text(
-              "Includes unused and prep waste.",
+            const SizedBox(height: 8),
+            const SizedBox(height: 8),
+            const Text(
+              "Compares food waste vs food bought, includes unused and prep waste.",
               style: TextStyle(fontSize: 12, color: Colors.black54),
             ),
           ],

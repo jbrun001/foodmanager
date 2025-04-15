@@ -30,13 +30,17 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
       print("No user logged in. Redirecting to login page...");
       context.go('/');
     }
-    _initializeWeeks();
+    _initialiseWeeks();
   }
 
-  void _initializeWeeks() {
+  void _initialiseWeeks() {
     DateTime now = DateTime.now();
     // Get the current week start (assuming week starts on Sunday)
-    DateTime currentWeekStart = now.subtract(Duration(days: now.weekday % 7));
+    DateTime currentWeekStart = DateTime(
+      now.year,
+      now.month,
+      now.day - (now.weekday % 7),
+    );
     // get the data oldest last
     _weekStarts = [];
     for (int i = 3; i >= 0; i--) {
@@ -44,11 +48,10 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
     }
   }
 
-  /// Aggregates the waste logs for each week into a map
+  // aggregates the waste logs for each week into a map
   Future<Map<String, Map<String, double>>> _getWeeklyStats() async {
-    // Map keys will be week labels (e.g., "Sep 22") and values are a map of stats.
+    // map keys will be week labels (e.g., "Sep 22") and values are a map of stats.
     Map<String, Map<String, double>> weeklyStats = {};
-
     for (DateTime weekStart in _weekStarts) {
       List<Map<String, dynamic>> logs =
           await widget.firebaseService.getWasteLogsForWeek(
@@ -67,21 +70,24 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
         totalInedible += (log['inedibleParts'] ?? 0) as double;
         totalRecycled += (log['recycled'] ?? 0) as double;
       }
-      String label = DateFormat.MMMd().format(weekStart);
+      String label = weekStart.toIso8601String().split('T')[0];
       weeklyStats[label] = {
         'totalWaste': totalWaste,
         'totalRecycled': totalRecycled,
         'totalComposted': totalComposted,
         // 'totalInedible': totalInedible, don't want to show inedible
       };
+      // testing - output result of weekly stats
+      print('WeeklyStats generated for: $label | total: $totalWaste');
     }
+
     return weeklyStats;
   }
 
   Future<Map<String, dynamic>> _getWeeklyData() async {
     try {
       final stats = await _getWeeklyStats();
-      final weekStart = _weekStarts.first;
+      final weekStart = _weekStarts.last;
 
       final smartlistItems =
           await widget.firebaseService.getSmartlistForWeek(userId, weekStart);
@@ -113,7 +119,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
 
       double lifetimeWaste = 0.0;
       for (var log in allLogs) {
-        final dynamic ts = log['timestamp'] ?? log['date'];
+        final dynamic ts = log['logdate'];
         late DateTime date;
 
         if (ts is Timestamp) {
@@ -124,17 +130,20 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           date = DateTime(2000);
         }
 
-        final logWeekStart = date.subtract(Duration(days: date.weekday % 7));
-        if (DateFormat('yyyy-MM-dd').format(logWeekStart) == currentWeekId)
-          continue;
+        final logWeekStart = DateTime(
+          date.year,
+          date.month,
+          date.day - (date.weekday % 7),
+        );
+// debug - check date formats match
+        print(
+            'checking ${date.toIso8601String()} log data date: ${logWeekStart.toIso8601String()} vs expected $currentWeekId');
 
         lifetimeWaste += (log['amount'] ?? 0.0) as double;
       }
 
       double lifetimeBought = 0.0;
       for (var doc in allSmartlists) {
-        if (doc['weekId'] == currentWeekId) continue;
-
         final items =
             doc['items'] as List<dynamic>; // cast to dynamic list first
 
@@ -192,13 +201,13 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
   List<PieChartSectionData> _buildPieChartSections(
       Map<String, Map<String, double>> weeklyStats) {
     // assume the latest week is the first week in _weekStarts.
-    String latestWeekLabel = DateFormat.MMMd().format(_weekStarts.first);
+    String latestWeekLabel = _weekStarts.last.toIso8601String().split('T')[0];
     Map<String, double> latestStats = weeklyStats[latestWeekLabel] ??
         {'totalRecycled': 0, 'totalComposted': 0, 'totalInedible': 0};
 
-    double recycled = latestStats['totalRecycled']!;
-    double composted = latestStats['totalComposted']!;
-    double totalWaste = latestStats['totalWaste']!;
+    double recycled = latestStats['totalRecycled'] ?? 0.0;
+    double composted = latestStats['totalComposted'] ?? 0.0;
+    double totalWaste = latestStats['totalWaste'] ?? 0.0;
 //    double inedible = latestStats['totalInedible']!;  don't show inedible
 //    double other = totalWaste - (composted + recycled);
 
@@ -244,7 +253,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Waste Log Analysis'),
+        title: const Text('Waste Efficiency'),
       ),
       drawer: MenuDrawer(),
       body: FutureBuilder<Map<String, dynamic>>(
@@ -265,7 +274,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           final lifetimeWaste = snapshot.data!['lifetimeWaste'] as double;
           final lifetimeBought = snapshot.data!['lifetimeBought'] as double;
 
-          final latestWeekLabel = DateFormat.MMMd().format(weekStart);
+          final latestWeekLabel = weekStart.toIso8601String().split('T')[0];
           final double totalWaste =
               weeklyStats[latestWeekLabel]?['totalWaste'] ?? 0.0;
 
@@ -280,99 +289,103 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                     lifetimeWaste: lifetimeWaste,
                     lifetimeBought: lifetimeBought,
                   ),
-                  // Graph 1: Bar chart of total waste per week
+                  // bar chart of total waste per week
                   Text(
-                    'Weekly Total Waste',
-                    style: Theme.of(context).textTheme.titleLarge,
+                    'Food Waste by Week',
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
                     height: 200,
-                    child: BarChart(
-                      BarChartData(
-                        alignment: BarChartAlignment.spaceAround,
-                        maxY: _getMaxWaste(weeklyStats),
-                        barGroups:
-                            weeklyStats.entries.toList().reversed.map((entry) {
-                          final index =
-                              weeklyStats.keys.toList().indexOf(entry.key);
-
-                          final total =
-                              (entry.value['totalWaste'] as double?) ?? 0.0;
-                          final composted =
-                              (entry.value['totalComposted'] as double?) ?? 0.0;
-                          final inedible =
-                              (entry.value['totalInedible'] as double?) ?? 0.0;
-
-                          final recycled = total - (composted + inedible);
-
-                          // Skip bar if total is zero (avoids invisible bars)
-                          if (total == 0) {
-                            return BarChartGroupData(x: index, barRods: []);
-                          }
-
-                          return BarChartGroupData(
-                            x: index,
-                            barRods: [
-                              BarChartRodData(
-                                toY: total,
-                                rodStackItems: [
-                                  BarChartRodStackItem(0, recycled,
-                                      Colors.blue), // Recycled (base)
-                                  BarChartRodStackItem(
-                                      recycled,
-                                      recycled + composted,
-                                      Colors.green), // Composted (on top)
-                                ],
-                                width: 22,
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                        titlesData: FlTitlesData(
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (double value, TitleMeta meta) {
-                                return Text(value.toInt().toString());
-                              },
-                            ),
-                          ),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (double value, TitleMeta meta) {
-                                int index = value.toInt();
-                                List<String> labels =
-                                    weeklyStats.keys.toList().reversed.toList();
-                                if (index >= 0 && index < labels.length) {
-                                  return Text(labels[index]);
-                                }
-                                return const Text('');
-                              },
-                            ),
-                          ),
+                    child: BarChart(BarChartData(
+                      alignment: BarChartAlignment.spaceAround,
+                      maxY: _getMaxWaste(weeklyStats),
+                      gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: false, // no vertical lines
+                        getDrawingHorizontalLine: (value) => FlLine(
+                          color: Colors.grey[300],
+                          strokeWidth: 1,
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  // Graph 2: Pie chart for waste composition of the latest week
-                  Text(
-                    'Waste Composition (Latest Week)',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    height: 200,
-                    child: PieChart(
-                      PieChartData(
-                        sections: _buildPieChartSections(weeklyStats),
-                        sectionsSpace: 2,
-                        centerSpaceRadius: 40,
+                      borderData: FlBorderData(
+                        show: false, // no borders around the chart
                       ),
-                    ),
+                      barGroups:
+                          weeklyStats.entries.toList().reversed.map((entry) {
+                        final index =
+                            weeklyStats.keys.toList().indexOf(entry.key);
+
+                        final total =
+                            (entry.value['totalWaste'] as double?) ?? 0.0;
+                        final composted =
+                            (entry.value['totalComposted'] as double?) ?? 0.0;
+                        final inedible =
+                            (entry.value['totalInedible'] as double?) ?? 0.0;
+                        final recycled = total - (composted + inedible);
+
+                        if (total == 0) {
+                          return BarChartGroupData(x: index, barRods: []);
+                        }
+
+                        return BarChartGroupData(
+                          x: index,
+                          barRods: [
+                            BarChartRodData(
+                              toY: total,
+                              rodStackItems: [
+                                BarChartRodStackItem(0, recycled, Colors.blue),
+                                BarChartRodStackItem(recycled,
+                                    recycled + composted, Colors.green),
+                              ],
+                              width: 22,
+                              borderRadius: BorderRadius.zero, // flat top
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                      titlesData: FlTitlesData(
+                        leftTitles: AxisTitles(
+                          axisNameWidget: const Text('g'), // y axis label
+                          axisNameSize: 20,
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            interval: 50, // fixed spacing like 0, 50, 100...
+                            reservedSize: 40,
+                            getTitlesWidget: (double value, TitleMeta meta) {
+                              return Text(value.toInt().toString());
+                            },
+                          ),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (double value, TitleMeta meta) {
+                              int index = value.toInt();
+                              List<String> labels =
+                                  weeklyStats.keys.toList().reversed.toList();
+                              if (index >= 0 && index < labels.length) {
+                                final isoDate = labels[index];
+                                final date = DateTime.tryParse(isoDate);
+                                final label = date != null
+                                    ? DateFormat.MMMd().format(date)
+                                    : '';
+                                return Text(label);
+                              }
+                              return const Text('');
+                            },
+                          ),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles:
+                              SideTitles(showTitles: false), // hide right axis
+                        ),
+                        topTitles: AxisTitles(
+                          sideTitles:
+                              SideTitles(showTitles: false), // hide top axis
+                        ),
+                      ),
+                    )),
                   ),
                   const SizedBox(height: 16),
                   Row(
@@ -381,6 +394,23 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                       _buildLegendItem(color: Colors.green, label: 'Composted'),
                       _buildLegendItem(color: Colors.blue, label: 'Recycled'),
                     ],
+                  ),
+                  const SizedBox(height: 32),
+                  // pie chart for waste composition of the latest week
+                  Text(
+                    'Food Waste Composition (latest week)',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 150,
+                    child: PieChart(
+                      PieChartData(
+                        sections: _buildPieChartSections(weeklyStats),
+                        sectionsSpace: 2,
+                        centerSpaceRadius: 40,
+                      ),
+                    ),
                   ),
                 ],
               ),

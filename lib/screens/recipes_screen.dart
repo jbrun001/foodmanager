@@ -49,7 +49,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
 
   Future<void> fetchRecipes() async {
     try {
-      setState(() => isLoading = true); // Start loading
+      setState(() => isLoading = true); // start loading
       List<Map<String, dynamic>> fetchedRecipes =
           await widget.firebaseService.getRecipes();
 

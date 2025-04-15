@@ -521,9 +521,15 @@ class FirebaseService {
 
     if (doc.exists) {
       final data = doc.data();
-      return List<Map<String, dynamic>>.from(data?['items'] ?? []);
+      final items = List<Map<String, dynamic>>.from(data?['items'] ?? []);
+      print(
+          '→ Smartlist found for ${DateFormat('yyyy-MM-dd').format(weekStart)} with ${items.length} items');
+      return items;
+    } else {
+      print(
+          'Smartlist not found for weekId: ${DateFormat('yyyy-MM-dd').format(weekStart)}');
+      return [];
     }
-    return [];
   }
 
   // retrieve only the manual items from the smartlist
@@ -770,9 +776,13 @@ class FirebaseService {
         .collection('Users')
         .doc(userId)
         .collection('WasteLogs')
-        .where('logdate', isGreaterThanOrEqualTo: weekStart)
-        .where('logdate', isLessThanOrEqualTo: weekEnd)
+        .where('logdate', isGreaterThanOrEqualTo: Timestamp.fromDate(weekStart))
+        .where('logdate', isLessThanOrEqualTo: Timestamp.fromDate(weekEnd))
         .get();
+    // testing
+    print(
+        'getWasteLogsForWeek: ${weekStart.toIso8601String()} to ${weekEnd.toIso8601String()}');
+    print('  logs returned: ${snapshot.docs.length}');
     return snapshot.docs
         .map((doc) => doc.data() as Map<String, dynamic>)
         .toList();

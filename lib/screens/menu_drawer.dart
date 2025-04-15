@@ -30,7 +30,7 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => context.go('/ingredient'),
           ),
           ListTile(
-            title: Text('Smart List'),
+            title: Text('Smart Shopping List'),
             onTap: () => context.go('/smartlist'),
           ),
 //          ListTile(
@@ -42,7 +42,7 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => context.go('/waste'),
           ),
           ListTile(
-            title: Text('Waste Analysis'),
+            title: Text('Waste Efficiency'),
             onTap: () => context.go('/analysis'),
           ),
           ListTile(

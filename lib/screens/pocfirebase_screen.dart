@@ -19,9 +19,11 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
   // live recipes
   final List<Map<String, dynamic>> recipes = [
     {
-      "title": "Sweet 'N' Smokey BBQ Chicken Fajitas",
-      "thumbnail": "https://dummyimage.com/100",
-      "image": "https://dummyimage.com/200",
+      "title": "Sweet 'N' Smoky BBQ Chicken Fajitas",
+      "thumbnail":
+          "https://production-media.gousto.co.uk/cms/mood-image/1115-Smoky-Chicken-Fajitas-With-Red-Pepper-x400.jpg",
+      "image":
+          "https://production-media.gousto.co.uk/cms/mood-image/1115-Smoky-Chicken-Fajitas-With-Red-Pepper-x400.jpg",
       "description": "",
       "cooktime": 20,
       "preptime": 5,
@@ -127,7 +129,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         {
           "step":
               "Heat a large wide based pan with a generous drizzle of olive oil over high heat",
-          "image": "https://dummyimage.com/100"
+          "image": ""
         },
         {
           "step":
@@ -179,8 +181,9 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     },
     {
       "title": "Fiery Jerk-Spiced Pork & Potato Mash",
-      "thumbnail": "https://dummyimage.com/100",
-      "image": "https://dummyimage.com/200",
+      "thumbnail":
+          "https://www.bbc.co.uk/food/recipes/jerk_pork_with_sweet_40784",
+      "image": "https://www.bbc.co.uk/food/recipes/jerk_pork_with_sweet_40784",
       "description": "",
       "cooktime": 20,
       "preptime": 0,
@@ -336,7 +339,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
           "step": "Drizzle the jerk spiced sauce over the sliced pork",
           "image": ""
         },
-        {"step": "Enjoy", "image": "https://dummyimage.com/100"}
+        {"step": "Enjoy", "image": ""}
       ],
       "additional_ingredients": [
         "Pepper",
@@ -348,8 +351,10 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     },
     {
       "title": "Korean Style Chicken Thigh Tacos with Sesame Slaw",
-      "thumbnail": "https://dummyimage.com/100",
-      "image": "https://dummyimage.com/200",
+      "thumbnail":
+          "https://production-media.gousto.co.uk/cms/mood-image/5369_Korean-Chicken-Thigh-Tacos-with-Sesame-Slaw_001_0-1684414549217-1685433459981-x700.jpg",
+      "image":
+          "https://production-media.gousto.co.uk/cms/mood-image/5369_Korean-Chicken-Thigh-Tacos-with-Sesame-Slaw_001_0-1684414549217-1685433459981-x700.jpg",
       "description": "",
       "cooktime": 25,
       "preptime": 5,
@@ -955,7 +960,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
 
     userId = FirebaseService().getCurrentUserId();
     try {
-      // Step 1: Delete existing waste logs for the user.
+      // selete existing waste logs for the user.
       QuerySnapshot snapshot = await _firestore
           .collection("Users")
           .doc(userId)
@@ -965,53 +970,26 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
         await doc.reference.delete();
       }
 
-      // Step 2: Generate one waste log per day for the last 6 weeks.
+      // add one log per Sunday for the last 6 weeks.
       final random = Random();
       DateTime today = DateTime.now();
-      DateTime startDate = today.subtract(Duration(days: 6 * 7)); // 42 days
 
-      for (int i = 0; i <= 6 * 7; i++) {
-        DateTime currentDate = startDate.add(Duration(days: i));
+      for (int i = 0; i < 6; i++) {
+        DateTime sunday =
+            today.subtract(Duration(days: today.weekday % 7 + (i * 7)));
 
-        // Generate a random log time.
-        DateTime logDate = DateTime(
-          currentDate.year,
-          currentDate.month,
-          currentDate.day,
-          random.nextInt(24),
-          random.nextInt(60),
-          random.nextInt(60),
-        );
+        // set time part to 00:00:00
+        DateTime logDate = DateTime(sunday.year, sunday.month, sunday.day);
+        DateTime weekStart = logDate;
 
-        // Compute start of the week (Sunday).
-        int daysToSubtract = currentDate.weekday % 7;
-        DateTime weekStart = DateTime(
-          currentDate.year,
-          currentDate.month,
-          currentDate.day,
-        ).subtract(Duration(days: daysToSubtract));
-        weekStart = DateTime(weekStart.year, weekStart.month, weekStart.day);
+        // generate waste values
+        double totalWaste = 100 + random.nextDouble() * 150;
+        double composted = totalWaste * (random.nextDouble() * 0.6);
+        double inedible = totalWaste * (random.nextDouble() * 0.3);
 
-        // Generate total waste (max ~250g realistic cap).
-        double totalWaste = 100 + random.nextDouble() * 150; // 100–250g
-
-        // Generate percentages and convert to grams.
-        double compostedPct = random.nextDouble() * 0.6; // up to 60%
-        double inediblePct = random.nextDouble() * 0.3; // up to 30%
-
-        // Ensure composted + inedible ≤ totalWaste
-        double composted = totalWaste * compostedPct;
-        double inedible = totalWaste * inediblePct;
-
-        // Limit to ensure recycled is always ≥ 0
-        if (composted + inedible > totalWaste) {
-          composted = totalWaste * 0.3;
-          inedible = totalWaste * 0.2;
-        }
-
-        // Create a unique ID based on the date.
+        // create a unique id based on the date.
         String wasteId =
-            "waste_${currentDate.year}${currentDate.month.toString().padLeft(2, '0')}${currentDate.day.toString().padLeft(2, '0')}";
+            "waste_${logDate.year}${logDate.month.toString().padLeft(2, '0')}${logDate.day.toString().padLeft(2, '0')}";
 
         await widget.firebaseService.addWasteLog(
           userId: userId,
@@ -1019,8 +997,7 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
           week: weekStart,
           logDate: logDate,
           amount: double.parse(totalWaste.toStringAsFixed(1)),
-          recycled: double.parse(
-              (totalWaste - composted - inedible).toStringAsFixed(1)),
+          recycled: double.parse((totalWaste - composted).toStringAsFixed(1)),
           composted: double.parse(composted.toStringAsFixed(1)),
           inedibleParts: double.parse(inedible.toStringAsFixed(1)),
         );

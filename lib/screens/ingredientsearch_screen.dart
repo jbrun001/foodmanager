@@ -44,29 +44,53 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
   }
 
   void fetchStockItems() async {
-    // String userId = '1'; // For testing
     List<Map<String, dynamic>> stockItems =
         await widget.firebaseService.getStockItems(userId);
 
-// debug
-    print("Fetched stock items from firebase: $stockItems");
+    stockItems.sort((a, b) {
+      final amountA = a['amount'] ?? 0;
+      final amountB = b['amount'] ?? 0;
+      return (amountA as num).compareTo(amountB as num);
+    });
 
     setState(() {
       ingredients = stockItems;
-      filteredIngredients = ingredients;
+      filteredIngredients = List.from(stockItems);
     });
   }
 
   void filterIngredients(String query) {
+    List<Map<String, dynamic>> results;
+
+    if (query.isEmpty) {
+      results = List.from(ingredients);
+    } else {
+      results = ingredients.where((ingredient) {
+        final nameMatch =
+            ingredient['name'].toLowerCase().contains(query.toLowerCase());
+        final typeMatch =
+            ingredient['type'].toLowerCase().contains(query.toLowerCase());
+        return nameMatch || typeMatch;
+      }).toList();
+    }
+    // debug error amount not showing on filter
+    print('Filtering ingredients with query: $query');
+    for (var ing in ingredients) {
+      print('${ing['name']} - amount: ${ing['amount']}, type: ${ing['type']}');
+    }
+    // sort by amount (default to 0 if null)
+    results.sort((a, b) {
+      final amountA = a['amount'] ?? 0;
+      final amountB = b['amount'] ?? 0;
+      return (amountA as num).compareTo(amountB as num);
+    });
+    print('Filtered results:');
+    for (var ing in results) {
+      print('${ing['name']} - amount: ${ing['amount']}');
+    }
+
     setState(() {
-      if (query.isEmpty) {
-        filteredIngredients = ingredients;
-      } else {
-        filteredIngredients = ingredients
-            .where((ingredient) =>
-                ingredient['name'].toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
+      filteredIngredients = results;
     });
   }
 
@@ -161,7 +185,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
             child: TextField(
               controller: searchController,
               decoration: InputDecoration(
-                labelText: 'Search Ingredients',
+                labelText: 'Search ingredient or type (i.e. meat)',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.search),
               ),
@@ -263,12 +287,22 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
   void filterIngredients(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredIngredients = availableIngredients;
+        filteredIngredients = List.from(availableIngredients);
       } else {
-        filteredIngredients = availableIngredients
-            .where((ingredient) =>
-                ingredient['name'].toLowerCase().contains(query.toLowerCase()))
-            .toList();
+        filteredIngredients = availableIngredients.where((ingredient) {
+          final nameMatch =
+              ingredient['name'].toLowerCase().contains(query.toLowerCase());
+          final typeMatch =
+              ingredient['type'].toLowerCase().contains(query.toLowerCase());
+          return nameMatch || typeMatch;
+        }).toList();
+
+        // Safely sort by amount (default to 0 if missing)
+        filteredIngredients.sort((a, b) {
+          final amountA = a['amount'] ?? 0;
+          final amountB = b['amount'] ?? 0;
+          return (amountA as num).compareTo(amountB as num);
+        });
       }
     });
   }
@@ -303,7 +337,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
             child: TextField(
               controller: searchController,
               decoration: InputDecoration(
-                labelText: 'Search Ingredients',
+                labelText: 'Search ingredient or type (i.e. meat)',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.search),
               ),
