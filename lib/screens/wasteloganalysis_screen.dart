@@ -277,6 +277,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           final latestWeekLabel = weekStart.toIso8601String().split('T')[0];
           final double totalWaste =
               weeklyStats[latestWeekLabel]?['totalWaste'] ?? 0.0;
+          final entries = weeklyStats.entries.toList();
 
           return SingleChildScrollView(
             child: Padding(
@@ -311,18 +312,13 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                       borderData: FlBorderData(
                         show: false, // no borders around the chart
                       ),
-                      barGroups:
-                          weeklyStats.entries.toList().reversed.map((entry) {
-                        final index =
-                            weeklyStats.keys.toList().indexOf(entry.key);
+                      barGroups: entries.asMap().entries.map((e) {
+                        final index = e.key;
+                        final entry = e.value;
 
-                        final total =
-                            (entry.value['totalWaste'] as double?) ?? 0.0;
-                        final composted =
-                            (entry.value['totalComposted'] as double?) ?? 0.0;
-                        final inedible =
-                            (entry.value['totalInedible'] as double?) ?? 0.0;
-                        final recycled = total - (composted + inedible);
+                        final total = entry.value['totalWaste'] ?? 0.0;
+                        final composted = entry.value['totalComposted'] ?? 0.0;
+                        final recycled = entry.value['totalRecycled'] ?? 0.0;
 
                         if (total == 0) {
                           return BarChartGroupData(x: index, barRods: []);
@@ -339,7 +335,8 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                                     recycled + composted, Colors.green),
                               ],
                               width: 22,
-                              borderRadius: BorderRadius.zero, // flat top
+                              borderRadius:
+                                  BorderRadius.zero, // stop bars being rounded
                             ),
                           ],
                         );
@@ -362,15 +359,13 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                             showTitles: true,
                             getTitlesWidget: (double value, TitleMeta meta) {
                               int index = value.toInt();
-                              List<String> labels =
-                                  weeklyStats.keys.toList().reversed.toList();
-                              if (index >= 0 && index < labels.length) {
-                                final isoDate = labels[index];
+                              final entries = weeklyStats.entries.toList();
+                              if (index >= 0 && index < entries.length) {
+                                final isoDate = entries[index].key;
                                 final date = DateTime.tryParse(isoDate);
-                                final label = date != null
+                                return Text(date != null
                                     ? DateFormat.MMMd().format(date)
-                                    : '';
-                                return Text(label);
+                                    : '');
                               }
                               return const Text('');
                             },

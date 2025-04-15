@@ -115,7 +115,7 @@ class WasteSummary_Card extends StatelessWidget {
             const SizedBox(height: 12),
             // Explanatory text (full width)
             Text(
-              "This week ${totalWaste.toStringAsFixed(1)}g out of ${totalBought.toStringAsFixed(1)}g bought.",
+              "This week ${totalWaste.toStringAsFixed(1)}g food was wasted vs ${totalBought.toStringAsFixed(1)}g food bought",
               style: const TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 8),
