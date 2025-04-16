@@ -1,0 +1,147 @@
+[
+    {
+      "title": "Fiery Jerk-Spiced Pork & Potato Mash",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "Description.",
+      "cooktime":   20,
+      "preptime":   0,
+      "calories":   650,
+      "portions":   4,
+      "cusine":     "Caribbean",
+      "category":   "Main Course",
+      "keywords":   "Jerk, Spicy, Pork, Caribbean, Mashed potatoes",
+      "ingredients": [
+        {
+            "ingredient_id": 17,
+            "ingredient_name": "Pork Loin Steak",
+            "amount": 600,
+            "unit": "g"
+          },
+          {
+            "ingredient_id": 18,
+            "ingredient_name": "Carrot & Cabbage Slaw Mix",
+            "amount": 320,
+            "unit": "g"
+          },
+          {
+            "ingredient_id": 19,
+            "ingredient_name": "Chicken Stock Mix",
+            "amount": 11,
+            "unit": "g"
+          },
+          {
+            "ingredient_id": 20,
+            "ingredient_name": "Jerk Paste",
+            "amount": 48,
+            "unit": "g"
+          },
+          {
+            "ingredient_id": 21,
+            "ingredient_name": "Mayonnaise",
+            "amount": 60,
+            "unit": "ml"
+          },
+          {
+            "ingredient_id": 22,
+            "ingredient_name": "Sweet Potatoes",
+            "amount": 4,
+            "unit": "pcs"
+          },
+          {
+            "ingredient_id": 23,
+            "ingredient_name": "White Wine Vinegar",
+            "amount": 30,
+            "unit": "ml"
+          },
+          {
+            "ingredient_id": 24,
+            "ingredient_name": "Flour",
+            "amount": 4,
+            "unit": "tsp"
+          },
+          {
+            "ingredient_id": 25,
+            "ingredient_name": "Boiled Water",
+            "amount": 250,
+            "unit": "ml"
+          }
+      ],
+      "method": [
+        {
+          "step": "Before you start cooking, take your pork steak out of the bridge open the packet and let it ajust to room temperture, then boil a kettle", "image": ""
+        },
+        {
+          "step": "Peel and chop yout sweet potato(es) into bite size pieces", "image": ""
+        },
+        {
+          "step": "Add the chopped sweet potato to a pot of boiled water over a heigh hear and bring to the boil", "image": ""
+        },
+        {
+          "step": "Cook for 10-12 minutes  or until fork tender",
+          "image": "https://dummyimage.com/100"
+        },
+        {
+          "step": "Add your pork loin steak(s) to a bowl with hald your jerk paste, half your white wine vinegar and half your flour", "image": ""
+        },
+        {
+          "step": "Add a pinch of salt and pepper and give everything a good mix up. This is your jerk spiced pork",
+          "image": "https://dummyimage.com/100"
+        },
+        {
+          "step": "Heat a large, wide based pan over a heigh hear wuth a small drizzle of vegetable oil", "image": ""
+        },
+        {
+          "step": "Once hot, add the jerk spiced pork and cook for 5-6 minutes  on each side or until slightly charred and cooked through",
+          "image": "https://dummyimage.com/100"
+        },
+        {
+          "step": "While the pork is cooking reboil half a kettle combine your carrot & cabbage slaw mix with your mayo and the remaining white wine vinegar", "image": ""
+        },
+        {
+          "step": "Add a pinch of salt and pepper and give everything a good mix up. This is your slaw", "image": ""
+        },
+        {
+          "step": "Dissolve your Checken stock mix in your boiled water with the remaining jerk paste a ounch of suger and a generous pinch of salt and papper. this is your jerk spiced stock",
+          "image": "https://dummyimage.com/100"
+        },
+        {
+          "step": "Once the potatoes are tender, drain, return them to the pot", "image": ""
+        },
+        {
+          "step": "Add a slamm knob of butter and a pinch of salt to the potatoes and mash them untill smooth. this is your sweet potatoe mash", "image": ""
+        },
+        {
+          "step": "Cover with a lit to keep warm untill serving",
+          "image": "https://dummyimage.com/100"
+        },
+        {
+          "step": "Once the pork is done, transfer the coocked steak to a clean chopping board (Reserve the pan) and leave to rest for 2 minutes ", "image": ""
+        },
+        {
+          "step": "Return the reserved pan to medium heat with the remaining flour and stir for 30 secs", "image": ""
+        },
+        {
+          "step": "Gradually stir the jerk spiced stock and cook for 2 minutes  until a smooth, thick sauce remains.  This is your jerk spiced sauce", "image": ""
+        },
+        {
+          "step": "(Scrape any bits from the bottom of the pan as it will add flavour to the sauce)",
+          "image": "https://dummyimage.com/100"
+        },
+        {
+          "step": "Slice the rested pork", "image": ""
+        },
+        {
+          "step": "Serve the sliced pork with the sweet potato mash and slaw to the side", "image": ""
+        },
+        {
+          "step": "Drizzle the jerk spiced sauce over the sliced pork", "image": ""
+        },
+        {
+          "step": "Enjoy",
+          "image": "https://dummyimage.com/100"
+        }
+      ],
+      "additional_ingredients": ["Pepper", "Salt", "Suger", "Vegetable Oil", "Butter"]
+    }
+  ]

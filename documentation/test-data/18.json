@@ -1,0 +1,163 @@
+[
+    {
+      "title": "Ras El Hanout Basa & Saffron Giant Couscous Stew",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   10,
+      "preptime":   10,
+      "calories":   391,
+      "portions":   4,
+      "cusine":     "North African",
+      "category":   "Main Course",
+      "keywords":   "Ras el hanout, Basa, Saffron, Couscous, Stew, North African, Spiced fish",
+      "ingredients": [
+        {
+          "ingredient_id": 112,
+          "ingredient_name": "Basa Fillet",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 113,
+          "ingredient_name": "Courgette",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 114,
+          "ingredient_name": "Finely Chopped Tomatoes",
+          "amount": 400,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 115,
+          "ingredient_name": "Giant Couscous",
+          "amount": 150,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 116,
+          "ingredient_name": "Ground Sumac",
+          "amount": 2,
+          "unit": "tbsp"
+        },
+        {
+          "ingredient_id": 117,
+          "ingredient_name": "Natural Yogurt",
+          "amount": 160,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 118,
+          "ingredient_name": "Ras el Hanout",
+          "amount": 1,
+          "unit": "tbsp"
+        },
+        {
+          "ingredient_id": 78,
+          "ingredient_name": "Roasted Garlic Paste",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 119,
+          "ingredient_name": "Saffron",
+          "amount": 1,
+          "unit": "pkt"
+        },
+        {
+          "ingredient_id": 120,
+          "ingredient_name": "Sultanas",
+          "amount": 60,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 79,
+          "ingredient_name": "Tomato Paste",
+          "amount": 63,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 110,
+          "ingredient_name": "Vegetable Stock Mix",
+          "amount": 22,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 25,
+          "ingredient_name": "Boiled Water",
+          "amount": 350,
+          "unit": "ml"
+        }     
+      ],
+      "method": [
+        {
+          "step": "Before you begin ", "image": ""
+        },
+        {
+          "step": "Get all your ingredients and equipment ready ", "image": ""
+        },
+        {
+          "step": "Skim though these steps then wash your fruit and vegetables", "image": ""
+        },
+        {
+          "step": "(Equipment and pan sizes vary, make sure you cook food thoroughly (even if it takes you a little longer than 10 minutes)", 
+          "image": ""
+        },
+        {
+          "step": "Now let’s get started", "image": ""
+        },
+        {
+          "step": "Boil a kettle and heat a large wide based pan with a drizzle olive oil over a heigh heat ", "image": ""
+        },
+        {
+          "step": "Top, tail and chop your corvette(s) in half lengthways, then slice on the diagonal", "image": ""
+        },
+        {
+          "step": "Once hot, add the sliced corvette and cook for 2 minutes or until slight browned", 
+          "image": ""
+        },
+        {
+          "step": "Add your giant couscous and saffron to a pot of boiled water with a pinch of salt and bring to the boil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Cook the giant couscous for 8 minutes or until tender with a slight bite then drain and return to the pot. This is your saffron giant couscous ", 
+          "image": ""
+        },
+        {
+          "step": "Re boil half a kettle", 
+          "image": ""
+        },
+        {
+          "step": "Once the courgette is slightly browned, add your rase l hanout and roasted garlic paste and cook for 30 secs or until fragrant", 
+          "image": ""
+        },
+        {
+          "step": "Once fragrant, add you tomato paste with you chopped tomatoes and sultanas ", "image": ""
+        },
+        {
+          "step": "Add your vegetable stock mix and your boiled water with a generous pinch of salt and pepper ", "image": ""
+        },
+        {
+          "step": "Top with your basa fillet(s) and cook for 5 minutes, turning once half way or until the fish is cooked through and the sauce has thickened. This is your rase l hanout basa stew", 
+          "image": ""
+        },
+        {
+          "step": "Once everything is ready, add the saffron giant couscous to the stew and gently stir it all together, this is your ras el hanout basa * saffron giant couscous stew", 
+          "image": ""
+        },
+        {
+          "step": "Serve the ras el hanout basa * saffron giant couscous stew and drizzle over with your yogurt", "image": ""
+        },
+        {
+          "step": "Garnish with your ground turmeric", "image": ""
+        },
+        {
+          "step": "Enjoy", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Pepper", "Salt", "Olive Oil", "Water"]
+    }
+  ]

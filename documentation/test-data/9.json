@@ -1,0 +1,148 @@
+[
+    {
+      "title": "Crispy Pork & Corn Birria-Inspired Ramen",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   10,
+      "preptime":   10,
+      "calories":   693,
+      "portions":   4,
+      "cusine":     "Mexican Fusion",
+      "category":   "Main Course",
+      "keywords":   "Birria, Ramen, Pork, Crispy, Corn, Fusion, Mexican",
+      "ingredients": [
+        {
+          "ingredient_id": 70,
+          "ingredient_name": "Pork Mince",
+          "amount": 500,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 71,
+          "ingredient_name": "Beef Stock Mix",
+          "amount": 22,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 72,
+          "ingredient_name": "Canned Sweetcorn",
+          "amount": 300,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 73,
+          "ingredient_name": "Cheddar Cheese",
+          "amount": 80,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 74,
+          "ingredient_name": "Chipotle Paste",
+          "amount": 40,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 75,
+          "ingredient_name": "Fine Egg Noodle Nest",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 8,
+          "ingredient_name": "Ground Coriander",
+          "amount": 2,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 10,
+          "ingredient_name": "Ground Smoked Paprika",
+          "amount": 4,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 78,
+          "ingredient_name": "Roasted Garlic Paste",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 15,
+          "ingredient_name": "Spring Onion",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 79,
+          "ingredient_name": "Tomato Paste",
+          "amount": 64,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 25,
+          "ingredient_name": "Boiled Water",
+          "amount": 1300,
+          "unit": "ml"
+        }
+      ],
+      "method": [
+        {
+          "step": "Get all your ingredients and equipment ready", "image": ""
+        },
+        {
+          "step": "Skim though these steps, then wash your fruit and vegetables", "image": ""
+        },
+        {
+          "step": "(Equipment and pan sizes vary, make sure you cook food thoroughly (even if it takes you a little longer than 10 minutes)", 
+          "image": ""
+        },
+        {
+          "step": "Boil a kettle", "image": ""
+        },
+        {
+          "step": "Heat a large, wide based pan, with a drizzle of vegetable oil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Once hot, add your pork mince and cook for 3-4 minutes or until beginning to brown, breaking it up into very small pieces with a wooden spoon as you go", 
+          "image": ""
+        },
+        {
+          "step": "While the pork is cooking trim, then slice your spring onion(s)", "image": ""
+        },
+        {
+          "step": "Great your cheddar cheese finely", "image": ""
+        },
+        {
+          "step": "Drain your sweetcorn", 
+          "image": ""
+        },
+        {
+          "step": "Once the pork is beginning to brown add half your smoked paprika with 2tsp sugar and a pinch of salt to the pan", "image": ""
+        },
+        {
+          "step": "Cook for 4-5 minutes further or until cooked though and crispy. This is your crispy pork", 
+          "image": ""
+        },
+        {
+          "step": "Meanwhile, heat a large wide based pan with a drizzle of vegetable oil over medium heat", "image": ""
+        },
+        {
+          "step": "Add your tomato paste with your ground coriander and remaining smoked paprika and cook for 1 min or until fragrant ", "image": ""
+        },
+        {
+          "step": "Add your boiled water with your fine egg noodles and drained sweetcorn", "image": ""
+        },
+        {
+          "step": "Bring to the boil over a heigh heat and cook for 1-2 minutes or until the noodles are tender. This is your corn birria inspired ramen", "image": ""
+        },
+        {
+          "step": "Serve the corn birria inspired ramen topped with the crispy pork, grated cheddar and sliced spring onion. This is your crispy pork & corn birria inspired ramen ", "image": ""
+        },
+        {
+          "step": "Enjoy", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Salt", "Sugar", "Vegetable Oil", "Water"]
+    }
+  ]

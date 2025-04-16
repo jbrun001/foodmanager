@@ -1,0 +1,167 @@
+[
+    {
+      "title": "Indonesian-Style Chicken Thigh Rendang with Green Bead Rice",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   30,
+      "preptime":   0,
+      "calories":   616,
+      "portions":   4,
+      "cusine":     "Indonesian",
+      "category":   "Main Course",
+      "keywords":   "Rendang, Chicken thigh, Indonesian, Green bean rice, Spicy, Coconut",
+      "ingredients": [
+        {
+          "ingredient_id": 26,
+          "ingredient_name": "Diced Chicken Thigh",
+          "amount": 500,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 88,
+          "ingredient_name": "Cardamom Pods",
+          "amount": 6,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 19,
+          "ingredient_name": "Chicken Stock Mix",
+          "amount": 22,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 6,
+          "ingredient_name": "Chilli Flakes",
+          "amount": 1,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 89,
+          "ingredient_name": "Dried Lime Leaf",
+          "amount": 1,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 90,
+          "ingredient_name": "Fine Green Beans",
+          "amount": 320,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 91,
+          "ingredient_name": "Fish Sauce",
+          "amount": 16,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 66,
+          "ingredient_name": "Lemongrass Stalks",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 7,
+          "ingredient_name": "Garlic Clove",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 92,
+          "ingredient_name": "Ginger Paste",
+          "amount": 15,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 97,
+          "ingredient_name": "Ground Cinnamon",
+          "amount": 0.5,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 59,
+          "ingredient_name": "Shallot",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 60,
+          "ingredient_name": "Solid Creamed Coconut",
+          "amount": 100,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 40,
+          "ingredient_name": "White Basmati Rice",
+          "amount": 260,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 16,
+          "ingredient_name": "Sugar",
+          "amount": 2,
+          "unit": "tsp"
+        }
+      ],
+      "method": [
+        {
+          "step": "Before you start cooking, take your chicken out of the bridge, open the packet and let it air", "image": ""
+        },
+        {
+          "step": "Boil a full kettle", "image": ""
+        },
+        {
+          "step": "Trim, then cut your green beans in half", "image": ""
+        },
+        {
+          "step": "Bash your lemongrass with a rolling pin, cut down the middle lengthways, remove the tough out layers and set aside for later, then roughly chop the softer inner cores(s)", 
+          "image": ""
+        },
+        {
+          "step": "Add your basmati rice and your cold water and the touch outer lemongrass layers to a pot with a lid and bring to the boil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Once boiling, reduce the heat to low and add the chopped green beans", "image": ""
+        },
+        {
+          "step": "Cook covered for 10-12 minutes or until all the water has been absorbed and the rice and green beans are cooked", "image": ""
+        },
+        {
+          "step": "Once done, remove from heat and keep covered until serving. This is your green been rice", 
+          "image": ""
+        },
+        {
+          "step": "While the rice and beans are cooking peel ad quarter your shallot ", "image": ""
+        },
+        {
+          "step": "Crush your cardamon pods open by squashing them with the side of a knife and discard the outer green skins", 
+          "image": ""
+        },
+        {
+          "step": "Add your cardamon seeds, soft inner core of the lemon grass and chopped shallot to a food processor with your crushed garlic and ginger paste", "image": ""
+        },
+        {
+          "step": "Add half your chilli flakes with your ground cinnamon and your sugar and blitz until smooth.  This is your rendang paste", "image": ""
+        },
+        {
+          "step": "Heat a large, wide based pan with a drizzle of vegetable oil over a medium heigh heat", "image": ""
+        },
+        {
+          "step": "Once hot, add your diced chicken thigh and cook for a further 6 minutes or until your chicken stock mix and fish sauce.  This is your coconut stock", 
+          "image": ""
+        },
+        {
+          "step": "Once the chicken this are browed, add the coconut stock and cook for a further 10-12 minutes or until the chicken is cooked through and the sauce is thickened.  This is your Indonesian style chicken Thai rendang ", "image": ""
+        },
+        {
+          "step": "Fluff the green bean rice with a fork serve the Indonesian style chicken Thai rendang over the green bean rice and garnish with your remaining chilli flakes ", 
+          "image": ""
+        },
+        {
+          "step": "Enjoy ", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Salt", "Vegetable Oil", "Water", "Sugar"]
+    }
+  ]

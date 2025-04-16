@@ -1,0 +1,117 @@
+[
+    {
+      "title": "Shredded Hoisin Chicken Wraps",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   20,
+      "preptime":   10,
+      "calories":   551,
+      "portions":   4,
+      "cusine":     "Chinese Fusion",
+      "category":   "Main Course",
+      "keywords":   "Hoisin, Chicken, Wraps, Chinese-style, Shredded, Fusion, Savory",
+      "ingredients": [
+        {
+          "ingredient_id": 56,
+          "ingredient_name": "Chicken Breast Portion",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 111,
+          "ingredient_name": "Cucumber",
+          "amount": 1,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 35,
+          "ingredient_name": "Gem Lettuce",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 83,
+          "ingredient_name": "Hoisin Sauce",
+          "amount": 80,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 12,
+          "ingredient_name": "Tortillas",
+          "amount": 6,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 39,
+          "ingredient_name": "Soy Sauce",
+          "amount": 30,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 15,
+          "ingredient_name": "Spring Onion",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 33,
+          "ingredient_name": "Toasted Sesame Seeds",
+          "amount": 10,
+          "unit": "g"
+        }        
+      ],
+      "method": [
+        {
+          "step": "Before you start cooking, take your chicken out of the fridge. Open the packet and let it air", "image": ""
+        },
+        {
+          "step": "Heat a large wide based pan over a medium heigh heat", 
+          "image": ""
+        },
+        {
+          "step": "Once hot add your chicken breast portion(s) and cook for 3 min on each side or until golden", "image": ""
+        },
+        {
+          "step": "Add a couple of splashes of water to the pan and cover with a lid then cook for a further 12-15 minutes or until the chicken is cooked though", 
+          "image": ""
+        },
+        {
+          "step": "Whilst the chicken is cooking, slice your cucumber into discs ", "image": ""
+        },
+        {
+          "step": "Slice each individual cucumber disc into matchsticks", "image": ""
+        },
+        {
+          "step": "Stim and slice your spring onions(s) lengthways int think strips", 
+          "image": ""
+        },
+        {
+          "step": "Add your tortilla to a plate and pop in microwave for 20 seconds on heigh or until warmed though", 
+          "image": ""
+        },
+        {
+          "step": "Once the chicken is cooked transfer it to a clean board and spread it apart, using two forks, this technique is known as pulling, this is your shredded chicken", 
+          "image": ""
+        },
+        {
+          "step": "Return the shredded chicken to the pan with your hoisin sauce and your soy sauce and cook for 2 min or until warmed though this is your shredded hoisin chicken", "image": ""
+        },
+        {
+          "step": "Wash your gum lettuce, pat it dry with kitchen paper and finely shred", 
+          "image": ""
+        },
+        {
+          "step": "Assemble the wraps by dividing the shredded lettuce, spring onion strips cucumber match sticks and shredded hoisin chicken between the warmed tortillas", "image": ""
+        },
+        {
+          "step": "Garnish with your toasted sesame seeds", 
+          "image": ""
+        },
+        {
+          "step": "Enjoy", "image": ""
+        }
+      ],
+      "additional_ingredients": []
+    }
+  ]

@@ -1,0 +1,178 @@
+[
+    {
+      "title": "Beetroot Hummus & Roast Veg Buddha Bowl (V)",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   30,
+      "preptime":   5,
+      "calories":   426,
+      "portions":   4,
+      "cusine":     "Middle Eastern Fusion",
+      "category":   "Main Course",
+      "keywords":   "Beetroot hummus, Roasted vegetables, Buddha bowl, Vegetarian, Middle Eastern, Plant-based",
+      "ingredients": [
+        {
+          "ingredient_id": 123,
+          "ingredient_name": "Bulgur Wheat",
+          "amount": 150,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 105,
+          "ingredient_name": "Butternut Squash Cubes",
+          "amount": 320,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 124,
+          "ingredient_name": "Chickpeas",
+          "amount": 780,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 125,
+          "ingredient_name": "Cooked Beetroot",
+          "amount": 500,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 7,
+          "ingredient_name": "Garlic Clove",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 126,
+          "ingredient_name": "Ground Cumin",
+          "amount": 2,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 127,
+          "ingredient_name": "Lemon",
+          "amount": 1,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 128,
+          "ingredient_name": "Nigella Seeds",
+          "amount": 2,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 129,
+          "ingredient_name": "Rocket",
+          "amount": 100,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 130,
+          "ingredient_name": "Tahini",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 76,
+          "ingredient_name": "Tenderstem Broccoli",
+          "amount": 320,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 41,
+          "ingredient_name": "Cold Water",
+          "amount": 2,
+          "unit": "tbsp"
+        },
+        {
+          "ingredient_id": 135,
+          "ingredient_name": "Olive Oil",
+          "amount": 10,
+          "unit": "tbsp"
+        }
+      ],
+      "method": [
+        {
+          "step": "Preheat the oven to 200C / 180C (fan) / gas 6 and boil a kettle", "image": ""
+        },
+        {
+          "step": "Seperate your Olive Oil into 2/10, 2/10, 2/10, 4/10", "image": ""
+        },
+        {
+          "step": "Drain your beetroot in a colander over the sink", "image": ""
+        },
+        {
+          "step": "Chop the drained into wedges", 
+          "image": ""
+        },
+        {
+          "step": "Add your butternut squash cubes, garlic and half of the beetroot wedges to a baking tray", "image": ""
+        },
+        {
+          "step": "Drizzle with olive oil and season with a pinch of salt", "image": ""
+        },
+        {
+          "step": "Put the tray(s) in the oven for an initial 10-15 minutes", 
+          "image": ""
+        },
+        {
+          "step": "While the veg is roasting, add your bulgur wheat to a pot with plenty of boiled water and a pinch of salt", "image": ""
+        },
+        {
+          "step": "Bring to the boil over a heigh heat and cook for 7-9 minutes or until tender with a slight bite", "image": ""
+        },
+        {
+          "step": "Once cooked, drain and return to the pot", 
+          "image": ""
+        },
+        {
+          "step": "Meanwhile, drain and rinse your chickpeas ", "image": ""
+        },
+        {
+          "step": "Cut your lemon(s) into quarters", 
+          "image": ""
+        },
+        {
+          "step": "Add the remaining beetroot wedges into the food processor with half the drained chickpeas, your tahini and a squeeze of lemon juice ", "image": ""
+        },
+        {
+          "step": "Add 2/10 of your origional olive oil, your cold water and a generous pinch of salt and blitz smooth.  This is your beetroot hummus", 
+          "image": ""
+        },
+        {
+          "step": "After an initial 10-15 minutes, add the remaining chickpeas to the tray(s) with the vegetables, sprinkle over your ground cumin, then drizzle with 2/10 of your origional left over olive oil and give it a good mix up ", "image": ""
+        },
+        {
+          "step": "Add your tenderstem broccoli to the tray(s) drizzle with the 2/10 of your origional olive oil and pinch of salt", "image": ""
+        },
+        {
+          "step": "Return the trays to the oven for a further 10-15 minutes or until everything is cooked through and golden", 
+          "image": ""
+        },
+        {
+          "step": "Meanwhile, add a small squeeze of lemon juice the remaining olive oil and a pinch of salt and pepper to a small bowl and stir it all together", "image": ""
+        },
+        {
+          "step": "Once the vegetables are cooked, squeeze the roasted garlic from its skin into the bowl and discard the skin", "image": ""
+        },
+        {
+          "step": "Mash the roasted garlic with a fork and whisk it to the dressing whisk is your roasted garlic dressing ", "image": ""
+        },
+        {
+          "step": "Wash your salad then pat it dry with kitchen paper",
+          "image": ""
+        },
+        {
+          "step": "Serve the beetroot hummus with the bulgur wheat salad and roasted veg to the side", "image": ""
+        },
+        {
+          "step": "Drizzle the roasted garlic dressing all over and garnish with the remaining lemon wedges", "image": ""
+        },
+        {
+          "step": "Garnish with your nigella seeds and enjoy", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Olive Oil", "Salt", "Water", "Pepper"]
+    }
+  ]

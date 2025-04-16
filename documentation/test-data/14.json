@@ -1,0 +1,163 @@
+[
+    {
+      "title": "Malaysian Hot & Sour Sea Bass with Lemongrass Rice",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   25,
+      "preptime":   5,
+      "calories":   487,
+      "portions":   4,
+      "cusine":     "Malaysian",
+      "category":   "Main Course",
+      "keywords":   "Malaysian, Sea bass, Hot and sour, Lemongrass, Rice, Spicy, Fish",
+      "ingredients": [
+        {
+          "ingredient_id": 50,
+          "ingredient_name": "Coriander",
+          "amount": 10,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 97,
+          "ingredient_name": "Crispy Onions",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 66,
+          "ingredient_name": "Lemongrass Stalks",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 92,
+          "ingredient_name": "Ginger Paste",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 98,
+          "ingredient_name": "Mangetout",
+          "amount": 160,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 99,
+          "ingredient_name": "Sambal Oelek",
+          "amount": 40,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 100,
+          "ingredient_name": "Sea Bass Fillet",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 62,
+          "ingredient_name": "Sugar Snap Peas",
+          "amount": 160,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 69,
+          "ingredient_name": "Tamarind Paste",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 101,
+          "ingredient_name": "Tomato",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 40,
+          "ingredient_name": "White Basmati Rice",
+          "amount": 260,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 41,
+          "ingredient_name": "Cold Water",
+          "amount": 600,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 16,
+          "ingredient_name": "Sugar",
+          "amount": 2,
+          "unit": "tbsp"
+        }
+      ],
+      "method": [
+        {
+          "step": "Bash your lemon grass with a rolling pin", "image": ""
+        },
+        {
+          "step": "Remove the tough layers of your lemongrass and set aside for later", "image": ""
+        },
+        {
+          "step": "Chop the softer core(s) finely", 
+          "image": ""
+        },
+        {
+          "step": "Add your basmati rice, outer lemongrass layers and your cold water to a pot with a lit and bring to the boil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Once boiling reduce the heat to verry low and cook, covered for 10-12 minutes or until all the water has been absorbed and the rice is cooked.  This is your lemongrass rice", 
+          "image": ""
+        },
+        {
+          "step": "Score the skin off your sea bass fillet(s) 3 or 4 times on the diagonal (be careful not to slice all the way through) ", "image": ""
+        },
+        {
+          "step": "Season both sides with a pinch of salt and pepper ", "image": ""
+        },
+        {
+          "step": "Heat a large wide based pan with a drizzle of vegetable oil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Once hot, add your sea bass fillet(s), skin side down and cook for 5 minutes, then flip the sea bass and cook for 1 minute further or until cooked though", "image": ""
+        },
+        {
+          "step": "Set aside and reserve the pan", 
+          "image": ""
+        },
+        {
+          "step": "Meanwhile, chop your tomato(es) into wedges", "image": ""
+        },
+        {
+          "step": "Return the reserved pan to a medium heigh hear with a drizzle of vegetable oil", "image": ""
+        },
+        {
+          "step": "Once hot, add the chopped lemongrass and tomato wedges to the pan and cook for 2-3 minutes or until fragrant", "image": ""
+        },
+        {
+          "step": "Once fragrant add your sambal oelek, tamarind paste, ginger paste and your sugar with a splash of water", "image": ""
+        },
+        {
+          "step": "Cook for 1-2 minutes or until the vegetables are hot and tender but with a slight crunch", "image": ""
+        },
+        {
+          "step": "Chop your coriander finely, including the stalks", 
+          "image": ""
+        },
+        {
+          "step": "Serve your cooked sea bass with lemongrass rice to the side ", "image": ""
+        },
+        {
+          "step": "Spoon your cooked sea bass with the lemongrass rice to the side", "image": ""
+        },
+        {
+          "step": "Garnish with the chopped coriander and your crispy onions ", "image": ""
+        },
+        {
+          "step": "Enjoy ", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Pepper", "Salt", "Sugar", "Vegetable Oil", "Water"]
+    }
+  ]

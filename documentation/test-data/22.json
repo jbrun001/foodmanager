@@ -1,0 +1,163 @@
+[
+    {
+      "title": "Warming Chicken Thigh & Ginger Ramen",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   25,
+      "preptime":   5,
+      "calories":   409,
+      "portions":   4,
+      "cusine":     "Japanese",
+      "category":   "Main Course",
+      "keywords":   "Ramen, Chicken thigh, Ginger, Japanese, Noodle soup, Comfort food",
+      "ingredients": [
+        {
+          "ingredient_id": 26,
+          "ingredient_name": "Diced Chicken Thigh",
+          "amount": 500,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 131,
+          "ingredient_name": "Chinese Rice Wine",
+          "amount": 30,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 132,
+          "ingredient_name": "Chestnut Mushrooms",
+          "amount": 160,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 19,
+          "ingredient_name": "Chicken Stock Mix",
+          "amount": 22,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 6,
+          "ingredient_name": "Chilli Flakes",
+          "amount": 1,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 58,
+          "ingredient_name": "Fresh Root Ginger",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 98,
+          "ingredient_name": "Mangetout",
+          "amount": 160,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 30,
+          "ingredient_name": "Rice Vinegar",
+          "amount": 60,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 39,
+          "ingredient_name": "Soy Sauce",
+          "amount": 60,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 15,
+          "ingredient_name": "Spring Onion",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 133,
+          "ingredient_name": "Star Anise",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 134,
+          "ingredient_name": "Whole Wheat Noodle Nest",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 25,
+          "ingredient_name": "Boiled Water",
+          "amount": 2000,
+          "unit": "ml"
+        }        
+      ],
+      "method": [
+        {
+          "step": "Before you start cooking, take your chicken out of the fridge and open the packet and let it air", "image": ""
+        },
+        {
+          "step": "Boil a full kettle", 
+          "image": ""
+        },
+        {
+          "step": "Trim, then spice your spring onion(s) finely, separating the whites and green parts", "image": ""
+        },
+        {
+          "step": "Peel (scrape of the skin with a teaspoon) and finely chop (or grate) your ginger ", "image": ""
+        },
+        {
+          "step": "Chop your mangetout into bite size pieces", "image": ""
+        },
+        {
+          "step": "Slice your chestnut mushrooms finely", 
+          "image": ""
+        },
+        {
+          "step": "Heat a large pot with a drizzle of vegetable oil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Once hot, add the chopped ginger, star anise and chilli flakes and cook for 1 minute, stirring constantly, or until fragrant and sizzling ", "image": ""
+        },
+        {
+          "step": "Once fragrant, add your died chicken thigh and sliced mushrooms and cook for 4-5 minutes or until lightly browned", 
+          "image": ""
+        },
+        {
+          "step": "Add your Chinese rice wine and rice vinegar to the pot and cook for 30 secs or until evaporated", "image": ""
+        },
+        {
+          "step": "Add your boiled water sprinkle in your chicken stock mix and whisk thoroughly to combine", "image": ""
+        },
+        {
+          "step": "Bring to the boil and once boiling reduce the heat to medium heigh", 
+          "image": ""
+        },
+        {
+          "step": "Add your wholewheat noodles to the pot and cook for 4-5 minutes or until neatly cooked but with a slight bite", "image": ""
+        },
+        {
+          "step": "(The noodles will continue cooking to aim for a ‘al dente’ at this point)", 
+          "image": ""
+        },
+        {
+          "step": "Add your soy sauce and sliced onion whites", 
+          "image": ""
+        },
+        {
+          "step": "Add your chopped mangetout and cook for a final 2 minutes or until the noodles are tender and the chicken is cooked though.  This is your warming chicken & ginger ramen", 
+          "image": ""
+        },
+        {
+          "step": "Serve the warming chicken & ginger ramen in bowls", "image": ""
+        },
+        {
+          "step": "Garnish with the sliced onion greens and discard the star anise", "image": ""
+        },
+        {
+          "step": "Enjoy", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Vegetable Oil","Water"]
+    }
+  ]

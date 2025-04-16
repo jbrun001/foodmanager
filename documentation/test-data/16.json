@@ -1,0 +1,190 @@
+[
+    {
+      "title": "Baked Butternut Squash Biryani (V)",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   25,
+      "preptime":   5,
+      "calories":   451,
+      "portions":   4,
+      "cusine":     "Indian",
+      "category":   "Main Course",
+      "keywords":   "Biryani, Butternut squash, Baked, Indian, Spiced rice, Vegetarian",
+      "ingredients": [
+        {
+          "ingredient_id": 105,
+          "ingredient_name": "Butternut Squash Cubes",
+          "amount": 320,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 88,
+          "ingredient_name": "Cardamom Pods",
+          "amount": 6,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 50,
+          "ingredient_name": "Coriander",
+          "amount": 20,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 97,
+          "ingredient_name": "Crispy Onions",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 106,
+          "ingredient_name": "Curry Powder",
+          "amount": 2,
+          "unit": "tbsp"
+        },
+        {
+          "ingredient_id": 107,
+          "ingredient_name": "Dried Bayleaf",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 58,
+          "ingredient_name": "Fresh Root Ginger",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 7,
+          "ingredient_name": "Garlic Clove",
+          "amount": 6,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 108,
+          "ingredient_name": "Green Chilli",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 109,
+          "ingredient_name": "Ground Turmeric",
+          "amount": 1,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 60,
+          "ingredient_name": "Solid Creamed Coconut",
+          "amount": 50,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 101,
+          "ingredient_name": "Tomato",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 110,
+          "ingredient_name": "Vegetable Stock Mix",
+          "amount": 22,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 40,
+          "ingredient_name": "White Basmati Rice",
+          "amount": 260,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 25,
+          "ingredient_name": "Boiled Water",
+          "amount": 700,
+          "unit": "ml"
+        }
+      ],
+      "method": [
+        {
+          "step": "Before you begin", "image": ""
+        },
+        {
+          "step": "This recipe takes around 5 minutes to prep, so get your casserole dick and all your ingredients ready, then wash your fruit and vegetables", "image": ""
+        },
+        {
+          "step": "(Make sure your dish is oven proof and safe to use on the hob, don’t have one? Start cooking in a large wide based pan then transfer to a oven proof dish and cover tightly with foil)", 
+          "image": ""
+        },
+        {
+          "step": "Preheat the oven to 220C / 200C (fan) / gas 7", "image": ""
+        },
+        {
+          "step": "Boil a kettle", "image": ""
+        },
+        {
+          "step": "Heat a large wide based, how safe oven proof casserole dish with a matching lid with a drizzle of olive oil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Once hot add your butternut squash cubes to the dish", 
+          "image": ""
+        },
+        {
+          "step": "Chop you tomato(es) into wedges", "image": ""
+        },
+        {
+          "step": "Crush your garlic cloves open by squashing them with the side of a knife and remove the skins", "image": ""
+        },
+        {
+          "step": "Add the tomato wedges and crush garlic to the dish", 
+          "image": ""
+        },
+        {
+          "step": "Crush your cardamon pods open by squashing them with the side of a knife", "image": ""
+        },
+        {
+          "step": "Slice your ginger in half (no need to peel)", "image": ""
+        },
+        {
+          "step": "Chop you creamed coconut roughly (if required)", "image": ""
+        },
+        {
+          "step": "Dissolve the chopped cream coconut and vegetable stock mix with your boiled water.  This is your coconut stock", 
+          "image": ""
+        },
+        {
+          "step": "Add the crushed cardamon pods and halves ginger to the dish with your ground turmeric, curry powder and bay leaf(ves) and give everything a good mix up", 
+          "image": ""
+        },
+        {
+          "step": "Add your basmati rice with the coconut stock and bring to the boil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Cover with a lid an put the dish in the oven for 15-20 minutes or until all the water has been absorbed, the squash is fork tender and the rice is cooked", 
+          "image": ""
+        },
+        {
+          "step": "Once the rice is cooked, remove the dish from the oven and set aside for 5 minutes to steam.  This is your baked butternut squash biryani ", "image": ""
+        },
+        {
+          "step": "Slice your green chilli(es) finely", "image": ""
+        },
+        {
+          "step": "Chop your coriander roughly, including the stalks", 
+          "image": ""
+        },
+        {
+          "step": "To serve, fluff the baked butternut squash biryani with a fork, stir through the chopped coriander and season with a generous pinch of salt and pepper ", "image": ""
+        },
+        {
+          "step": "Top with the sliced green chilli and crispy onions", "image": ""
+        },
+        {
+          "step": "(Watch out for ginger halves, cardamom pods and pay leaves and discard)", "image": ""
+        },
+        {
+          "step": "Enjoy", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Salt", "Olive Oil", "Pepper", "Water"]
+    }
+  ]

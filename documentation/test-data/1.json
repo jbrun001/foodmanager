@@ -1,0 +1,168 @@
+[
+	{
+		"title": "Sweet 'N' Smoky BBQ Chicken Fajitas",
+		"thumbnail": "https://dummyimage.com/100",
+		"image": "https://dummyimage.com/200",
+		"description": "Description.",
+		"cooktime":   20,
+		"preptime":   5,
+		"calories":   628,
+		"portions":   4,
+		"cusine":     "Mexican-American",
+		"category":   "Main Course",    
+		"keywords":   "BBQ, Smoky, Chicken, Fajitas, Quick Dinner",
+		"ingredients": [
+			{
+					"ingredient_id": 1,
+					"ingredient_name": "Chicken Breast Strips",
+					"amount": 500,
+					"unit": "g"
+				},
+				{
+					"ingredient_id": 13,
+					"ingredient_name": "Chedder Cheese",
+					"amount": 80,
+					"unit": "g"
+				},
+				{
+					"ingredient_id": 28,
+					"ingredient_name": "Cherry Tomatoes",
+					"amount": 250,
+					"unit": "g"
+				},
+				{
+					"ingredient_id": 6,
+					"ingredient_name": "Chilli Flakes",
+					"amount": 1,
+					"unit": "tsp"
+				},
+				{
+					"ingredient_id": 7,
+					"ingredient_name": "Garlic Clove",
+					"amount": 2,
+					"unit": "pcs"
+				},
+				{
+					"ingredient_id": 8,
+					"ingredient_name": "Ground Coriander",
+					"amount": 2,
+					"unit": "tsp"
+				},
+				{
+					"ingredient_id": 9,
+					"ingredient_name": "Cumin",
+					"amount": 2,
+					"unit": "tsp"
+				},
+				{
+					"ingredient_id": 10,
+					"ingredient_name": "Smoked Paprika",
+					"amount": 4,
+					"unit": "tsp"
+				},
+				{
+					"ingredient_id": 11,
+					"ingredient_name": "Yogurt",
+					"amount": 160,
+					"unit": "g"
+				},
+				{
+					"ingredient_id": 12,
+					"ingredient_name": "Tortillas",
+					"amount": 12,
+					"unit": "pcs"
+				},
+				{
+					"ingredient_id": 13,
+					"ingredient_name": "Red Onion",
+					"amount": 2,
+					"unit": "pcs"
+				},
+				{
+					"ingredient_id": 14,
+					"ingredient_name": "Red Pepper",
+					"amount": 2,
+					"unit": "pcs"
+				},
+				{
+					"ingredient_id": 15,
+					"ingredient_name": "Spring Onions",
+					"amount": 2,
+					"unit": "pcs"
+				},
+				{
+					"ingredient_id": 16,
+					"ingredient_name": "Sugar",
+					"amount": 2,
+					"unit": "tsp"
+				}
+		],
+		"method": [
+			{
+				"step": "Before you start cooking, take your chicken out of the fridge open the packet and let it air", "image": ""
+			},
+			{
+				"step": "Deseed your pepper(s) and cut into thin strips", "image": ""
+			},
+			{
+				"step": "peel and finely slice your Red Onion(s)",
+				"image": "https://dummyimage.com/100"
+			},
+
+
+			{
+				"step": "Heat a larhe wide based pan with a generous drizzle of olive oil over high heat",
+				"image": "https://dummyimage.com/100"
+			},
+			{
+				"step": "once hot, add the pepper strips, sliced onion and chicken breast strips to the pan and cook for 10-12 minutes  or untill the vegetables have softend and the chicken is coocked through",
+				"image": "https://dummyimage.com/100"
+			},
+			{
+				"step": "Whilst everything is cooking chop your cherry tomatoes roughly then keep chopping them together untill they resemble a salsa like consistency", "image": ""
+			},
+			{
+				"step": "Add the chopped tomatoes to a bowl with your chilli flakes. A pinch of salt and a drizzle of olive oil", "image": ""
+			},
+			{
+				"step": "Stir it all together, this is your salsa", "image": ""
+			},
+			{
+				"step": "peal and greate your garlic",
+				"image": "https://dummyimage.com/100"
+			},
+			{
+				"step": "Combine your smoked paprika, corriander and cuminutes  in a bowl with your sugar.  This is your BBQ spice mix", "image": ""
+			},
+			{
+        "step": "Once the chicken is cooked through, add the BBQ spice mix and the greated garlic to the pan and cook out for 2-3 minutes  or untill fragrent. This is your sweet 'n' smokey BBQ chicken fajita filling",
+				"image": "https://dummyimage.com/100"
+      },
+      {
+        "step": "Add your tortillas to a plate and pop them in the microwave for 20 secs or until warmed through",
+        "image": "https://dummyimage.com/100"
+      },
+      {
+        "step": "Greate your chedder cheese", "image": ""
+      },
+      {
+        "step": "Trim then slice your spring onion(s) finely",
+        "image": "https://dummyimage.com/100"
+      },
+      {
+        "step": "Serve the sweet 'n' smokey BBQ chicken fajita filling over the tortilas ", "image": ""
+      },
+			{
+        "step": "Top with the greated cheddar and salsa", "image": ""
+      },
+      {
+        "step": "Dollop over your natural yoghurt, garnish with the sliced spring onion and onjoy.",
+        "image": "https://dummyimage.com/100"
+      }
+		],
+		"additional_ingredients": [
+			"Olive Oil",
+			"Salt"
+		]
+	}
+]

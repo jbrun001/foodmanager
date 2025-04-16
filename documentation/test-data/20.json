@@ -1,0 +1,139 @@
+[
+    {
+      "title": "Korean-Style Gochujang Pork Bibimbap with Spinach Rice",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   20,
+      "preptime":   10,
+      "calories":   711,
+      "portions":   4,
+      "cusine":     "Korean",
+      "category":   "Main Course",
+      "keywords":   "Bibimbap, Gochujang, Pork, Korean, Spinach rice, Spicy, Rice bowl",
+      "ingredients": [
+        {
+          "ingredient_id": 111,
+          "ingredient_name": "Cucumber",
+          "amount": 1,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 43,
+          "ingredient_name": "Egg",
+          "amount": 4,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 28,
+          "ingredient_name": "Gochujang Paste",
+          "amount": 60,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 70,
+          "ingredient_name": "Pork Mince",
+          "amount": 500,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 121,
+          "ingredient_name": "Spinach",
+          "amount": 160,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 32,
+          "ingredient_name": "Toasted Sesame Oil",
+          "amount": 20,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 33,
+          "ingredient_name": "Toasted Sesame Seeds",
+          "amount": 5,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 122,
+          "ingredient_name": "Tomato Ketchup",
+          "amount": 60,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 1,
+          "ingredient_name": "Long Grain Rice",
+          "amount": 260,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 41,
+          "ingredient_name": "Cold Water",
+          "amount": 450,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 41,
+          "ingredient_name": "Cold Water",
+          "amount": 4,
+          "unit": "tbsp"
+        }        
+      ],
+      "method": [
+        {
+          "step": "Add your white long grain rice to a pot with a lid with your ml cold water to a pot with a lit and bring to the boil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Once boiling reduce the heat to very low and cook, covered for 10-12 minutes or until all the water has been absorbed and the rice is cooked", "image": ""
+        },
+        {
+          "step": "Once done, remove from the heat and set aside (lid on) to steam until serving", 
+          "image": ""
+        },
+        {
+          "step": "Heat a large wide based pan with a drizzle of vegetable oil and heigh heat", "image": ""
+        },
+        {
+          "step": "Once hot, add your pork mince with a pinch of salt and pepper and cook for 8-10 minutes or until cooked through, brown and crispy breaking to up with a wooden spoon as you go", 
+          "image": ""
+        },
+        {
+          "step": "Cut you cucumber in half lengthways, then slice finely", "image": ""
+        },
+        {
+          "step": "Combine your gochujang paste and tomato ketchup in a bowl with you tbsp cold water.  This is your gochujang ketchup", "image": ""
+        },
+        {
+          "step": "Once the pork is cooked add half the gochujang ketchup to the pan and stir it all together in fully coated.  This is your gochujang pork", "image": ""
+        },
+        {
+          "step": "Once the pork is coated, push the gochujang pork to one side of the pan and crack your egg(s) into the other side", "image": ""
+        },
+        {
+          "step": "Cover with a lid and cook fir 2-3 minutes or until done to your liking", "image": ""
+        },
+        {
+          "step": "(give your egg a little shake before you crack for a perfectly centred yolk)", 
+          "image": ""
+        },
+        {
+          "step": "Wash your spinach and pat it dry with kitchen paper", "image": ""
+        },
+        {
+          "step": "Add your toasted sesame oil and spinach to the pot with the cooked rice with a pinch of salt and give everything a good mix up until the spinach starts to wilt.  This is your spinach rice", 
+          "image": ""
+        },
+        {
+          "step": "Serve the gochujang pork with the spinach rice and spiced cucumber to the side and top with the friend egg(s).  this is your Korean style gochujang pork bibimbap", "image": ""
+        },
+        {
+          "step": "Drizzle over the remaining gochujang ketchup and garnish with your toasted sesame seeds", "image": ""
+        },
+        {
+          "step": "Enjoy", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Vegetable Oil", "Salt", "Sugar", "Water", "Pepper"]
+    }
+  ]

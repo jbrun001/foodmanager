@@ -1,0 +1,190 @@
+[
+    {
+      "title": "Tamarind & Lemongrass Chicken with Peanuts Salad",
+      "thumbnail": "https://dummyimage.com/100",
+      "image": "https://dummyimage.com/200",
+      "description": "",
+      "cooktime":   10,
+      "preptime":   10,
+      "calories":   607,
+      "portions":   4,
+      "cusine":     "Southeast Asian",
+      "category":   "Main Course",
+      "keywords":   "Tamarind, Lemongrass, Chicken, Peanut salad, Southeast Asian, Fresh herbs",
+      "ingredients": [
+        {
+          "ingredient_id": 63,
+          "ingredient_name": "Diced Chicken Breast",
+          "amount": 500,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 27,
+          "ingredient_name": "Carrot",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 64,
+          "ingredient_name": "Cooked White Long Grain Rice",
+          "amount": 560,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 65,
+          "ingredient_name": "Cornflour",
+          "amount": 2,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 6,
+          "ingredient_name": "Chilli Flakes",
+          "amount": 1,
+          "unit": "tsp"
+        },
+        {
+          "ingredient_id": 66,
+          "ingredient_name": "Lemongrass Stalks",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 45,
+          "ingredient_name": "Ginger & Garlic Paste",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 54,
+          "ingredient_name": "Honey",
+          "amount": 50,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 36,
+          "ingredient_name": "Lime",
+          "amount": 1,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 67,
+          "ingredient_name": "Mini Cosberg Lettuce",
+          "amount": 2,
+          "unit": "pcs"
+        },
+        {
+          "ingredient_id": 38,
+          "ingredient_name": "Roasted Peanuts",
+          "amount": 50,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 68,
+          "ingredient_name": "Tamari Soy Sauce",
+          "amount": 30,
+          "unit": "ml"
+        },
+        {
+          "ingredient_id": 69,
+          "ingredient_name": "Tamarind Paste",
+          "amount": 30,
+          "unit": "g"
+        },
+        {
+          "ingredient_id": 41,
+          "ingredient_name": "Cold Water",
+          "amount": 120,
+          "unit": "ml"
+        }
+      ],
+      "method": [
+        {
+          "step": "Before you begin", "image": ""
+        },
+        {
+          "step": "Get all your ingredients and equipment ready", "image": ""
+        },
+        {
+          "step": "Skim though these steps, then wash your fruit and vegetables", "image": ""
+        },
+        {
+          "step": "Take your chicken out of the fridge, open the packet and let it air", "image": ""
+        },
+        {
+          "step": "(Equipment and pan sizes vary, make sure you cook food thoroughly (even if it takes you a little longer than 10 minutes)", 
+          "image": ""
+        },
+        {
+          "step": "Now let’s start", "image": ""
+        },
+        {
+          "step": "Bash your lemongrass stalk(s) with a rolling pin until it splits open", "image": ""
+        },
+        {
+          "step": "Heat a large, wide based pan with a drizzle of olive oil over a heigh heat", "image": ""
+        },
+        {
+          "step": "Once hot, add the based lemon grass and diced chicken breast to the pan with a pinch of salt and cook for 7-8 minutes or until lightly browned", 
+          "image": ""
+        },
+        {
+          "step": "While the chicken is cooking, top, tail, peel, and grate your carrot(s)", "image": ""
+        },
+        {
+          "step": "Wash your lettuce, the pat it dry with kitchen paper and cut into quarters lengthwise. These are your lettuce wedges", "image": ""
+        },
+        {
+          "step": "Roughly chop your roasted peanuts", 
+          "image": ""
+        },
+        {
+          "step": "Add your cornflour, chilli flakes and tamari soy sauce to a bowl with your tamarind paste, half your honey", "image": ""
+        },
+        {
+          "step": "Ginger & garlic paste and your cold water", "image": ""
+        },
+        {
+          "step": "Give everything a good mix up.  This is your tamarind sauce", 
+          "image": ""
+        },
+        {
+          "step": "Once lightly browned, add the tamarind sauce to the chicken and cook for a further 3-4 minutes or until the sauce has thickened and the chicken is cooked thorough ", "image": ""
+        },
+        {
+          "step": "Meanwhile, chop your lime(s) into wedges", "image": ""
+        },
+        {
+          "step": "Once cooked through, add generous squeeze of lime juice and mix it all together.  This is your tamarind & lemongrass chicken", 
+          "image": ""
+        },
+        {
+          "step": "Mix up the white long grain rice and cut the top corner of the packet a little and microwave for 2 minutes or until hot", "image": ""
+        },
+        {
+          "step": "(Cooking with more than one pouch you can pop them in together, but you will have to adjust the microwave time accordingly)", 
+          "image": ""
+        },
+        {
+          "step": "Combine the chopped peanuts and he remaining honey in a bowl with a generous squeeze if lime juice (reserve some for garnish) a pinch of salt and a drizzle of olive oil. This is your peanut & lime dressing", 
+          "image": ""
+        },
+        {
+          "step": "Discard the lemon grass stalk(s)", "image": ""
+        },
+        {
+          "step": "Serve the tamarind and lemongrass chicken over the cooked rice with the grated carrot and lettuce wedges to the side", "image": ""
+        },
+        {
+          "step": "Drizzle the peanut & lime dressing over the carrot and wedges", "image": ""
+        },
+        {
+          "step": "Garnish with a lime wedge", "image": ""
+        },
+        {
+          "step": "Enjoy", 
+          "image": ""
+        }
+      ],
+      "additional_ingredients": ["Olive Oil", "Salt"]
+    }
+]
