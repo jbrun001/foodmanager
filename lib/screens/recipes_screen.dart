@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
+import '../widgets/recipedetail.dart';
 
 class RecipesScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -119,7 +120,22 @@ class _RecipesScreenState extends State<RecipesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recipe Search'),
+        title: Text('Recipe Select'),
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              context.go('/planner', extra: widget.firebaseService);
+            },
+            icon: Icon(Icons.arrow_forward, color: Colors.black),
+            label: Text(
+              'Plan',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
       drawer: MenuDrawer(),
       body: Stack(
@@ -165,7 +181,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
                         );
                       }).toList(),
                     ),
-/*                    SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Text("Max Cals:", style: TextStyle(fontSize: 16)),
                     SizedBox(width: 8),
                     DropdownButton<int?>(
@@ -182,7 +198,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
                           child: Text(cal == null ? 'Any' : '$cal kcal'),
                         );
                       }).toList(),
-                    ), */
+                    ),
                   ],
                 ),
               ),
@@ -278,13 +294,29 @@ class _RecipesScreenState extends State<RecipesScreen> {
                                         ),
                                         OutlinedButton(
                                           onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    RecipeDetailScreen(
-                                                        recipe: recipe),
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              backgroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.vertical(
+                                                        top: Radius.circular(
+                                                            20)),
                                               ),
+                                              builder: (context) {
+                                                return DraggableScrollableSheet(
+                                                  expand: false,
+                                                  initialChildSize: 0.85,
+                                                  maxChildSize: 0.95,
+                                                  builder: (_, controller) =>
+                                                      SingleChildScrollView(
+                                                    controller: controller,
+                                                    child: RecipeDetail(
+                                                        recipe: recipe),
+                                                  ),
+                                                );
+                                              },
                                             );
                                           },
                                           child: Text('View'),
@@ -356,6 +388,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
   }
 }
 
+/*
 class RecipeDetailScreen extends StatelessWidget {
   final Map<String, dynamic> recipe;
 
@@ -500,6 +533,22 @@ class RecipeDetailScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  } 
+}
+
+*/
+// call recipedetail widget
+class RecipeDetailScreen extends StatelessWidget {
+  final Map<String, dynamic> recipe;
+
+  const RecipeDetailScreen({Key? key, required this.recipe}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(recipe['title'])),
+      body: RecipeDetail(recipe: recipe),
     );
   }
 }

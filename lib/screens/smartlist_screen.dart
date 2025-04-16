@@ -3,7 +3,7 @@ import 'menu_drawer.dart';
 import 'package:intl/intl.dart';
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
-import 'previewleftovers_screen.dart';
+import '../services/smartlist_service.dart'; // contains loadSmartlist
 
 class SmartlistScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -68,9 +68,23 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     });
   }
 
+  Future<void> _loadSmartlist() async {
+    setState(() => _isLoading = true);
+
+    _smartlistItems = await loadSmartlist(
+      firebaseService: widget.firebaseService,
+      userId: userId,
+      selectedWeekStart: selectedWeekStart,
+      selectedStore: _selectedStore,
+      fetchMealPlanIngredients: _fetchMealPlanIngredients,
+    );
+
+    setState(() => _isLoading = false);
+  }
+
   // fetches data from firebase
   // updated to calculate required ingredients from the mealplan
-  Future<void> _loadSmartlist() async {
+  Future<void> _loadSmartlist2() async {
     setState(() => _isLoading = true); // start loading
     // list of all the ingredients for the mealplan in the selected week
     List<Map<String, dynamic>> mealPlanIngredients =
@@ -363,21 +377,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Smart Shopping List'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.preview),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PreviewLeftoversScreen(
-                      firebaseService: widget.firebaseService),
-                ),
-              );
-            },
-          )
-        ],
+        title: Text('Shop'),
       ),
       drawer: MenuDrawer(),
       body: Column(

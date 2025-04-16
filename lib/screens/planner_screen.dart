@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart'; // for date formatting
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
+import '../widgets/recipedetail.dart';
 
 // use template of recipe_screen as that is a stateful widget
 
@@ -22,222 +23,6 @@ class _PlannerScreenState extends State<PlannerScreen> {
   String userId = '';
 
   List<Map<String, dynamic>> addedRecipes = [];
-  // test data based on work in recipes_screen
-  // this data should be replaced by data passed from the recipes_screen
-  /*
-  List<Map<String, dynamic>> addedRecipes = [
-    {
-      'title': 'One-Pot Hainanese-Style Chicken & Rice with Pak Choi',
-      'thumbnail': 'https://dummyimage.com/100',
-      'image': 'https://dummyimage.com/200',
-      'description': '',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 620,
-      'portions': 4,
-      'cusine': 'hainanese',
-      'category': 'meal',
-      'keywords': '',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Long Grain Rice',
-          'amount': 130,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Chicken Breast',
-          'amount': 2,
-          'unit': ''
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Pak Choi',
-          'amount': 2,
-          'unit': ''
-        },
-      ],
-      'method': [
-        {
-          'step': 'put the rice in the pot with enough water to cover',
-          'image': ''
-        },
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-    {
-      'title': 'Southern Thai-Style Chicken Panang Curry',
-      'thumbnail': 'https://dummyimage.com/100',
-      'image': 'https://dummyimage.com/200',
-      'description': 'Description of recipe.',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 1000,
-      'portions': 4,
-      'cusine': 'thai',
-      'category': 'meal',
-      'keywords': 'spicy',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Long Grain Rice',
-          'amount': 130,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Chicken Thighs',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Thai Red Curry Paste',
-          'amount': 40,
-          'unit': 'g'
-        },
-      ],
-      'method': [
-        {'step': 'Chop the chicken into bite size pieces', 'image': ''},
-        {
-          'step': 'Add a little oil to a wide based pan, and heat on medium',
-          'image': 'https://dummyimage.com/100'
-        },
-        {'step': 'Add chicken and cook for 3-4 mins until brown', 'image': ''},
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-    {
-      'title':
-          'Creole-Style Haddock & Sweet Potato Stew with Garlic Rice extra long title',
-      'thumbnail': 'https://dummyimage.com/100',
-      'image': 'https://dummyimage.com/200',
-      'description':
-          'Longer description taking up more space that previous item and enough words to go onto a second line.',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 520,
-      'portions': 4,
-      'cusine': 'creole',
-      'category': 'meal',
-      'keywords': '',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Haddock',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Long Grain Rice',
-          'amount': 130,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Sweet Potato',
-          'amount': 200,
-          'unit': 'g'
-        },
-      ],
-      'method': [
-        {'step': 'Add the rice to a pot', 'image': ''},
-        {
-          'step': 'Add cold water to rice',
-          'image': 'https://dummyimage.com/100'
-        },
-        {'step': 'Cook on high until water is boiling', 'image': ''},
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-    {
-      'title': 'Rich Mushroom Ragu Linguine (V)',
-      'thumbnail': 'https://dummyimage.com/100',
-      'image': 'https://dummyimage.com/200',
-      'description': 'Description',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 520,
-      'portions': 4,
-      'cusine': 'vegan',
-      'category': 'meal',
-      'keywords': '',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Flat White Mushrooms',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Linguine',
-          'amount': 180,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Chopped Tomato',
-          'amount': 200,
-          'unit': 'g'
-        },
-      ],
-      'method': [
-        {'step': 'Cut mushrooms into thick slices', 'image': ''},
-        {
-          'step':
-              'Add to an oiled wide based pan and fry until starting to brown',
-          'image': 'https://dummyimage.com/100'
-        },
-        {'step': 'Add chopped tomato', 'image': ''},
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-    {
-      'title': 'Beef Satay Wraps',
-      'thumbnail': 'https://dummyimage.com/100',
-      'image': 'https://dummyimage.com/200',
-      'description': 'description',
-      'cooktime': 25,
-      'preptime': 5,
-      'calories': 520,
-      'portions': 4,
-      'cusine': 'hainanese',
-      'category': 'indonesian',
-      'keywords': '',
-      'ingredients': [
-        {
-          'ingredient_id': 1,
-          'ingredient_name': 'Minced Beef',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 2,
-          'ingredient_name': 'Soft Tortilla Wraps',
-          'amount': 200,
-          'unit': 'g'
-        },
-        {
-          'ingredient_id': 3,
-          'ingredient_name': 'Peanut Butter',
-          'amount': 25,
-          'unit': 'g'
-        },
-      ],
-      'method': [
-        {'step': 'Add minced beef to an oiled wide based pan', 'image': ''},
-        {
-          'step':
-              'cook on medium, breaking up beef until beef starting to brown',
-          'image': 'https://dummyimage.com/100'
-        },
-      ],
-      'additional_ingredients': ['Salt', 'Pepper'],
-    },
-  ];*/
 
   DateTime selectedWeekStart = DateTime.now(); // get today
   Map<String, List<Map<String, dynamic>>> plan = {}; // use JSON format
@@ -357,7 +142,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
           DateFormat('EEEE').format(selectedWeekStart.add(Duration(days: i)));
       emptyPlan[day] = []; // Initialize empty lists for each day
     }
-// debug - check format of empty plan
+// testing - check format of empty plan
     print("Creating planner for week starting: ${selectedWeekStart}");
     print("Generated days: ${emptyPlan.keys.toList()}");
     return emptyPlan;
@@ -418,6 +203,48 @@ class _PlannerScreenState extends State<PlannerScreen> {
     return scaledIngredients;
   }
 
+  // show full recipe details using the scaled ingredients from the planner
+  void showPlannedRecipeDetail(
+      BuildContext context, Map<String, dynamic> plannedRecipe) {
+    // find the full recipe by matching the title
+    final fullRecipe = addedRecipes.firstWhere(
+      (recipe) => recipe['title'] == plannedRecipe['title'],
+      orElse: () => {}, // empty if not found
+    );
+    // testing
+    if (fullRecipe.isEmpty) {
+      print("Full recipe not found for: ${plannedRecipe['title']}");
+      return;
+    }
+    // create a new copy of the full recipe
+    final mergedRecipe = Map<String, dynamic>.from(fullRecipe);
+    // replace the ingredients with the scaled ones from the planner
+    mergedRecipe['ingredients'] =
+        List<Map<String, dynamic>>.from(plannedRecipe['ingredients'] ?? []);
+    // update the portion count as shown in the plan
+    mergedRecipe['portions'] = plannedRecipe['plannedPortions'];
+    // show the recipe using recipe detail widget
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.85,
+          maxChildSize: 0.95,
+          builder: (_, controller) => SingleChildScrollView(
+            controller: controller,
+            child: RecipeDetail(recipe: mergedRecipe),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   // full build of the user interface
   Widget build(BuildContext context) {
@@ -429,8 +256,22 @@ class _PlannerScreenState extends State<PlannerScreen> {
     );
     return Scaffold(
       appBar: AppBar(
-        // top bar
-        title: Text('Meal Planner'), // screen name
+        title: Text('Plan'),
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              context.go('/preview', extra: widget.firebaseService);
+            },
+            icon: Icon(Icons.arrow_forward, color: Colors.black),
+            label: Text(
+              'Preview',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
       drawer: MenuDrawer(), // menu icon in top bar
       body: Column(
@@ -588,12 +429,24 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                               saveMealPlan();
                                             });
                                           }),
+                                      // make the title text clickable https://api.flutter.dev/flutter/widgets/GestureDetector-class.html
                                       Expanded(
-                                        child: Text(
-                                          recipe['title'] != null
-                                              ? 'x ${recipe['title']}'
-                                              : 'Untitled',
-                                          overflow: TextOverflow.ellipsis,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            showPlannedRecipeDetail(context,
+                                                recipe); // show modal with full details
+                                          },
+                                          child: Text(
+                                            recipe['title'] ?? 'Untitled',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                              decoration: TextDecoration
+                                                  .underline, // make it look like a link
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       IconButton(

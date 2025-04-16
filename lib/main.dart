@@ -14,6 +14,7 @@ import 'screens/wasteloganalysis_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // needed to support cross platform
 import 'services/firebase_service.dart'; // all the database interaction
+import 'screens/cooking_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +30,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
+      title: 'Food Manager',
       routerConfig: _router(firebaseService),
     );
   }
@@ -73,6 +76,11 @@ GoRouter _router(FirebaseService firebaseService) {
         path: '/smartlist',
         builder: (context, state) =>
             SmartlistScreen(firebaseService: firebaseService),
+      ),
+      GoRoute(
+        path: '/cooking',
+        builder: (context, state) =>
+            CookingScreen(firebaseService: FirebaseService()),
       ),
       GoRoute(
         path: '/waste',

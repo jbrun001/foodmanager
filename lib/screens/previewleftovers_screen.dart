@@ -4,6 +4,7 @@ import 'menu_drawer.dart';
 import '../services/firebase_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
+import '../services/smartlist_service.dart';
 
 class PreviewLeftoversScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -25,6 +26,7 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
   // R1.LO.02 add recipes to user recipes for use in meal planning screen
   List<Map<String, dynamic>> addedRecipes = [];
   List<Map<String, dynamic>> aggregatedItems = [];
+  bool _isLoading = true; // to stop screen displaying before data is there
 
   @override
   void initState() {
@@ -41,9 +43,14 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
   }
 
   Future<void> _initData() async {
-    await _loadAggregatedSmartlist();
-    await _loadCombinedStock();
-    await _loadRecipes();
+    setState(() => _isLoading = true);
+    try {
+      await _loadAggregatedSmartlist(); // update and retrieve smartlist
+      await _loadCombinedStock(); // get user stock items and merge lefovers from smartlist
+      await _loadRecipes(); // get recipes for matching
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   Future<void> _loadAggregatedSmartlist() async {
@@ -51,9 +58,26 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
     final DateTime weekStart =
         now.subtract(Duration(days: now.weekday % 7)); // current week Sunday
 
-    aggregatedItems = await widget.firebaseService.getSmartlistForWeek(
-      userId,
-      weekStart,
+    aggregatedItems = await loadSmartlist(
+      firebaseService: widget.firebaseService,
+      userId: userId,
+      selectedWeekStart: weekStart,
+      selectedStore: 'Tesco',
+      fetchMealPlanIngredients: () async {
+        Map<String, List<Map<String, dynamic>>> mealPlan = await widget
+            .firebaseService
+            .getMealPlan(userId, weekStart, weekStart.add(Duration(days: 6)));
+
+        return mealPlan.values.expand((meals) {
+          return meals.expand((meal) {
+            if (meal['ingredients'] is List) {
+              return (meal['ingredients'] as List)
+                  .whereType<Map<String, dynamic>>();
+            }
+            return <Map<String, dynamic>>[];
+          });
+        }).toList();
+      },
     );
   }
 
@@ -88,7 +112,9 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
       int fullyMatchedCount = 0;
       for (var ingredient in ingredients) {
         String name = ingredient['ingredient_name'] ?? '';
-        double required = (ingredient['amount'] as num).toDouble();
+        double required = (ingredient['amount'] is num)
+            ? (ingredient['amount'] as num).toDouble()
+            : 0.0;
         double available = combinedStock[name] ?? 0.0;
         if (available >= required) {
           fullyMatchedCount++;
@@ -101,8 +127,8 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
       recipe['matchScore'] = matchScore;
       recipe['matchFraction'] = "$fullyMatchedCount/$totalIngredients";
       // only add to the list if some ingredients match
-      // gets rid of those recipes where nothing matches
-      if (matchScore > 0.0) {
+      // gets rid of those recipes where less than 59% match
+      if (matchScore > 49.0) {
         calculatedRecipes.add(recipe);
       }
     }
@@ -165,166 +191,185 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Preview Leftovers'),
-      ),
-      drawer: MenuDrawer(),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Ingredients left at end of the week',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      getLeftoverSummary(),
-                      style: TextStyle(fontSize: 14, color: Colors.black87),
-                    ),
-                  ],
-                ),
+        title: Text('Preview'),
+        actions: [
+          TextButton.icon(
+            onPressed: () {
+              context.go('/planner', extra: widget.firebaseService);
+            },
+            icon: Icon(Icons.arrow_forward, color: Colors.black),
+            label: Text(
+              'Plan',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Recipes that you will have all or some of the ingredients to make.",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: scoredRecipes.isEmpty
-                    ? Center(
-                        child: Text(
-                          "No recipes available with current leftovers and stock.",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: scoredRecipes.length,
-                        itemBuilder: (context, index) {
-                          final recipe = scoredRecipes[index];
-                          final score = recipe['matchScore'] as double;
-                          final fraction = recipe['matchFraction'] as String;
-                          return Card(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: Row(
-                              children: [
-                                CachedNetworkImage(
-                                  imageUrl: recipe['thumbnail'] ??
-                                      'https://via.placeholder.com/100',
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      Shimmer.fromColors(
-                                    baseColor: Colors.grey[300]!,
-                                    highlightColor: Colors.grey[100]!,
-                                    child: Container(
-                                      width: 100,
-                                      height: 100,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.broken_image, size: 100),
-                                ),
-                                SizedBox(width: 8),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        recipe['title'] ?? 'Untitled',
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(height: 8),
-                                      Text(
-                                          //                                        "Match: ${score.toStringAsFixed(1)}% ($fraction ingredients)",
-                                          "$fraction ingredients",
-                                          style:
-                                              TextStyle(color: Colors.black)),
-                                    ],
-                                  ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () => addRecipe(recipe),
-                                  child: Text('Add'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-              ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 100,
-              color: Colors.white,
-              child: addedRecipes.isNotEmpty
-                  ? ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: addedRecipes.length,
-                      itemBuilder: (context, index) {
-                        final recipe = addedRecipes[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: GestureDetector(
-                            onTap: () => removeRecipe(recipe),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: CachedNetworkImage(
-                                imageUrl: recipe['thumbnail'] ??
-                                    'https://via.placeholder.com/100',
-                                width: 80,
-                                height: 80,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                    Shimmer.fromColors(
-                                  baseColor: Colors.grey[300]!,
-                                  highlightColor: Colors.grey[100]!,
-                                  child: Container(
-                                    width: 80,
-                                    height: 80,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                errorWidget: (context, url, error) => Icon(
-                                    Icons.broken_image,
-                                    size: 80,
-                                    color: Colors.grey),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: Text('No recipes added yet',
-                          style: TextStyle(color: Colors.grey))),
             ),
           ),
         ],
       ),
+      drawer: MenuDrawer(),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Stack(
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Ingredients left at end of the week',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            getLeftoverSummary(),
+                            style:
+                                TextStyle(fontSize: 14, color: Colors.black87),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Recipes that you will have all or some of the ingredients to make.",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: scoredRecipes.isEmpty
+                          ? Center(
+                              child: Text(
+                                "No recipes available with current leftovers and stock.",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: scoredRecipes.length,
+                              itemBuilder: (context, index) {
+                                final recipe = scoredRecipes[index];
+                                final score = recipe['matchScore'] as double;
+                                final fraction =
+                                    recipe['matchFraction'] as String;
+                                return Card(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  child: Row(
+                                    children: [
+                                      CachedNetworkImage(
+                                        imageUrl: recipe['thumbnail'] ??
+                                            'https://via.placeholder.com/100',
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            Shimmer.fromColors(
+                                          baseColor: Colors.grey[300]!,
+                                          highlightColor: Colors.grey[100]!,
+                                          child: Container(
+                                            width: 100,
+                                            height: 100,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.broken_image, size: 100),
+                                      ),
+                                      SizedBox(width: 8),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              recipe['title'] ?? 'Untitled',
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                                //                                        "Match: ${score.toStringAsFixed(1)}% ($fraction ingredients)",
+                                                "$fraction ingredients",
+                                                style: TextStyle(
+                                                    color: Colors.black)),
+                                          ],
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () => addRecipe(recipe),
+                                        child: Text('Add'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 100,
+                    color: Colors.white,
+                    child: addedRecipes.isNotEmpty
+                        ? ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: addedRecipes.length,
+                            itemBuilder: (context, index) {
+                              final recipe = addedRecipes[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () => removeRecipe(recipe),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: CachedNetworkImage(
+                                      imageUrl: recipe['thumbnail'] ??
+                                          'https://via.placeholder.com/100',
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          Shimmer.fromColors(
+                                        baseColor: Colors.grey[300]!,
+                                        highlightColor: Colors.grey[100]!,
+                                        child: Container(
+                                          width: 80,
+                                          height: 80,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.broken_image,
+                                              size: 80, color: Colors.grey),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Text('No recipes added yet',
+                                style: TextStyle(color: Colors.grey))),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }
