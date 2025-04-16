@@ -1014,6 +1014,134 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
     }
   }
 
+  // prints all ingredients in all recipes
+  Future<void> _printAllRecipeIngredients() async {
+    final firestore = FirebaseFirestore.instance;
+    final recipesSnapshot = await firestore.collection('recipes').get();
+
+    if (recipesSnapshot.docs.isEmpty) {
+      print('No recipes found.');
+      return;
+    }
+
+    print('Ingredients from recipes:');
+
+    for (final doc in recipesSnapshot.docs) {
+      final recipe = doc.data();
+      final ingredients = recipe['ingredients'] ?? [];
+
+      for (final ingredient in ingredients) {
+        final name = ingredient['ingredient_name'] ?? 'Unknown Ingredient';
+        print('- $name');
+      }
+    }
+  }
+
+  Future<void> _generateIngredientsFromRecipes() async {
+    final firestore = FirebaseFirestore.instance;
+    final recipesSnapshot = await firestore.collection('recipes').get();
+    final now = DateTime.now().toIso8601String();
+
+    final processed = <String>{};
+
+    print("generating ingredients from recipes");
+    for (final doc in recipesSnapshot.docs) {
+      final recipe = doc.data();
+      final ingredients = recipe['ingredients'] ?? [];
+
+      for (final ing in ingredients) {
+        final name = ing['ingredient_name']?.toString().trim();
+        if (name == null || name.isEmpty || processed.contains(name)) continue;
+        processed.add(name);
+
+        final docRef = firestore.collection('Ingredients').doc(name);
+        final existing = await docRef.get();
+
+        final type = guessType(name);
+        final unit = ing['unit'] ?? 'g';
+
+        final placeholderMoq = {
+          'amount': 99,
+          'units': unit,
+          'storeName': 'Tesco',
+          'URL': '',
+          'lastCollected': now,
+          'type': type,
+        };
+
+        if (!existing.exists) {
+          await docRef.set({
+            'name': name,
+            'unit': unit,
+            'type': type,
+            'Moqs': [placeholderMoq],
+          });
+          print(' Created $name with placeholder MOQ');
+        } else {
+          final moqs = (existing.data()?['Moqs'] as List?) ?? [];
+          if (moqs.isNotEmpty) {
+            print(' $name already has MOQ, skipping');
+            continue;
+          }
+
+          await docRef.update({
+            'Moqs': FieldValue.arrayUnion([placeholderMoq])
+          });
+          print(' Added placeholder MOQ to $name');
+        }
+      }
+    }
+
+    print('done generating ingredients from recipes');
+  }
+
+  String guessType(String name) {
+    final lower = name.toLowerCase().trim();
+
+    final typeKeywords = {
+      'meat': ['chicken', 'beef', 'pork', 'mince', 'thigh', 'sausage'],
+      'vegetable': [
+        'potato',
+        'carrot',
+        'onion',
+        'pak choi',
+        'broccoli',
+        'lettuce',
+        'pepper'
+      ],
+      'spices & pastes': [
+        'curry paste',
+        'ginger',
+        'garlic',
+        'spice',
+        'herb',
+        'chili',
+        'paprika'
+      ],
+      'dairy': ['milk', 'cheese', 'butter', 'yogurt', 'cream'],
+      'baking': ['flour', 'yeast', 'sugar', 'baking powder', 'bicarbonate'],
+      'world goods': [
+        'rice',
+        'noodle',
+        'soy',
+        'sriracha',
+        'wrap',
+        'linguine',
+        'tortilla'
+      ],
+      'fish': ['haddock', 'salmon', 'cod', 'tuna', 'mackerel'],
+      'household': ['water', 'oil'],
+    };
+
+    for (final entry in typeKeywords.entries) {
+      for (final keyword in entry.value) {
+        if (lower.contains(keyword)) return entry.key;
+      }
+    }
+
+    return 'General';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1055,6 +1183,16 @@ class _POCFirebaseScreenState extends State<POCFirebaseScreen> {
             ElevatedButton(
               onPressed: _generateFoodWasteTestData,
               child: Text("Generate Food Waste Test Data for current user"),
+            ),
+            // print all recipe ingredients
+            ElevatedButton(
+              onPressed: _printAllRecipeIngredients,
+              child: Text("Print all recipe ingredients"),
+            ),
+            // print all recipe ingredients
+            ElevatedButton(
+              onPressed: _generateIngredientsFromRecipes,
+              child: Text("Generating Ingredients from recipes"),
             ),
           ],
         ),

@@ -523,7 +523,7 @@ class FirebaseService {
       final data = doc.data();
       final items = List<Map<String, dynamic>>.from(data?['items'] ?? []);
       print(
-          '→ Smartlist found for ${DateFormat('yyyy-MM-dd').format(weekStart)} with ${items.length} items');
+          'smartlist found for ${DateFormat('yyyy-MM-dd').format(weekStart)} with ${items.length} items');
       return items;
     } else {
       print(

@@ -124,6 +124,10 @@ Future<List<Map<String, dynamic>>> loadSmartlist({
       } else {
         value['purchase_amount'] = value['needed'];
       }
+      // testing
+      if (moq == 0.0) print('smartlist calculation: $key has no MOQ set');
+      print(
+          'smartlist calculation: $key: Required: $required stock: $stock Needed: ${value['needed']} MOQ: $moq');
     } else {
       value['purchase_amount'] = 0.0;
       value['purchased'] = required > 0.0;

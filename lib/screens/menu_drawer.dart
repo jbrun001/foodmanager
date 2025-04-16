@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // for authentication'
+import 'package:firebase_auth/firebase_auth.dart'; // for authentication
 
 class MenuDrawer extends StatelessWidget {
   @override
@@ -14,7 +14,7 @@ class MenuDrawer extends StatelessWidget {
                 style: TextStyle(color: Colors.white, fontSize: 24)),
           ),
           ListTile(
-            title: Text('Recipe Search'),
+            title: Text('Recipe Select'),
             onTap: () => context.go('/recipes'),
           ),
           ListTile(
@@ -26,28 +26,20 @@ class MenuDrawer extends StatelessWidget {
             onTap: () => context.go('/preview'),
           ),
           ListTile(
-            title: Text('Cooking helper'),
-            onTap: () => context.go('/cooking'),
+            title: Text('Smart Shopping List'),
+            onTap: () => context.go('/smartlist'),
           ),
           ListTile(
             title: Text('Ingredient Stock'),
             onTap: () => context.go('/ingredient'),
           ),
           ListTile(
-            title: Text('Smart Shopping List'),
-            onTap: () => context.go('/smartlist'),
-          ),
-//          ListTile(
-//            title: Text('Preview Left Over Ingredients'),
-//            onTap: () => context.go('/preview'),
-//          ),
-          ListTile(
-            title: Text('Food Waste Log'),
-            onTap: () => context.go('/waste'),
-          ),
-          ListTile(
             title: Text('Waste Efficiency'),
             onTap: () => context.go('/analysis'),
+          ),
+          ListTile(
+            title: Text('Log Food Waste'),
+            onTap: () => context.go('/waste'),
           ),
           ListTile(
             title: Text('User Profile'),
@@ -64,18 +56,6 @@ class MenuDrawer extends StatelessWidget {
             title: Text('POC firebase'),
             onTap: () => context.go('/firebase'),
           ),
-//          ListTile(
-//            title: Text('POC JSON API'),
-//            onTap: () => context.go('/jsonapi'),
-//          ),
-//          ListTile(
-//            title: Text('POC firebase'),
-//            onTap: () => context.go('/firebase'),
-//          ),
-//          ListTile(
-//            title: Text('Smartlist'),
-//            onTap: () => context.go('/smartlist'),
-//          ),
         ],
       ),
     );
