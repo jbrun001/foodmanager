@@ -89,20 +89,7 @@
 			"ingredient_name": "Sugar Snap Peas",
 			"amount": 160,
 			"unit": "g"
-		},
-		{
-			"ingredient_id": 25,
-			"ingredient_name": "Boiled Water",
-			"amount": 250,
-			"unit": "ml"
-		},
-		{
-		  "ingredient_id": 135,
-		  "ingredient_name": "Olive Oil",
-		  "amount": 3,
-		  "unit": "tbsp"
 		}
-		
       ],
       "method": [
 		{

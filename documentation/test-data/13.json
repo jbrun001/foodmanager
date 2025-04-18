@@ -77,25 +77,7 @@
           "ingredient_name": "Rice Noodles",
           "amount": 300,
           "unit": "g"
-        },
-        {
-          "ingredient_id": 25,
-          "ingredient_name": "Boiled Water",
-          "amount": 680,
-          "unit": "ml"
-        },
-        {
-          "ingredient_id": 16,
-          "ingredient_name": "Sugar",
-          "amount": 1,
-          "unit": "tbsp"
-        },
-        {
-          "ingredient_id": 16,
-          "ingredient_name": "Sugar",
-          "amount": 2,
-          "unit": "tsp"
-        }        
+        }      
       ],
       "method": [
         {

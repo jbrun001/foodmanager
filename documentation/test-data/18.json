@@ -1,6 +1,6 @@
 [
     {
-      "title": "Ras El Hanout Basa & Saffron Giant Couscous Stew",
+      "title": "Basa & Saffron Giant Couscous Stew",
       "thumbnail": "https://dummyimage.com/100",
       "image": "https://dummyimage.com/200",
       "description": "",
@@ -83,13 +83,7 @@
           "ingredient_name": "Vegetable Stock Mix",
           "amount": 22,
           "unit": "g"
-        },
-        {
-          "ingredient_id": 25,
-          "ingredient_name": "Boiled Water",
-          "amount": 350,
-          "unit": "ml"
-        }     
+        }
       ],
       "method": [
         {

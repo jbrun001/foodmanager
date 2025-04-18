@@ -1,6 +1,6 @@
 [
     {
-      "title": "Crispy Pork & Corn Birria-Inspired Ramen",
+      "title": "Crispy Pork & Corn Ramen",
       "thumbnail": "https://dummyimage.com/100",
       "image": "https://dummyimage.com/200",
       "description": "",
@@ -77,12 +77,6 @@
           "ingredient_name": "Tomato Paste",
           "amount": 64,
           "unit": "g"
-        },
-        {
-          "ingredient_id": 25,
-          "ingredient_name": "Boiled Water",
-          "amount": 1300,
-          "unit": "ml"
         }
       ],
       "method": [

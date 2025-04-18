@@ -13,13 +13,9 @@ class IngredientSearchScreen extends StatefulWidget {
 class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
   // holds the current userId
   String userId = '';
+  Map<String, TextEditingController> stockAmountControllers = {};
   // Ingredients in stock
-  List<Map<String, dynamic>> ingredients = [
-    {'name': 'Flour', 'amount': 500, 'unit': 'g', 'type': 'Baking'},
-    {'name': 'Sugar', 'amount': 300, 'unit': 'g', 'type': 'Baking'},
-    {'name': 'Milk', 'amount': 1, 'unit': 'L', 'type': 'Dairy'},
-    {'name': 'Eggs', 'amount': 6, 'unit': '', 'type': 'Protein'},
-  ];
+  List<Map<String, dynamic>> ingredients = [];
 
   // Filtered list of ingredients for search
   List<Map<String, dynamic>> filteredIngredients = [];
@@ -56,6 +52,19 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
     setState(() {
       ingredients = stockItems;
       filteredIngredients = List.from(stockItems);
+
+      // set up controllers for each ingredientamount
+      for (var ing in stockItems) {
+        final id = ing['name'];
+        final amount = ing['amount'] ?? 0;
+
+        if (!stockAmountControllers.containsKey(id)) {
+          stockAmountControllers[id] =
+              TextEditingController(text: amount.toString());
+        } else {
+          stockAmountControllers[id]!.text = amount.toString();
+        }
+      }
     });
   }
 
@@ -66,24 +75,29 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
       results = List.from(ingredients);
     } else {
       results = ingredients.where((ingredient) {
-        final nameMatch =
-            ingredient['name'].toLowerCase().contains(query.toLowerCase());
-        final typeMatch =
-            ingredient['type'].toLowerCase().contains(query.toLowerCase());
+        final nameMatch = (ingredient['name'] ?? '')
+            .toLowerCase()
+            .contains(query.toLowerCase());
+        final typeMatch = (ingredient['type'] ?? '')
+            .toLowerCase()
+            .contains(query.toLowerCase());
         return nameMatch || typeMatch;
       }).toList();
     }
-    // debug error amount not showing on filter
+
+    // Debug output
     print('Filtering ingredients with query: $query');
     for (var ing in ingredients) {
       print('${ing['name']} - amount: ${ing['amount']}, type: ${ing['type']}');
     }
-    // sort by amount (default to 0 if null)
+
+    // Sort by amount, default to 0 if null
     results.sort((a, b) {
       final amountA = a['amount'] ?? 0;
       final amountB = b['amount'] ?? 0;
       return (amountA as num).compareTo(amountB as num);
     });
+
     print('Filtered results:');
     for (var ing in results) {
       print('${ing['name']} - amount: ${ing['amount']}');
@@ -145,28 +159,30 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
 
   // add ingredient to the list (from the add ingredient screen)
   void addNewIngredient(Map<String, dynamic> newIngredient) async {
-    // String userId = '1';
-//debug
     print("Attempting to add ingredient: $newIngredient");
-
-    bool exists =
+    final exists =
         ingredients.any((item) => item['name'] == newIngredient['name']);
-    // only add if the ingredient isn't already there
-    if (!exists) {
-      try {
-        await widget.firebaseService.addUserStockItem(
-            userId: userId,
-            stockItemId: newIngredient['name'],
-            ingredientId: newIngredient['name'],
-            ingredientAmount: newIngredient['amount'].toDouble(),
-            ingredientUnit: newIngredient['unit'],
-            ingredientType: newIngredient['type']);
-        //debug
-        print("Attempting to add ingredient: $newIngredient");
-        fetchStockItems(); // refresh UI
-      } catch (e) {
-        print("Error adding ingredient: $e");
-      }
+    if (exists) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('${newIngredient['name']} is already in stock.'),
+        duration: Duration(seconds: 2),
+      ));
+      return;
+    }
+
+    try {
+      await widget.firebaseService.addUserStockItem(
+        userId: userId,
+        stockItemId: newIngredient['name'],
+        ingredientId: newIngredient['name'],
+        ingredientAmount: newIngredient['amount'].toDouble(),
+        ingredientUnit: newIngredient['unit'],
+        ingredientType: newIngredient['type'],
+      );
+      print("Added new ingredient: $newIngredient");
+      fetchStockItems(); // refresh list
+    } catch (e) {
+      print("Error adding ingredient: $e");
     }
   }
 
@@ -174,7 +190,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ingredient Search'),
+        title: Text('Items in Stock'),
       ),
       drawer: MenuDrawer(), // menu icon in top bar
       body: Column(
@@ -185,7 +201,7 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
             child: TextField(
               controller: searchController,
               decoration: InputDecoration(
-                labelText: 'Search ingredient or type (i.e. meat)',
+                labelText: 'Search ingredient or type (i.e. world foods)',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.search),
               ),
@@ -199,23 +215,31 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
               itemCount: filteredIngredients.length,
               itemBuilder: (context, index) {
                 final ingredient = filteredIngredients[index];
+                final id = (ingredient['name'] ?? '').toString();
+                final amount = ingredient['amount'] ?? 0;
+
+                // Initialize controller once
+                if (!stockAmountControllers.containsKey(id)) {
+                  stockAmountControllers[id] =
+                      TextEditingController(text: amount.toString());
+                }
+
                 return Card(
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
-                    title: Text(ingredient['name']),
+                    title: Text(id), // using ingredientId as display name
                     subtitle: Text(
                         'Type: ${ingredient['type']} - Unit: ${ingredient['unit']}'),
                     trailing: SizedBox(
                       width: 60,
-                      child: TextFormField(
-                        // Use initialValue instead of a controller.
-                        initialValue: ingredient['amount'].toString(),
+                      child: TextField(
+                        controller: stockAmountControllers[id],
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (value) {
-                          int newAmount =
-                              int.tryParse(value) ?? ingredient['amount'];
+                        decoration:
+                            InputDecoration(border: OutlineInputBorder()),
+                        onSubmitted: (value) {
+                          final newAmount = int.tryParse(value) ?? amount;
                           _updateIngredientAmount(ingredient, newAmount);
                         },
                       ),
@@ -258,13 +282,8 @@ class AddIngredientScreen extends StatefulWidget {
 
 class _AddIngredientScreenState extends State<AddIngredientScreen> {
   // Mock data for ingredients not in stock
-  List<Map<String, dynamic>> availableIngredients = [
-    {'name': 'Butter', 'unit': 'g', 'type': 'Dairy'},
-    {'name': 'Yeast', 'unit': 'g', 'type': 'Baking'},
-    {'name': 'Salt', 'unit': 'g', 'type': 'Spices'},
-    {'name': 'Vanilla Extract', 'unit': 'ml', 'type': 'Baking'},
-  ];
-
+  List<Map<String, dynamic>> availableIngredients = [];
+  Map<String, TextEditingController> amountControllers = {};
   List<Map<String, dynamic>> filteredIngredients = [];
   List<Map<String, dynamic>> selectedIngredients =
       []; // Sticky area ingredients
@@ -316,11 +335,28 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
   }
 
   void submitSelectedIngredients() {
+    bool hasError = false; // check for zero or duplicates
     for (var ingredient in selectedIngredients) {
-      print("Calling onAddIngredient for: $ingredient");
+      final name = ingredient['name'];
+      final controller = amountControllers[name];
+      final parsed = int.tryParse(controller?.text ?? '') ?? 0;
+
+      if (parsed <= 0) {
+        hasError = true;
+        print('Invalid amount for ${ingredient['name']}: $parsed');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text('Amount must be greater than 0 for "${ingredient['name']}"'),
+          duration: Duration(seconds: 2),
+        ));
+        break;
+      }
+      ingredient['amount'] = parsed ?? 0;
       widget.onAddIngredient(ingredient);
     }
-    Navigator.pop(context);
+    if (!hasError) {
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -352,39 +388,29 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 final ingredient = filteredIngredients[index];
                 return Card(
                   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ListTile(
-                    title: Text(ingredient['name']),
-                    subtitle: Text('Type: ${ingredient['type']}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
                       children: [
-                        SizedBox(
-                          width: 60,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                            ),
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            controller: TextEditingController(
-                              text: ingredient['amount'].toString(),
-                            ),
-                            onSubmitted: (value) {
-                              setState(() {
-                                filteredIngredients[index]['amount'] =
-                                    int.tryParse(value) ?? ingredient['amount'];
-                              });
-                            },
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                ingredient['name'] ?? 'Unnamed',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 4),
+                              Text('Type: ${ingredient['type'] ?? 'Unknown'}'),
+                            ],
                           ),
                         ),
-                        SizedBox(width: 8),
-                        Text(ingredient['unit']),
-                        SizedBox(width: 8),
-                        IconButton(
-                          icon: Icon(Icons.add_circle, color: Colors.green),
+                        ElevatedButton(
                           onPressed: () {
                             addToStickyArea(ingredient);
                           },
+                          child: Text('Add'),
                         ),
                       ],
                     ),
@@ -397,41 +423,62 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
           // Sticky Area
           Container(
             height: 100,
-            color: Colors.grey[200],
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: selectedIngredients.length,
-              itemBuilder: (context, index) {
-                final ingredient = selectedIngredients[index];
-                return Card(
-                  margin: EdgeInsets.all(8),
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    child: Column(
-                      children: [
-                        Text(ingredient['name']),
-                        SizedBox(
-                          width: 60,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Amount',
+            color: Colors.white,
+            child: selectedIngredients.isNotEmpty
+                ? ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: selectedIngredients.length,
+                    itemBuilder: (context, index) {
+                      final ingredient = selectedIngredients[index];
+                      final name = ingredient['name'];
+
+                      // Ensure a controller exists for this ingredient
+                      if (!amountControllers.containsKey(name)) {
+                        amountControllers[name] = TextEditingController(
+                          text: ingredient['amount']?.toString() ?? '',
+                        );
+                      }
+
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              name,
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            keyboardType: TextInputType.number,
-                            onSubmitted: (value) {
-                              setState(() {
-                                ingredient['amount'] = int.tryParse(value) ?? 0;
-                              });
-                            },
-                          ),
+                            SizedBox(height: 4),
+                            SizedBox(
+                              width: 60,
+                              height: 30,
+                              child: TextField(
+                                controller: amountControllers[name],
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: 'amt',
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 4, vertical: 2),
+                                ),
+                                onChanged: (value) {
+                                  ingredient['amount'] =
+                                      int.tryParse(value) ?? 0;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      'No ingredients added yet',
+                      style: TextStyle(color: Colors.grey),
                     ),
                   ),
-                );
-              },
-            ),
-          ),
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(

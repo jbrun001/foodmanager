@@ -1,6 +1,6 @@
 [
     {
-      "title": "Warming Chicken Thigh & Ginger Ramen",
+      "title": "Chicken Thigh & Ginger Ramen",
       "thumbnail": "https://dummyimage.com/100",
       "image": "https://dummyimage.com/200",
       "description": "",
@@ -14,7 +14,7 @@
       "ingredients": [
         {
           "ingredient_id": 26,
-          "ingredient_name": "Diced Chicken Thigh",
+          "ingredient_name": "Chicken Thigh",
           "amount": 500,
           "unit": "g"
         },
@@ -50,7 +50,7 @@
         },
         {
           "ingredient_id": 98,
-          "ingredient_name": "Mangetout",
+          "ingredient_name": "Sugar Snap Peas",
           "amount": 160,
           "unit": "g"
         },
@@ -83,13 +83,7 @@
           "ingredient_name": "Whole Wheat Noodle Nest",
           "amount": 4,
           "unit": "pcs"
-        },
-        {
-          "ingredient_id": 25,
-          "ingredient_name": "Boiled Water",
-          "amount": 2000,
-          "unit": "ml"
-        }        
+        }       
       ],
       "method": [
         {

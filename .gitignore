@@ -48,7 +48,10 @@ app.*.map.json
 /android/app/.cxx/
 
 /lib/firebase_options.dart
+/documentation/test-data
+/lib/screens/pocfirebase_screen.dart
 
 *.exe
 
 pubspec.lock
+

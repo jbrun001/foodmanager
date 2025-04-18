@@ -1,6 +1,6 @@
 [
     {
-      "title": "Korean-Style Gochujang Pork Bibimbap with Spinach Rice",
+      "title": "Gochujang Pork Bibimbap with Spinach Rice",
       "thumbnail": "https://dummyimage.com/100",
       "image": "https://dummyimage.com/200",
       "description": "",
@@ -62,22 +62,10 @@
         },
         {
           "ingredient_id": 1,
-          "ingredient_name": "Long Grain Rice",
+          "ingredient_name": "White Basmati Rice",
           "amount": 260,
           "unit": "g"
-        },
-        {
-          "ingredient_id": 41,
-          "ingredient_name": "Cold Water",
-          "amount": 450,
-          "unit": "ml"
-        },
-        {
-          "ingredient_id": 41,
-          "ingredient_name": "Cold Water",
-          "amount": 4,
-          "unit": "tbsp"
-        }        
+        }       
       ],
       "method": [
         {

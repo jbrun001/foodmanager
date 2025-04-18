@@ -1,6 +1,6 @@
 [
     {
-      "title": "Seeded Goat's Cheese & Beetroot Grain Bowl with Pesto Dressing (V)",
+      "title": "Goats Cheese & Beetroot Grain Bowl with Pesto Dressing",
       "thumbnail": "https://dummyimage.com/100",
       "image": "https://dummyimage.com/200",
       "description": "",
@@ -10,11 +10,11 @@
       "portions":   4,
       "cusine":     "Modern European",
       "category":   "Main Course",
-      "keywords":   "Goat's cheese, Beetroot, Grain bowl, Pesto, Vegetarian, Seeded, Modern European",
+      "keywords":   "Goats cheese, Beetroot, Grain bowl, Pesto, Vegetarian, Seeded, Modern European",
       "ingredients": [
         {
           "ingredient_id": 76,
-          "ingredient_name": "Tenderstem Broccoli",
+          "ingredient_name": "Broccoli",
           "amount": 160,
           "unit": "g"
         },
@@ -65,12 +65,6 @@
           "ingredient_name": "White Wine Vinegar",
           "amount": 30,
           "unit": "ml"
-        },
-        {
-          "ingredient_id": 135,
-          "ingredient_name": "Olive Oil",
-          "amount": 4,
-          "unit": "tbsp"
         }
       ],
       "method": [

@@ -1,6 +1,6 @@
 [
     {
-      "title": "Spicy Rice Noodle Soup with Sesame Korean-Style Tofu (V)",
+      "title": "Spicy Rice Noodle Soup with Sesame Tofu",
       "thumbnail": "https://dummyimage.com/100",
       "image": "https://dummyimage.com/200",
       "description": "",
@@ -83,24 +83,6 @@
           "ingredient_name": "Vegetable Stock Mix",
           "amount": 11,
           "unit": "g"
-        },
-        {
-          "ingredient_id": 16,
-          "ingredient_name": "Sugar",
-          "amount": 2,
-          "unit": "tbsp"
-        },
-        {
-          "ingredient_id": 41,
-          "ingredient_name": "Cold Water",
-          "amount": 2,
-          "unit": "tbsp"
-        },
-        {
-          "ingredient_id": 25,
-          "ingredient_name": "Boiled Water",
-          "amount": 1200,
-          "unit": "ml"
         }
       ],
       "method": [

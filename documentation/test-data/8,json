@@ -26,7 +26,7 @@
         },
         {
           "ingredient_id": 64,
-          "ingredient_name": "Cooked White Long Grain Rice",
+          "ingredient_name": "Long Grain Rice",
           "amount": 560,
           "unit": "g"
         },
@@ -68,7 +68,7 @@
         },
         {
           "ingredient_id": 67,
-          "ingredient_name": "Mini Cosberg Lettuce",
+          "ingredient_name": "Gem Lettuce",
           "amount": 2,
           "unit": "pcs"
         },
@@ -80,7 +80,7 @@
         },
         {
           "ingredient_id": 68,
-          "ingredient_name": "Tamari Soy Sauce",
+          "ingredient_name": "Soy Sauce",
           "amount": 30,
           "unit": "ml"
         },
@@ -89,12 +89,6 @@
           "ingredient_name": "Tamarind Paste",
           "amount": 30,
           "unit": "g"
-        },
-        {
-          "ingredient_id": 41,
-          "ingredient_name": "Cold Water",
-          "amount": 120,
-          "unit": "ml"
         }
       ],
       "method": [
