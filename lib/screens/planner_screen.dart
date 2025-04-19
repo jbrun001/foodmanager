@@ -6,6 +6,7 @@ import 'package:intl/intl.dart'; // for date formatting
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
 import '../widgets/recipedetail.dart';
+import '../services/smartlist_service.dart';
 
 // use template of recipe_screen as that is a stateful widget
 
@@ -28,6 +29,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
   Map<String, List<Map<String, dynamic>>> plan = {}; // use JSON format
   bool isLoading = true; // for loading indicator
   int preferredPortions = 2; // set to 2 incase no data in user profile
+  bool hasUpdatedStock = false;
 
   @override
   void initState() {
@@ -245,6 +247,65 @@ class _PlannerScreenState extends State<PlannerScreen> {
     );
   }
 
+  // called from update stock button
+  Future<void> updateStockFromSmartlist() async {
+    // get the current smartlist
+    final smartlist = await loadSmartlist(
+      firebaseService: widget.firebaseService,
+      userId: userId,
+      selectedWeekStart: selectedWeekStart,
+      selectedStore: null,
+      fetchMealPlanIngredients: () async {
+        List<Map<String, dynamic>> ingredients = [];
+        plan.forEach((_, recipes) {
+          for (var r in recipes) {
+            ingredients.addAll(
+                List<Map<String, dynamic>>.from(r['ingredients'] ?? []));
+          }
+        });
+        return ingredients;
+      },
+    );
+    // are there any leftovers?
+    final leftovers =
+        smartlist.where((item) => item['left_over_amount'] > 0).toList();
+
+    // if no leftovers then show message and return
+    if (leftovers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No leftovers to update in stock.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
+    // if there are leftovers tehn overwroite/create stockitems
+    await widget.firebaseService.updateStockItems(
+      userId,
+      leftovers
+          .map((item) => {
+                'name': item['name'],
+                'amount': item['left_over_amount'],
+                'unit': item['unit'],
+                'type': item['type'],
+              })
+          .toList(),
+    );
+
+    setState(() {
+      hasUpdatedStock = true;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Stock updated from smartlist leftovers.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   // full build of the user interface
   Widget build(BuildContext context) {
@@ -292,6 +353,26 @@ class _PlannerScreenState extends State<PlannerScreen> {
                     onPressed: () => pickStartDate(context),
                     child: Text(
                         '${DateFormat('yMMMd').format(selectedWeekStart)}')),
+                // update stock button
+                OutlinedButton(
+                  onPressed: hasUpdatedStock ? null : updateStockFromSmartlist,
+                  style: ButtonStyle(
+                    foregroundColor:
+                        WidgetStateProperty.resolveWith<Color>((states) {
+                      if (states.contains(WidgetState.disabled))
+                        return Colors.grey;
+                      return Theme.of(context).colorScheme.primary;
+                    }),
+                    side: WidgetStateProperty.resolveWith<BorderSide>((states) {
+                      if (states.contains(WidgetState.disabled)) {
+                        return BorderSide(color: Colors.grey);
+                      }
+                      return BorderSide(
+                          color: Theme.of(context).colorScheme.primary);
+                    }),
+                  ),
+                  child: Text('Update Stock'),
+                ),
               ],
             ),
           ),

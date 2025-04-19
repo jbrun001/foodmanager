@@ -130,12 +130,12 @@ Future<List<Map<String, dynamic>>> loadSmartlist({
       value['purchase_amount'] = 0.0;
       value['purchased'] = required > 0.0;
     }
-    // testing - output all items for validation druing testing
-    print(
-        'smartlist calculation: $key: Required: $required stock: $stock Needed: ${value['needed']} MOQ: $moq');
 
     // calculate what the stock level will be after the meal is cooked
     value['left_over_amount'] = stock + value['purchase_amount'] - required;
+    // testing - output all items for validation druing testing
+    print(
+        'smartlist calculation:, $key: ,Required: ,$required, stock: ,$stock, Needed: ,${value['needed']}, MOQ: ,$moq, Left Over:,${value['left_over_amount']},purchase amount, ${value['purchase_amount']}');
   });
 
   List<Map<String, dynamic>> sortedItems = aggregatedItems.values.toList();

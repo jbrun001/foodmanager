@@ -40,7 +40,27 @@ class MyApp extends StatelessWidget {
 // Define the GoRouter
 GoRouter _router(FirebaseService firebaseService) {
   return GoRouter(
-    initialLocation: '/', // Start at the login screen
+    initialLocation: '/',
+    // check if web user is trying to access a page without a login
+    redirect: (context, state) {
+      final userId = FirebaseService().getCurrentUserId();
+      final location = state.matchedLocation;
+
+      // if they aren't logged in then force them to to login screen
+      // exclude signin screen as users won't be logged in for that
+      final isLoggingIn = location == '/' || location == '/signup';
+
+      if (userId == '' && !isLoggingIn) {
+        return '/'; // redirect to login if not logged in and not at / or /signup
+      }
+      // if they are logged in and they try to go to the login page /
+      // then re-direct them to the recipes screen - to stop them
+      // logging in again
+      if (userId != '' && location == '/') {
+        return '/recipes';
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/',

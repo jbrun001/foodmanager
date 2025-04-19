@@ -892,4 +892,31 @@ class FirebaseService {
             })
         .toList();
   }
+
+  // this updates stock with the leftovers from a meal plan
+  // if there aren't stock items it creates them, if there
+  // are items it overwrites them
+  Future<void> updateStockItems(
+      String userId, List<Map<String, dynamic>> updatedItems) async {
+    final stockRef = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('StockItems');
+
+    final batch = FirebaseFirestore.instance.batch();
+
+    for (var item in updatedItems) {
+      final name = item['name'];
+      final docRef = stockRef.doc(name);
+
+      batch.set(docRef, {
+        'ingredientId': name,
+        'ingredientAmount': item['amount'],
+        'unit': item['unit'],
+        'type': item['type'],
+      });
+    }
+
+    await batch.commit();
+  }
 }

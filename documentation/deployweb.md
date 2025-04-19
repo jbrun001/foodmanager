@@ -4,7 +4,7 @@ jakemacmini@JMM foodmanager % flutter build web
 
 Compiling lib/main.dart for the Web...                           1,399ms
 ✓ Built build/web
-jakemacmini@JMM foodmanager % 
+jakemacmini@JMM  foodmanager % 
 
 jakemacmini@JMM foodmanager % firebase --version
 14.2.0
