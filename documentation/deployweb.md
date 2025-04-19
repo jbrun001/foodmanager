@@ -1,10 +1,10 @@
 
 ```
-jakemacmini@Jakes-Mac-mini foodmanager % flutter build web
+jakemacmini@JMM foodmanager % flutter build web
 
 Compiling lib/main.dart for the Web...                           1,399ms
 ✓ Built build/web
-jakemacmini@Jakes-Mac-mini foodmanager % 
+jakemacmini@JMM foodmanager % 
 
 jakemacmini@JMM foodmanager % firebase --version
 14.2.0
@@ -43,7 +43,8 @@ i  hosting[foodmanager-f117f]: releasing new version...
 Project Console: https://console.firebase.google.com/project/foodmanager-f117f/overview
 Hosting URL: https://foodmanager-f117f.web.app
 
-```
+
+
 
 jakemacmini@JMM foodmanager % flutter emulators --launch apple_ios_simulator
 
@@ -65,3 +66,5 @@ q Quit (terminate the application on the device).
 
 A Dart VM Service on iPhone 16 Plus is available at: http://127.0.0.1:49452/S4N2aeI35DQ=/
 The Flutter DevTools debugger and profiler on iPhone 16 Plus is available at: http://127.0.0.1:9101?uri=http://127.0.0.1:49452/S4N2aeI35DQ=/
+```
+
