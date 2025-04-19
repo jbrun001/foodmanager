@@ -1,5 +1,6 @@
 import '../services/firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 // calculates smart list from multiple data sources
 Future<List<Map<String, dynamic>>> loadSmartlist({
@@ -10,6 +11,26 @@ Future<List<Map<String, dynamic>>> loadSmartlist({
   required Future<List<Map<String, dynamic>>> Function()
       fetchMealPlanIngredients,
 }) async {
+  // check if stock was already updated if it was updated for this week
+  // then don't re-calculate it - reload it.
+  // when a user has updated stock for a week they can't change the
+  // smartlist
+  final doc = await firebaseService.firestore
+      .collection('Users')
+      .doc(userId)
+      .collection('SmartLists')
+      .doc(DateFormat('yyyy-MM-dd').format(selectedWeekStart))
+      .get();
+
+  final stockUpdated = doc.exists && doc.data()?['stockUpdated'] == true;
+
+  if (stockUpdated) {
+    final cachedSmartlist =
+        List<Map<String, dynamic>>.from(doc.data()?['items'] ?? []);
+    print('Returning cached smartlist snapshot');
+    return cachedSmartlist;
+  }
+
   // list of the ingredients for the mealplan in the selected week
   List<Map<String, dynamic>> mealPlanIngredients =
       await fetchMealPlanIngredients();

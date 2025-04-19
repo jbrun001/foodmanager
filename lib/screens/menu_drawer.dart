@@ -52,9 +52,19 @@ class MenuDrawer extends StatelessWidget {
               context.go('/'); // redirect to login screen
             },
           ),
+/*
           ListTile(
             title: Text('POC firebase'),
             onTap: () => context.go('/firebase'),
+          ),
+*/
+          ListTile(
+            title: Text(
+              'Version 1.2.0',
+              textAlign: TextAlign.left,
+              style: TextStyle(color: Colors.grey),
+            ),
+            enabled: false,
           ),
         ],
       ),

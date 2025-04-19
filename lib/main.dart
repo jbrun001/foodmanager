@@ -97,11 +97,12 @@ GoRouter _router(FirebaseService firebaseService) {
         builder: (context, state) =>
             SmartlistScreen(firebaseService: firebaseService),
       ),
-      GoRoute(
+/*      GoRoute(
         path: '/cooking',
         builder: (context, state) =>
             CookingScreen(firebaseService: FirebaseService()),
       ),
+*/
       GoRoute(
         path: '/waste',
         builder: (context, state) =>
@@ -112,11 +113,13 @@ GoRouter _router(FirebaseService firebaseService) {
         builder: (context, state) =>
             WasteLogAnalysisScreen(firebaseService: firebaseService),
       ),
+/*
       GoRoute(
         path: '/firebase',
         builder: (context, state) =>
             POCFirebaseScreen(firebaseService: firebaseService),
       ),
+*/
       GoRoute(
           path: '/signup',
           builder: (context, state) =>

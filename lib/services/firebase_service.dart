@@ -493,12 +493,14 @@ class FirebaseService {
   }
 
   // save the full smartlist for one week
+  // include flag for stock updated
   Future<void> saveSmartlistForWeek({
     required String userId,
     required DateTime weekStart,
     required List<Map<String, dynamic>> items,
+    bool stockUpdated = false,
   }) async {
-    await FirebaseFirestore.instance
+    await firestore
         .collection('Users')
         .doc(userId)
         .collection('SmartLists')
@@ -506,7 +508,8 @@ class FirebaseService {
         .set({
       'weekStart': weekStart,
       'items': items,
-    });
+      'stockUpdated': stockUpdated,
+    }, SetOptions(merge: true));
   }
 
   // load the full smartlist for one week
@@ -918,5 +921,23 @@ class FirebaseService {
     }
 
     await batch.commit();
+  }
+
+  // record that the stock has been updated for this smart list
+  // this freezes the current smart list
+  Future<void> markStockUpdatedInSmartlist({
+    required String userId,
+    required DateTime weekStart,
+  }) async {
+    print(
+        "Marking stock updated for week: ${DateFormat('yyyy-MM-dd').format(weekStart)}");
+    await firestore
+        .collection('Users')
+        .doc(userId)
+        .collection('SmartLists')
+        .doc(DateFormat('yyyy-MM-dd').format(weekStart))
+        .set({
+      'stockUpdated': true,
+    }, SetOptions(merge: true));
   }
 }

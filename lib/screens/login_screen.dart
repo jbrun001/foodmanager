@@ -94,6 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
             TextField(
               controller: passwordController,
               obscureText: true,
+              textInputAction:
+                  TextInputAction.done, // enables enter key to submit
+              onSubmitted: (_) => _loginWithEmail(), // triggers login on Enter
               decoration: InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),

@@ -41,6 +41,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
       context.go('/');
     }
     initialisePlanner();
+    checkStockUpdated(); // check if user is allowed to update stock
   }
 
   @override
@@ -171,8 +172,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
           picked.month,
           picked.day, // reset time to midnight, by not including time
         ).subtract(Duration(days: offsetToSunday));
-        fetchPlannerData();
       });
+      await fetchPlannerData();
+      await checkStockUpdated();
     }
   }
 
@@ -281,6 +283,17 @@ class _PlannerScreenState extends State<PlannerScreen> {
       return;
     }
 
+    await widget.firebaseService.saveSmartlistForWeek(
+      userId: userId,
+      weekStart: selectedWeekStart,
+      items: smartlist,
+    );
+    // mark this smartlist with stockUpdated true
+    await widget.firebaseService.markStockUpdatedInSmartlist(
+      userId: userId,
+      weekStart: selectedWeekStart,
+    );
+
     // if there are leftovers tehn overwroite/create stockitems
     await widget.firebaseService.updateStockItems(
       userId,
@@ -304,6 +317,21 @@ class _PlannerScreenState extends State<PlannerScreen> {
         duration: Duration(seconds: 2),
       ),
     );
+  }
+
+  // checks if user should be allowed to update stock
+  Future<void> checkStockUpdated() async {
+    final docId = DateFormat('yyyy-MM-dd').format(selectedWeekStart);
+    final doc = await widget.firebaseService.firestore
+        .collection('Users')
+        .doc(userId)
+        .collection('SmartLists')
+        .doc(docId)
+        .get();
+
+    setState(() {
+      hasUpdatedStock = doc.exists && doc.data()?['stockUpdated'] == true;
+    });
   }
 
   @override
@@ -371,7 +399,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                           color: Theme.of(context).colorScheme.primary);
                     }),
                   ),
-                  child: Text('Update Stock'),
+                  child: Text(hasUpdatedStock ? 'Plan Locked' : 'Update Stock'),
                 ),
               ],
             ),
@@ -386,6 +414,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
                   return DragTarget<Map<String, dynamic>>(
                     // trigger if a recipe is dropped in the drag target
                     onAcceptWithDetails: (details) {
+                      // block dropping to target if meal plan is locked
+                      if (hasUpdatedStock) return;
                       final originalRecipe =
                           Map<String, dynamic>.from(details.data);
                       final int originalPortions =
@@ -482,34 +512,39 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                               .toList(),
                                           // if user changes portions
                                           // recalculate the ingredient amounts
-                                          onChanged: (val) {
-                                            setState(() {
-                                              final int newPortions = val ?? 1;
-                                              final int originalPortions =
-                                                  recipe['portions'] ?? 1;
-                                              // make sure ingredientsOriginal exists
-                                              recipe['ingredientsOriginal'] ??=
-                                                  List<
-                                                          Map<String,
-                                                              dynamic>>.from(
-                                                      recipe['ingredients']);
-                                              final originalIngredients = List<
-                                                  Map<String,
-                                                      dynamic>>.from(recipe[
-                                                  'ingredientsOriginal']);
-                                              recipe['ingredients'] =
-                                                  scaleIngredients(
-                                                originalIngredients:
-                                                    originalIngredients,
-                                                originalPortions:
-                                                    originalPortions,
-                                                targetPortions: newPortions,
-                                              );
-                                              recipe['plannedPortions'] =
-                                                  newPortions;
-                                              saveMealPlan();
-                                            });
-                                          }),
+                                          // but not if meal plan is locked
+                                          onChanged: hasUpdatedStock
+                                              ? null
+                                              : (val) {
+                                                  setState(() {
+                                                    final int newPortions =
+                                                        val ?? 1;
+                                                    final int originalPortions =
+                                                        recipe['portions'] ?? 1;
+                                                    // make sure ingredientsOriginal exists
+                                                    recipe[
+                                                        'ingredientsOriginal'] ??= List<
+                                                            Map<String,
+                                                                dynamic>>.from(
+                                                        recipe['ingredients']);
+                                                    final originalIngredients = List<
+                                                        Map<String,
+                                                            dynamic>>.from(recipe[
+                                                        'ingredientsOriginal']);
+                                                    recipe['ingredients'] =
+                                                        scaleIngredients(
+                                                      originalIngredients:
+                                                          originalIngredients,
+                                                      originalPortions:
+                                                          originalPortions,
+                                                      targetPortions:
+                                                          newPortions,
+                                                    );
+                                                    recipe['plannedPortions'] =
+                                                        newPortions;
+                                                    saveMealPlan();
+                                                  });
+                                                }),
                                       // make the title text clickable https://api.flutter.dev/flutter/widgets/GestureDetector-class.html
                                       Expanded(
                                         child: GestureDetector(
@@ -522,21 +557,22 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black,
                                               decoration: TextDecoration
                                                   .underline, // make it look like a link
                                             ),
                                           ),
                                         ),
                                       ),
+                                      // disable delete if meal plan is locked
                                       IconButton(
                                         icon: Icon(Icons.delete),
-                                        onPressed: () {
-                                          setState(() {
-                                            plan[day]!.remove(recipe);
-                                          });
-                                        },
+                                        onPressed: hasUpdatedStock
+                                            ? null
+                                            : () {
+                                                setState(() {
+                                                  plan[day]!.remove(recipe);
+                                                });
+                                              },
                                       ),
                                     ],
                                   ),
@@ -632,12 +668,16 @@ class _PlannerScreenState extends State<PlannerScreen> {
                             ],
                           ),
                           child: Text(
-                            recipe['title'] ?? '',
+                            hasUpdatedStock
+                                ? 'Plan is locked – no changes allowed'
+                                : (recipe['title'] ?? ''),
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
                             softWrap: true,
                             style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
