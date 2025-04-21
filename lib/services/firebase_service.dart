@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // for authentication
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart'; // for oauth2 authentication
 import 'package:intl/intl.dart'; // for date formatting
+import 'package:flutter/foundation.dart'
+    show kIsWeb; // for detecting if running running on web
+import 'package:universal_platform/universal_platform.dart'; // for identifying non web platforms
 
 // this services file contains the class for all database activity
 class FirebaseService {
@@ -10,7 +14,7 @@ class FirebaseService {
   // firebase authentication object
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  // create a new user document in Firestore
+  // create a new user document in Firestore for testing
   Future<void> createUserPOC({
     required String userId,
     required String firebaseId,
@@ -137,7 +141,7 @@ class FirebaseService {
     });
   }
 
-  // add a stock item to a user
+  // add a stock item to a user from an ingredient
   Future<void> addIngredient({
     required String userId,
     required String stockItemId,
@@ -212,10 +216,10 @@ class FirebaseService {
     }
   }
 
-  // saves current meal plan.
+  // saves current meal plan
   // checks for existing meals so it doesn't duplicate
   // updates new ones
-  // deletes any that don't exist any more
+  // deletes any meals that don't exist any more
   Future<void> saveMealPlan(String userId, DateTime startDate,
       Map<String, List<Map<String, dynamic>>> plan) async {
     try {
@@ -406,7 +410,7 @@ class FirebaseService {
       String dateKey = date.toIso8601String(); // convert date to ISO 8601
       String docId = "${dateKey}_$name"; // unique key: ISO date + item name
 
-// debug
+// testing
       print(
           "Checking if item '$name' already exists for user $userId on date $dateKey");
 
@@ -418,7 +422,7 @@ class FirebaseService {
           .get();
 
       if (!docSnapshot.exists) {
-// debug
+// testing
         print("Item '$name' does not exist, adding to Firestore.");
 
         await firestore
@@ -452,7 +456,7 @@ class FirebaseService {
       String dateKey = date.toIso8601String();
       String docId = "${dateKey}_$name";
 
-// debug
+// test
       print(
           "Updating item '$name' for user $userId on date $dateKey to purchased: $purchased");
 
@@ -647,32 +651,54 @@ class FirebaseService {
     }
   }
 
-  // Google Sign-In
+  // google Sign-In
+  // https://medium.com/@mohantaankit2002/best-practices-for-handling-flutter-web-and-mobile-app-variants-in-a-single-codebase-543f74f67a9a
   Future<User?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) {
-        print('Google sign-in cancelled');
+      if (kIsWeb) {
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithPopup(googleProvider);
+        User? user = userCredential.user;
+
+        if (user != null) {
+          print('Web: User signed in with Google: ${user.uid}');
+          await createUserSignUp(
+              user.uid, user.email ?? '', 2, "Tesco"); // default values
+        }
+
+        return user;
+      } else if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS) {
+        // iOS and android use the same function
+        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+        if (googleUser == null) {
+          print('Google sign-in cancelled');
+          return null;
+        }
+
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        UserCredential userCredential =
+            await auth.signInWithCredential(credential);
+        User? user = userCredential.user;
+
+        if (user != null) {
+          print('User signed in with Google: ${user.uid}');
+          await createUserSignUp(
+              user.uid, user.email ?? '', 2, "Tesco"); // default values
+        }
+        return user;
+      } else {
+        // if we are here we are not running on web iOS or Android
+        // which are the target platforms
+        print('Google Sign-In not supported on this platform.');
         return null;
       }
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      UserCredential userCredential =
-          await auth.signInWithCredential(credential);
-      User? user = userCredential.user;
-
-      if (user != null) {
-        print('User signed in with Google: ${user.uid}');
-        await createUserSignUp(
-            user.uid, user.email ?? '', 2, "Tesco"); // Default values
-      }
-      return user;
     } catch (e) {
       print('Error signing in with Google: $e');
       return null;
@@ -751,7 +777,7 @@ class FirebaseService {
   // If no store is found, it creates one with the name "Tesco" and returns it
   Future<List<String>> getStores() async {
     try {
-      QuerySnapshot snapshot = await firestore.collection('Stores').get();
+      QuerySnapshot snapshot = await firestore.collection('Store').get();
       if (snapshot.docs.isEmpty) {
         // No stores found – create a default store "Tesco"
         await firestore.collection('Store').add({'name': 'Tesco'});
