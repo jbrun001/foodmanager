@@ -32,7 +32,7 @@ class _RecipesScreenState extends State<RecipesScreen> {
     70
   ]; // R1.RD.02
   int? selectedCookTime; // null = no filter R1.RD.02
-  final List<int?> caloriesOptions = [null, 500, 600, 700, 800, 900, 1000];
+  final List<int?> caloriesOptions = [null, 500, 600, 700, 800, 900];
   int? selectedCalories;
 
   @override
@@ -182,22 +182,24 @@ class _RecipesScreenState extends State<RecipesScreen> {
                       }).toList(),
                     ),
                     SizedBox(width: 8),
-                    Text("Max Cals:", style: TextStyle(fontSize: 16)),
+                    Text("Max Kcal:", style: TextStyle(fontSize: 16)),
                     SizedBox(width: 8),
-                    DropdownButton<int?>(
-                      value: selectedCalories,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedCalories = value;
-                          applyFilters();
-                        });
-                      },
-                      items: caloriesOptions.map((cal) {
-                        return DropdownMenuItem<int?>(
-                          value: cal,
-                          child: Text(cal == null ? 'Any' : '$cal kcal'),
-                        );
-                      }).toList(),
+                    Expanded(
+                      child: DropdownButton<int?>(
+                        value: selectedCalories,
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCalories = value;
+                            applyFilters();
+                          });
+                        },
+                        items: caloriesOptions.map((cal) {
+                          return DropdownMenuItem<int?>(
+                            value: cal,
+                            child: Text(cal == null ? 'Any' : '$cal'),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ],
                 ),
