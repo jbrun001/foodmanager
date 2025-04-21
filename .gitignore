@@ -58,3 +58,5 @@ app.*.map.json
 pubspec.lock
 /.vscode
 /.vscode/launch.json
+
+/ios/Runner/GoogleService-Info.plist
