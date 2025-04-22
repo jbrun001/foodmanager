@@ -60,7 +60,7 @@ class MenuDrawer extends StatelessWidget {
 */
           ListTile(
             title: Text(
-              'Version 1.2.1',
+              'Version 1.2.2',
               textAlign: TextAlign.left,
               style: TextStyle(color: Colors.grey),
             ),

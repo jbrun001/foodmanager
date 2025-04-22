@@ -79,8 +79,8 @@ class _WasteLogScreenState extends State<WasteLogScreen> {
         week: _weekStart, // start of the week for grouping
         logDate: _selectedDate, // actual log date
         amount: wasteAmount,
-        recycled: double.parse((wasteAmount - compostedAmount - inedibleAmount)
-            .toStringAsFixed(1)),
+        recycled:
+            double.parse((wasteAmount - compostedAmount).toStringAsFixed(1)),
         composted: compostedAmount,
         inedibleParts: inedibleAmount,
       );
