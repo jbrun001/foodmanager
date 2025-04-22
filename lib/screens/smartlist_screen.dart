@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
 import '../services/smartlist_service.dart'; // contains loadSmartlist
+import '../services/testing_service.dart'; // test logging
 
 class SmartlistScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -82,147 +83,6 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     setState(() => _isLoading = false);
   }
 
-  // fetches data from firebase
-  // updated to calculate required ingredients from the mealplan
-  Future<void> _loadSmartlist2() async {
-    setState(() => _isLoading = true); // start loading
-    // list of all the ingredients for the mealplan in the selected week
-    List<Map<String, dynamic>> mealPlanIngredients =
-        await _fetchMealPlanIngredients();
-    // list of all the items entered manually in the smart list
-    List<Map<String, dynamic>> manualItems = await widget.firebaseService
-        .getManualSmartlistItems(userId, selectedWeekStart);
-    // List of all the ingredients this user has
-    List<Map<String, dynamic>> stockItems =
-        await widget.firebaseService.getStockItems(userId); // Fetch stock items
-    // map of all of the moqs all ingredients in the currently selected store,
-    // if no store then default to tesco
-    Map<String, double> moqs =
-        await widget.firebaseService.getMoQsForStore(_selectedStore ?? 'Tesco');
-
-    // list of unique ingredients and their total amounts based on
-    // meal plan ingredients and existing smartlist items
-    Map<String, Map<String, dynamic>> aggregatedItems = {};
-
-    // convert stock items into a map with ingredient name and amount
-    // Convert stock list into a lookup map (ingredient name -> amount)
-    Map<String, double> userStock = {};
-    for (var stockItem in stockItems) {
-      userStock[stockItem['name']] = (stockItem['amount'] as num).toDouble();
-    }
-
-    // for every ingredient in the meal plan add it to agregatedItems
-    // if it exists already then increase the amount
-    for (var ingredient in mealPlanIngredients) {
-      // check that there is an ingredient name
-      String name = ingredient['ingredient_name'] ?? 'Unknown Ingredient';
-      // check units are strings
-      String unit = ingredient['unit'] ?? 'unit';
-      double amount = (ingredient['amount'] as num).toDouble();
-      // check there is a type - if not then create a type of general
-      String type = ingredient.containsKey('type') && ingredient['type'] != null
-          ? ingredient['type']
-          : 'General';
-
-      if (aggregatedItems.containsKey(name)) {
-        aggregatedItems[name]!['amount'] += amount;
-      } else {
-        aggregatedItems[name] = {
-          'name': name,
-          'amount': amount,
-          'unit': unit,
-          'type': type,
-          'purchased': false,
-          'isManual': false, // items from meal plan
-          'stock': userStock[name] ?? 0.0, // get the amount from StockItems
-          'needed': 0.0, // place to store how much is needed to be purchased
-          'moq': moqs[name] ?? 0.0, // minimum order quantity
-          'purchase_amount': 0.0, // amount factoring MOQ and existing stock
-          'left_over_amount': 0.0, // stock level after cooking this meal
-        };
-      }
-    }
-
-    // add manually entered items and merge duplicates
-    for (var item in manualItems) {
-      String name = item['name'] ?? 'Unknown Item';
-      String unit = item['unit'] ?? 'unit';
-      double amount = (item['amount'] as num).toDouble();
-      String type = item.containsKey('type') && item['type'] != null
-          ? item['type']
-          : 'General';
-
-      if (aggregatedItems.containsKey(name)) {
-        aggregatedItems[name]!['amount'] += amount;
-      } else {
-        aggregatedItems[name] = {
-          'name': name,
-          'amount': amount,
-          'unit': unit,
-          'type': type,
-          'purchased': item['purchased'] ?? false,
-          'isManual': true, // manually added items
-          'stock': userStock[name] ?? 0.0, // get the amount from StockItems
-          'needed': 0.0, // how much is needed after stock removed
-          'moq': moqs[name] ?? 0.0, // minimum order quantity
-          'purchase_amount': 0.0, // amount factoring MOQ and existing stock
-          'left_over_amount': 0.0, // stock level after cooking this meal
-        };
-      }
-    }
-
-    // go through smartlist and calculate needed amounts,
-    // and what the stock level will be when the meal
-    // has been cooked - left_over_amount
-    aggregatedItems.forEach((key, value) {
-      double required = value['amount'];
-      double stock = value['stock'];
-      double moq = value['moq'];
-      // find out how much more is needed
-      // if required > stock then we need required-stock
-      // else we don't need any more so 0.0
-      value['needed'] = required > stock ? required - stock : 0.0;
-      // if the item is requred by the meal plan and is not needed to
-      // purchase because it's already in stock then mark as already
-      // purchased
-      if (value['needed'] == 0.0 && value['amount'] > 0.0) {
-        value['purchased'] = true;
-      }
-      // take account of minimum order quantities for each inggredient
-      // only if we need to buy more
-      if (value['needed'] > 0.0) {
-        if (moq > 0.0) {
-          // calculate purchase amount based on MOQ
-          // value[needed]/moq finds out how many packs we need
-          // the .ceil rounds this up to the nearest integer
-          // moq * gets you the amount in units
-          value['purchase_amount'] = moq * (value['needed'] / moq).ceil();
-        } else {
-          value['purchase_amount'] = value['needed'];
-        }
-      } else {
-        value['purchase_amount'] = 0.0;
-        value['purchased'] = required > 0.0;
-      }
-      // calculate what the stock level will be after the meal is cooked
-      value['left_over_amount'] = stock + value['purchase_amount'] - required;
-    });
-
-    setState(() {
-      List<Map<String, dynamic>> sortedItems = aggregatedItems.values.toList();
-      sortedItems.sort(_smartlistSort);
-      _smartlistItems = sortedItems;
-      _isLoading = false; // finished loading
-    });
-
-    // save smart list after creation
-    await widget.firebaseService.saveSmartlistForWeek(
-      userId: userId,
-      weekStart: selectedWeekStart,
-      items: _smartlistItems,
-    );
-  }
-
   // R1.SL.01
   // list sorting, purchased items last
   // within purchased/unpurchased sort by ingredient type
@@ -245,8 +105,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     Map<String, List<Map<String, dynamic>>> mealPlan =
         await widget.firebaseService.getMealPlan(userId, selectedWeekStart,
             selectedWeekStart.add(Duration(days: 6)));
-//debug
-    print("Fetched Meal Plan: $mealPlan");
+
     List<Map<String, dynamic>> ingredientsList = [];
 
     for (var meals in mealPlan.values) {
@@ -264,8 +123,8 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
         }
       }
     }
-//debug
-    print("Extracted Ingredients: $ingredientsList");
+    testLog('smartlist._fetchMealPlanIngredients', 'result',
+        {'ingredientsList': ingredientsList});
     return ingredientsList;
   }
 

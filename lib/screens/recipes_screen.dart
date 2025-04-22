@@ -60,7 +60,6 @@ class _RecipesScreenState extends State<RecipesScreen> {
         isLoading = false;
       });
     } catch (e) {
-      print("Error fetching recipes: $e");
       setState(() => isLoading = false);
     }
   }

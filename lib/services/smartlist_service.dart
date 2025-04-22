@@ -1,6 +1,6 @@
 import '../services/firebase_service.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../services/testing_service.dart';
 
 // calculates smart list from multiple data sources
 Future<List<Map<String, dynamic>>> loadSmartlist({
@@ -27,7 +27,6 @@ Future<List<Map<String, dynamic>>> loadSmartlist({
   if (stockUpdated) {
     final cachedSmartlist =
         List<Map<String, dynamic>>.from(doc.data()?['items'] ?? []);
-    print('Returning cached smartlist snapshot');
     return cachedSmartlist;
   }
 
@@ -146,7 +145,11 @@ Future<List<Map<String, dynamic>>> loadSmartlist({
         value['purchase_amount'] = value['needed'];
       }
       // testing
-      if (moq == 0.0) print('smartlist calculation: $key has no MOQ set');
+      if (moq == 0.0) {
+        testLog('sl_service.loadSmartlist', 'no moq value', {
+          'key': key,
+        });
+      }
     } else {
       value['purchase_amount'] = 0.0;
       value['purchased'] = required > 0.0;
@@ -155,8 +158,15 @@ Future<List<Map<String, dynamic>>> loadSmartlist({
     // calculate what the stock level will be after the meal is cooked
     value['left_over_amount'] = stock + value['purchase_amount'] - required;
     // testing - output all items for validation druing testing
-    print(
-        'smartlist calculation:, $key: ,Required: ,$required, stock: ,$stock, Needed: ,${value['needed']}, MOQ: ,$moq, Left Over:,${value['left_over_amount']},purchase amount, ${value['purchase_amount']}');
+    testLog('sl_service.loadSmartlist', 'sl calc result', {
+      'key': key,
+      'required by mealPlan': required,
+      'available in stock': stock,
+      'needed after stock removed': value['needed'],
+      'MOQ for item': moq,
+      'left at end of week': value['left_over_amount'],
+      'to be purchased': value['purchase_amount']
+    });
   });
 
   List<Map<String, dynamic>> sortedItems = aggregatedItems.values.toList();

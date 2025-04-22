@@ -7,6 +7,7 @@ import 'menu_drawer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // needed for Timestamp
 // f1_charts reference https://clay-atlas.com/us/blog/2021/10/14/flutter-en-flchart-pie-chart/
 import '../widgets/wastesummary_card.dart';
+import '../services/testing_service.dart';
 
 class WasteLogAnalysisScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -78,7 +79,8 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
         // 'totalInedible': totalInedible, don't want to show inedible
       };
       // testing - output result of weekly stats
-      print('WeeklyStats generated for: $label | total: $totalWaste');
+      testLog('waste.analysis.getWeeklyStats', 'results',
+          {'lable': label, 'total waste': totalWaste});
     }
 
     return weeklyStats;
@@ -135,10 +137,12 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           date.month,
           date.day - (date.weekday % 7),
         );
-// debug - check date formats match
-        print(
-            'checking ${date.toIso8601String()} log data date: ${logWeekStart.toIso8601String()} vs expected $currentWeekId');
-
+        // debug - check date formats match
+        testLog('waste.analysis._getWeeklyData', 'compare log date', {
+          'check': date.toIso8601String(),
+          'logWeekStart': logWeekStart,
+          'vs expected': currentWeekId
+        });
         lifetimeWaste += (log['amount'] ?? 0.0) as double;
       }
 
@@ -151,15 +155,19 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           final item = Map<String, dynamic>.from(rawItem);
           double amount = (item['purchase_amount'] ?? 0.0) as double;
           if (amount == 0.0) continue;
-// debug
-          print(
-              'smartlist: ${item['name']} ${item['purchase_amount']}${item['unit']} = ${convertToGrams(amount, item['unit'] ?? '')}g');
+          // debug
+          //print(
+          //    'smartlist: ${item['name']} ${item['purchase_amount']}${item['unit']} = ${convertToGrams(amount, item['unit'] ?? '')}g');
           lifetimeBought += convertToGrams(amount, item['unit'] ?? '');
         }
       }
-// debug
-      print(
-          'weekstart: $weekStart | lifetimeWaste: $lifetimeWaste | lifetimeBought: $lifetimeBought');
+      // testing
+      testLog('waste.analysis._getWeeklyData', 'compare log date', {
+        'weekStart': weekStart,
+        'lifetimeWaste': lifetimeWaste,
+        'lifetimeBought': lifetimeBought
+      });
+
       return {
         'weeklyStats': stats,
         'smartlistItems': smartlistItems,
@@ -167,9 +175,9 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
         'lifetimeWaste': lifetimeWaste,
         'lifetimeBought': lifetimeBought,
       };
-    } catch (e, stacktrace) {
-      print('Error in _getWeeklyData: $e');
-      print(stacktrace);
+    } catch (e) {
+      testLog('waste.analysis._getWeeklyData', 'error caught',
+          {'error': e.toString()});
       rethrow;
     }
   }

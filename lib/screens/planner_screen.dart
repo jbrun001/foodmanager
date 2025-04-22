@@ -7,8 +7,7 @@ import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
 import '../widgets/recipedetail.dart';
 import '../services/smartlist_service.dart';
-
-// use template of recipe_screen as that is a stateful widget
+import '../services/testing_service.dart';
 
 class PlannerScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -64,7 +63,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
       await widget.firebaseService
           .saveMealPlan(userId, selectedWeekStart, plan);
     } catch (e) {
-      print("Error saving meal plan: $e");
+      testLog('Planner.saveMealPlan', 'Saving', {'error': e.toString()});
     }
   }
 
@@ -99,9 +98,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
       Map<String, List<Map<String, dynamic>>> fetchedPlan = await widget
           .firebaseService
           .getMealPlan(userId, selectedWeekStart, endDate);
-// debug what is the format of the stored data - does it match what's expected?
-      print("Fetched days from Firebase: ${fetchedPlan.keys.toList()}");
-      print("Expected days in planner: ${createEmptyPlanner().keys.toList()}");
+      // debug what is the format of the stored data - does it match what's expected?
+      // print("Fetched days from Firebase: ${fetchedPlan.keys.toList()}");
+      // print("Expected days in planner: ${createEmptyPlanner().keys.toList()}");
+
       // data from firebase only contains days in plan that have recipes
       // create an empty plan with all days initialised
       Map<String, List<Map<String, dynamic>>> fullWeekPlan =
@@ -117,9 +117,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
         plan = fullWeekPlan;
         isLoading = false;
       });
-      print("Final plan after merging missing days: ${plan.keys.toList()}");
+      testLog(
+          'Planner.fetchPlannerData', 'final', {'plan': plan.keys.toList()});
     } catch (e) {
-      print("Error fetching meal plan: $e");
+      testLog('Planner.fetchPlannerData', 'fetching meal plan',
+          {'error': e.toString()});
       setState(() {
         plan = createEmptyPlanner();
         isLoading = false;
@@ -145,9 +147,10 @@ class _PlannerScreenState extends State<PlannerScreen> {
           DateFormat('EEEE').format(selectedWeekStart.add(Duration(days: i)));
       emptyPlan[day] = []; // Initialize empty lists for each day
     }
-// testing - check format of empty plan
-    print("Creating planner for week starting: ${selectedWeekStart}");
-    print("Generated days: ${emptyPlan.keys.toList()}");
+    // testing - check format of empty plan
+    testLog('Planner.createEmptyPlan', '', {'start week': selectedWeekStart});
+    testLog('Planner.createEmptyPlan', '',
+        {'generated days': emptyPlan.keys.toList()});
     return emptyPlan;
   }
 
@@ -187,7 +190,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
     required int targetPortions,
   }) {
     List<Map<String, dynamic>> scaledIngredients = [];
-    print('scale ingredients: from $originalPortions to $targetPortions');
+    testLog('Planner.scaledIngredients', 'scaling',
+        {'from': originalPortions, 'to': targetPortions});
 
     for (var ingredient in originalIngredients) {
       // create copy of ingredients
@@ -200,10 +204,13 @@ class _PlannerScreenState extends State<PlannerScreen> {
       // round up to nearest whole number
       scaled['amount'] = scaledAmount.ceil();
       scaledIngredients.add(scaled);
-      print(
-          "Scale: ${scaled['ingredient_name']} orginal: ${ingredient['amount']} scaled: ${scaled['amount']}");
+
+      testLog('Planner.scaledIngredients', 'result', {
+        'Item': scaled['ingredient_name'],
+        'orginal amt': ingredient['amount'],
+        'scaled amt': scaled['amount']
+      });
     }
-    print("end scaling");
     return scaledIngredients;
   }
 
@@ -217,7 +224,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
     );
     // testing
     if (fullRecipe.isEmpty) {
-      print("Full recipe not found for: ${plannedRecipe['title']}");
+      testLog('Planner.showPlannedRecipeDetail', 'Not found in added', {
+        'Recipe': plannedRecipe['title'],
+      });
       return;
     }
     // create a new copy of the full recipe
@@ -438,9 +447,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
                       scaledRecipe['plannedPortions'] = userPortions;
                       setState(() {
-// degub - check if day matches any day in the plan
-                        print(
-                            "Checking if $day exists in plan: ${plan.containsKey(day)}");
+                        // testing - check if day matches any day in the plan
+                        testLog('Planner.ui', 'Check if day exists in plan',
+                            {'day': day, 'result': plan.containsKey(day)});
                         // update the UI
                         plan[day]
                             ?.add(scaledRecipe); // add recipe to selected day
@@ -608,17 +617,18 @@ class _PlannerScreenState extends State<PlannerScreen> {
                 final recipe = addedRecipes[index];
                 return LongPressDraggable<Map<String, dynamic>>(
                   data: recipe, // dragged data
-// debug
                   onDragStarted: () {
-                    print('Dragging started for: ${recipe['title']}');
+                    testLog('Planner.uidrag', 'Dragging started for',
+                        {'recipe': recipe['title']});
                   },
                   onDragCompleted: () {
-                    print('Dragging completed for: ${recipe['title']}');
+                    testLog('Planner.uidrag', 'Dragging completed for',
+                        {'recipe': recipe['title']});
                   },
                   onDragEnd: (details) {
-                    print('Dragging ended for: ${recipe['title']}');
+                    testLog('Planner.uidrag', 'Dragging ended for',
+                        {'recipe': recipe['title']});
                   },
-// end debug
                   // styling of dragged recipe
                   feedback: Material(
                     color: Colors.transparent,

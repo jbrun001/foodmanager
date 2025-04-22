@@ -6,7 +6,7 @@ import 'screens/recipes_screen.dart';
 import 'screens/smartlist_screen.dart';
 import 'screens/ingredientsearch_screen.dart';
 import 'screens/previewleftovers_screen.dart';
-import 'screens/pocfirebase_screen.dart';
+//import 'screens/pocfirebase_screen.dart';
 import 'screens/signup_screen.dart';
 import 'screens/user_profile_screen.dart';
 import 'screens/waste_log_screen.dart';
@@ -14,7 +14,6 @@ import 'screens/wasteloganalysis_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart'; // needed to support cross platform
 import 'services/firebase_service.dart'; // all the database interaction
-import 'screens/cooking_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'menu_drawer.dart';
 import '../services/firebase_service.dart';
 import 'package:go_router/go_router.dart'; // required for login redirect
+import '../services/testing_service.dart';
 
 class IngredientSearchScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -85,10 +86,11 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
       }).toList();
     }
 
-    // Debug output
-    print('Filtering ingredients with query: $query');
+    testLog('ingredientsearch.filterIngredients', 'Filtering ingredients with',
+        {'query': query});
     for (var ing in ingredients) {
-      print('${ing['name']} - amount: ${ing['amount']}, type: ${ing['type']}');
+      testLog('ingredientsearch.filterIngredients', 'result',
+          {'': ing['name'], 'amount': ing['amount'], 'type': ing['type']});
     }
 
     // Sort by amount, default to 0 if null
@@ -98,9 +100,9 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
       return (amountA as num).compareTo(amountB as num);
     });
 
-    print('Filtered results:');
     for (var ing in results) {
-      print('${ing['name']} - amount: ${ing['amount']}');
+      testLog('ingredientsearch.filterIngredients', 'sorted result',
+          {'': ing['name'], 'amount': ing['amount'], 'type': ing['type']});
     }
 
     setState(() {
@@ -125,9 +127,11 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
         ingredientUnit: ingredient['unit'],
         ingredientType: ingredient['type'],
       );
-      print("Updated ingredient in Firebase: ${ingredient['name']}");
+      testLog('ingredientsearch._updateIngredientAmount', 'saved to firebase',
+          {'ingredient': ingredient['name']});
     } catch (e) {
-      print("Failed to update ingredient: $e");
+      testLog('ingredientsearch._updateIngredientAmount',
+          'firebase save failed', {'': e.toString()});
     }
   }
 
@@ -159,10 +163,13 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
 
   // add ingredient to the list (from the add ingredient screen)
   void addNewIngredient(Map<String, dynamic> newIngredient) async {
-    print("Attempting to add ingredient: $newIngredient");
+    testLog('ingredientsearch.addNewIngredient', 'Adding ingredient',
+        {'ingredient': newIngredient});
     final exists =
         ingredients.any((item) => item['name'] == newIngredient['name']);
     if (exists) {
+      testLog('ingredientsearch.addNewIngredient', 'exists already',
+          {'ingredient': newIngredient});
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('${newIngredient['name']} is already in stock.'),
         duration: Duration(seconds: 2),
@@ -179,10 +186,12 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
         ingredientUnit: newIngredient['unit'],
         ingredientType: newIngredient['type'],
       );
-      print("Added new ingredient: $newIngredient");
+      testLog('ingredientsearch.addNewIngredient', 'Saved',
+          {'ingredient': newIngredient});
       fetchStockItems(); // refresh list
     } catch (e) {
-      print("Error adding ingredient: $e");
+      testLog('ingredientsearch.addNewIngredient', 'firebase save failed',
+          {'': e.toString()});
     }
   }
 
@@ -343,7 +352,6 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
 
       if (parsed <= 0) {
         hasError = true;
-        print('Invalid amount for ${ingredient['name']}: $parsed');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content:
               Text('Amount must be greater than 0 for "${ingredient['name']}"'),

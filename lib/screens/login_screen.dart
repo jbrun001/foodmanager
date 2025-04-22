@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/firebase_service.dart';
+import '../services/testing_service.dart';
 
 class LoginScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -17,7 +18,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _loginWithEmail() async {
     setState(() => isLoading = true);
-    print("Attempting to log in with email: ${emailController.text}");
+
+    testLog('LoginScreen._loginWithEmail', 'Attempting to log in',
+        {'email': emailController.text});
 
     var user = await widget.firebaseService.signInWithEmail(
       emailController.text,
@@ -26,10 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => isLoading = false);
 
     if (user != null) {
-      print("Login successful! Redirecting to recipes screen.");
+      testLog('LoginScreen._loginWithEmail',
+          'Login successful! Redirecting to recipes screen', {});
       context.go('/recipes');
     } else {
-      print("Login failed.");
+      testLog('LoginScreen._loginWithEmail', 'Login failed', {});
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Invalid credentials. Try again.')),
       );
@@ -38,16 +42,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _loginWithGoogle() async {
     setState(() => isLoading = true);
-    print("Attempting Google Sign-In");
+    testLog('LoginScreen._loginWitGoogle', 'Attempting Google Sign-In', {});
 
     var user = await widget.firebaseService.signInWithGoogle();
     setState(() => isLoading = false);
 
     if (user != null) {
-      print("Google Login successful! Redirecting to recipes screen.");
+      testLog('LoginScreen._loginWitGoogle',
+          'Google Login successful! Redirecting to recipes screen', {});
       context.go('/recipes');
     } else {
-      print("Google Login failed.");
+      testLog('LoginScreen._loginWitGoogle', 'Google Login failed', {});
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Google login failed. Try again.')),
       );
@@ -137,7 +142,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text("Don't have an account?"),
                 TextButton(
                   onPressed: () {
-                    print("Navigating to Sign-Up screen.");
                     context.go('/signup'); // Navigate to Sign-Up
                   },
                   child: Text('Sign Up'),

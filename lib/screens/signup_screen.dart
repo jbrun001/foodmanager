@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/firebase_service.dart';
+import '../services/testing_service.dart';
 
 class SignupScreen extends StatefulWidget {
   final FirebaseService firebaseService;
@@ -37,10 +38,10 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() => isLoading = false);
 
     if (user != null) {
-      print('Sign-up successful! Redirecting to recipes screen.');
+      testLog('signup.signUpWithEmail', 'signed up', {});
       context.go('/recipes');
     } else {
-      print('Sign-up failed.');
+      testLog('signup.signUpWithEmail', 'signed up failed', {});
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Signup failed')));
     }

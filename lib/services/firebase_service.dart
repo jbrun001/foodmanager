@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // for authentication
-import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart'; // for oauth2 authentication
 import 'package:intl/intl.dart'; // for date formatting
 import 'package:flutter/foundation.dart'
     show kIsWeb; // for detecting if running running on web
 import 'package:universal_platform/universal_platform.dart'; // for identifying non web platforms
+import '../services/testing_service.dart'; // for logging test data
 
 // this services file contains the class for all database activity
 class FirebaseService {
@@ -32,9 +32,10 @@ class FirebaseService {
       'WasteLogs': {},
       'Smartlists': {},
     }).then((_) {
-      print('User created successfully');
-    }).catchError((error) {
-      print('Error creating user: $error');
+      testLog('fb_service.createUserPoC', 'saved', {'id': firebaseId});
+    }).catchError((e) {
+      testLog('fb_service.createUserPoC', 'save failed',
+          {'id': firebaseId, 'error': e.toString()});
     });
   }
 
@@ -53,9 +54,9 @@ class FirebaseService {
       'week': week,
       'Meals': {},
     }).then((_) {
-      print('Meal Plan added successfully');
-    }).catchError((error) {
-      print('Error adding meal plan: $error');
+      testLog('fb_service.addMealPlan', 'saved', {'meal plan': mealPlanId});
+    }).catchError((e) {
+      testLog('fb_service.addMealPlan', 'save', {'error': e.toString()});
     });
   }
 
@@ -80,9 +81,9 @@ class FirebaseService {
       'mealDate': mealDate,
       'portions': portions,
     }).then((_) {
-      print('Meal added successfully');
-    }).catchError((error) {
-      print('Error adding meal: $error');
+      testLog('fb_service.addMeal', 'saved', {'mealPlanId': mealPlanId});
+    }).catchError((e) {
+      testLog('fb_service.addMeal', 'save', {'error': e.toString()});
     });
   }
 
@@ -110,9 +111,9 @@ class FirebaseService {
       'composted': composted,
       'inedibleParts': inedibleParts,
     }).then((_) {
-      print('Waste Log added successfully');
-    }).catchError((error) {
-      print('Error adding waste log: $error');
+      testLog('fb_service.addWasteLog', 'saved', {'wasteId': wasteId});
+    }).catchError((e) {
+      testLog('fb_service.addWasteLog', 'save failed', {'error': e.toString()});
     });
   }
 
@@ -135,9 +136,9 @@ class FirebaseService {
       'amount': amount,
       'SmartlistItems': {},
     }).then((_) {
-      print('Smartlist added successfully');
-    }).catchError((error) {
-      print('Error adding smartlist: $error');
+      testLog('fb_service.addSmartList', 'saved', {'listId': listId});
+    }).catchError((e) {
+      testLog('fb_service.addSmartList', 'save', {'error': e.toString()});
     });
   }
 
@@ -157,9 +158,9 @@ class FirebaseService {
       'ingredientId': ingredientId,
       'ingredientAmount': ingredientAmount,
     }).then((_) {
-      print('Stock Item added successfully');
-    }).catchError((error) {
-      print('Error adding stock item: $error');
+      testLog('fb_service.addIngredient', 'saved', {'name': ingredientId});
+    }).catchError((e) {
+      testLog('fb_service.addIngredient', 'save', {'error': e.toString()});
     });
   }
 
@@ -170,7 +171,7 @@ class FirebaseService {
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
     } catch (e) {
-      print("Error fetching recipes: $e");
+      testLog('fb_service.getRecipes', 'save', {'error': e.toString()});
       return [];
     }
   }
@@ -211,7 +212,7 @@ class FirebaseService {
 
       return plan;
     } catch (e) {
-      print("Error fetching meal plan: $e");
+      testLog('fb_service.geMealPlan', 'get', {'error': e.toString()});
       return {};
     }
   }
@@ -243,16 +244,12 @@ class FirebaseService {
       for (var entry in plan.entries) {
         String day = entry.key;
         List<Map<String, dynamic>> meals = entry.value;
-
-        print('saveMealPlan: day is $day');
-
+        testLog('fb_service.saveMealPlan', 'processing...', {'day': day});
         for (var meal in meals) {
           String mealId =
               '${startDate.add(Duration(days: _dayOffset(day))).toIso8601String()}-${meal['title']}';
           newMealIds.add(mealId); // keep track of meals that should remain
-
-          print(' mealId: saving: $mealId');
-
+          testLog('fb_service.saveMealPlan', '  saving...', {'mealId': mealId});
           await mealPlansRef.doc(mealId).set({
             'userId': userId,
             'date': startDate
@@ -276,9 +273,10 @@ class FirebaseService {
         await mealPlansRef.doc(mealId).delete();
       }
 
-      print("Meal plan updated successfully");
+      testLog('fb_service.saveMealPlan', 'Meal plan updated successfully', {});
     } catch (e) {
-      print("Error saving meal plan: $e");
+      testLog(
+          'fb_service.saveMealPlan', 'save failed', {'error': e.toString()});
     }
   }
 
@@ -303,15 +301,10 @@ class FirebaseService {
           .collection('StockItems')
           .orderBy('ingredientId') // sort
           .get();
-//debug
-      print(
-          "Stock Items Query Snapshot: ${snapshot.docs.map((d) => d.data())}");
-
       return snapshot.docs.map((doc) {
         final data = doc.data() as Map<String, dynamic>;
-//debug
-        print("Document ID: ${doc.id}, Data: $data");
-
+        testLog('fb_service.getStockItems', 'Stock item',
+            {'doc.id': doc.id, 'data': data});
         return {
           'id': doc.id,
           'name': data['ingredientId'] ?? 'Unknown',
@@ -324,7 +317,8 @@ class FirebaseService {
         };
       }).toList();
     } catch (e) {
-      print("Error fetching stock items: $e");
+      testLog(
+          'fb_service.getStockItems', 'get failed', {'error': e.toString()});
       return [];
     }
   }
@@ -336,12 +330,14 @@ class FirebaseService {
       required double ingredientAmount,
       required String ingredientUnit,
       required String ingredientType}) async {
-//debug
-    print("Saving ingredient to Firestore...");
-    print(
-        "User ID: $userId, StockItem ID: $stockItemId, Ingredient ID: $ingredientId");
-    print(
-        "Amount: $ingredientAmount, Unit: $ingredientUnit, Type: $ingredientType");
+    testLog('fb_service.addUserStockItem', 'saving', {
+      'user': userId,
+      'stockItemId': stockItemId,
+      'ingredientId': ingredientId,
+      'ingredientAmount': ingredientAmount,
+      'ingredientUnit': ingredientUnit,
+      'ingredientType': ingredientType,
+    });
 
     try {
       await firestore
@@ -356,7 +352,8 @@ class FirebaseService {
         'type': ingredientType,
       });
     } catch (e) {
-      print("Firestore save failed: $e");
+      testLog('fb_service.addUserStockItem', 'save failed',
+          {'error': e.toString()});
     }
   }
 
@@ -365,22 +362,19 @@ class FirebaseService {
       String userId, DateTime date) async {
     try {
       String dateKey = date.toIso8601String(); // Store date as ISO 8601
-// debug
-      print("Fetching smartlist for user $userId on date $dateKey");
-
+      testLog('fb_service.getSmartList', 'getting smartlist for',
+          {'user': userId, 'date': dateKey});
       QuerySnapshot querySnapshot = await firestore
           .collection('Users')
           .doc(userId)
           .collection('SmartLists')
           .where('date', isEqualTo: dateKey)
           .get();
-
-// debug
-      print("Fetched ${querySnapshot.docs.length} items");
-
+      testLog('fb_service.getSmartList', 'items',
+          {'count': querySnapshot.docs.length});
       return querySnapshot.docs.map((doc) {
-// debug
-        print("Retrieved item: ${doc['name']}, purchased: ${doc['purchased']}");
+        testLog('fb_service.getSmartList', 'items',
+            {'name': doc['name'], 'purchased': doc['purchased']});
         return {
           'id': doc.id,
           'name': doc['name'],
@@ -392,7 +386,8 @@ class FirebaseService {
         };
       }).toList();
     } catch (e) {
-      print("Error fetching smartlist: $e");
+      testLog('fb_service.getSmartList', 'get failed',
+          {'date': date, 'error': e.toString()});
       return [];
     }
   }
@@ -410,10 +405,6 @@ class FirebaseService {
       String dateKey = date.toIso8601String(); // convert date to ISO 8601
       String docId = "${dateKey}_$name"; // unique key: ISO date + item name
 
-// testing
-      print(
-          "Checking if item '$name' already exists for user $userId on date $dateKey");
-
       DocumentSnapshot docSnapshot = await firestore
           .collection('Users')
           .doc(userId)
@@ -422,9 +413,6 @@ class FirebaseService {
           .get();
 
       if (!docSnapshot.exists) {
-// testing
-        print("Item '$name' does not exist, adding to Firestore.");
-
         await firestore
             .collection('Users')
             .doc(userId)
@@ -438,14 +426,15 @@ class FirebaseService {
           'purchased': false,
           'date': dateKey,
         });
-
-        print("Item '$name' successfully added to Firestore.");
+        testLog('fb_service.addSmartListItem', 'item saved',
+            {'item': name, 'date': dateKey});
       } else {
-        print(
-            "Item '$name' already exists on '$dateKey', not adding duplicate.");
+        testLog('fb_service.addSmartListItem', 'duplicate not added',
+            {'item': name, 'date': dateKey});
       }
     } catch (e) {
-      print("Error adding item: $e");
+      testLog('fb_service.addSmartListItem', 'save failed',
+          {'item': name, 'error': e.toString()});
     }
   }
 
@@ -456,20 +445,17 @@ class FirebaseService {
       String dateKey = date.toIso8601String();
       String docId = "${dateKey}_$name";
 
-// test
-      print(
-          "Updating item '$name' for user $userId on date $dateKey to purchased: $purchased");
-
       await firestore
           .collection('Users')
           .doc(userId)
           .collection('SmartLists')
           .doc(docId)
           .update({'purchased': purchased});
-
-      print("Successfully updated '$name' purchased status to: $purchased");
+      testLog('fb_service.updateSmartListItem', 'saved',
+          {'item': name, 'purchased?': purchased});
     } catch (e) {
-      print("Error updating item: $e");
+      testLog('fb_service.updateSmartListItem', 'save failed',
+          {'item': name, 'error': e.toString()});
     }
   }
 
@@ -479,20 +465,16 @@ class FirebaseService {
     try {
       String dateKey = date.toIso8601String();
       String docId = "${dateKey}_$name";
-
-// debug: Logging deletion attempt
-      print(
-          "Attempting to delete item '$name' for user $userId on date $dateKey");
-
       await firestore
           .collection('Users')
           .doc(userId)
           .collection('SmartLists')
           .doc(docId)
           .delete();
-      print("Successfully deleted '$name' from Firestore.");
+      testLog('fb_service.deleteSmartListItem', 'deleted', {'docId': docId});
     } catch (e) {
-      print("Error deleting item: $e");
+      testLog('fb_service.deleteSmartListItem', 'delete failed',
+          {'item': name, 'error': e.toString()});
     }
   }
 
@@ -529,12 +511,14 @@ class FirebaseService {
     if (doc.exists) {
       final data = doc.data();
       final items = List<Map<String, dynamic>>.from(data?['items'] ?? []);
-      print(
-          'smartlist found for ${DateFormat('yyyy-MM-dd').format(weekStart)} with ${items.length} items');
+      testLog('fb_service.getSmartlistForWeek', 'not found', {
+        'week': DateFormat('yyyy-MM-dd').format(weekStart),
+        'item count': items.length
+      });
       return items;
     } else {
-      print(
-          'Smartlist not found for weekId: ${DateFormat('yyyy-MM-dd').format(weekStart)}');
+      testLog('fb_service.getSmartlistForWeek', 'not found',
+          {'week': DateFormat('yyyy-MM-dd').format(weekStart)});
       return [];
     }
   }
@@ -563,7 +547,8 @@ class FirebaseService {
         };
       }).toList();
     } catch (e) {
-      print("Error fetching ingredients: $e");
+      testLog(
+          'fb_service.getIngredients', 'get failed', {'error': e.toString()});
       return [];
     }
   }
@@ -572,17 +557,9 @@ class FirebaseService {
   Future<Map<String, double>> getMoQsForStore(String storeName) async {
     try {
       QuerySnapshot snapshot = await firestore.collection('Ingredients').get();
-
       Map<String, double> moqMap = {};
-
-      print(
-          "Fetched ${snapshot.docs.length} documents from Ingredients collection.");
-
       for (var doc in snapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
-
-        print(
-            "Document ID: ${doc.id}, Data: $data"); // Debug full document data
 
         if (data.containsKey('Moqs') && data['Moqs'] is List) {
           List<dynamic> moqList = data['Moqs']; // list
@@ -595,22 +572,25 @@ class FirebaseService {
               String ingredientName = data['name'] ?? doc.id;
               double moq = (moqData['amount'] as num).toDouble();
               String moqUnit = moqData['units'] ?? 'unit';
-
-              print("Matched MOQ for Store: $storeName");
-              print("Ingredient: $ingredientName, MOQ: $moq $moqUnit");
-
+              testLog('fb_service.getMoQForStore', 'matched moq', {
+                'storeName': storeName,
+                'ingredientName': ingredientName,
+                'moq': moq,
+                'moqUnit': moqUnit
+              });
               moqMap[ingredientName] = moq;
             }
           }
         } else {
-          print("No valid 'Moqs' field found for document ID: ${doc.id}");
+          testLog('fb_service.getMoQForStore', 'no valid MOQ field',
+              {'docId': doc.id});
         }
       }
-
-      print("Final MOQ Map: $moqMap");
+      testLog('fb_service.getMoQForStore', 'MoQ result', {'map': moqMap});
       return moqMap;
     } catch (e) {
-      print("Error fetching MOQ data: $e");
+      testLog('fb_service.getMoQForStore', 'get failed',
+          {'item': storeName, 'error': e.toString()});
       return {};
     }
   }
@@ -626,12 +606,13 @@ class FirebaseService {
       );
       User? user = userCredential.user;
       if (user != null) {
-        print('User signed up: ${user.uid}');
+        testLog('fb_service.signUpWithEmail', 'user signing up',
+            {'email': email, 'uid': user.uid});
         await createUserSignUp(user.uid, email, portions, store);
       }
       return user;
     } catch (e) {
-      print('Error signing up: $e');
+      testLog('fb_service.signUpWithEmail', 'save failed', {'error': e});
       return null;
     }
   }
@@ -643,10 +624,12 @@ class FirebaseService {
         email: email,
         password: password,
       );
-      print('User logged in: ${userCredential.user?.uid}');
+      testLog('fb_service.signInWithEmail', 'Logged in',
+          {'user': userCredential.user?.uid});
       return userCredential.user;
     } catch (e) {
-      print('Error signing in: $e');
+      testLog(
+          'fb_service.signInWithEmail', 'Logged in', {'error': e.toString()});
       return null;
     }
   }
@@ -662,17 +645,18 @@ class FirebaseService {
         User? user = userCredential.user;
 
         if (user != null) {
-          print('Web: User signed in with Google: ${user.uid}');
+          testLog('fb_service.signInWithGoogle', 'Google Log in web',
+              {'user': user.uid});
           await createUserSignUp(
               user.uid, user.email ?? '', 2, "Tesco"); // default values
         }
-
         return user;
       } else if (UniversalPlatform.isAndroid || UniversalPlatform.isIOS) {
         // iOS and android use the same function
         final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
         if (googleUser == null) {
-          print('Google sign-in cancelled');
+          testLog(
+              'fb_service.signInWithGoogle', 'google sign in cancelled', {});
           return null;
         }
 
@@ -688,7 +672,8 @@ class FirebaseService {
         User? user = userCredential.user;
 
         if (user != null) {
-          print('User signed in with Google: ${user.uid}');
+          testLog('fb_service.signInWithGoogle', 'logged in iOS/Android',
+              {'user': user.uid});
           await createUserSignUp(
               user.uid, user.email ?? '', 2, "Tesco"); // default values
         }
@@ -696,11 +681,11 @@ class FirebaseService {
       } else {
         // if we are here we are not running on web iOS or Android
         // which are the target platforms
-        print('Google Sign-In not supported on this platform.');
+        testLog('fb_service.signInWithGoogle', 'platform not supported', {});
         return null;
       }
     } catch (e) {
-      print('Error signing in with Google: $e');
+      testLog('fb_service.signInWithGoogle', 'log in', {'error': e.toString()});
       return null;
     }
   }
@@ -713,18 +698,20 @@ class FirebaseService {
       DocumentSnapshot doc = await userDoc.get();
 
       if (!doc.exists) {
-        print('Creating new user in Firestore: $userId');
         await userDoc.set({
           'email': email,
           'preferredPortions': portions,
           'preferredStore': store,
           'createdAt': FieldValue.serverTimestamp(),
         });
+        testLog('fb_service.createUserSignUp', 'saved', {'userId': userId});
       } else {
-        print('User already exists in Firestore: $userId');
+        testLog('fb_service.createUserSignUp', 'duplicate not saving',
+            {'userId': userId});
       }
     } catch (e) {
-      print('Error creating user in Firestore: $e');
+      testLog('fb_service.createUserSignUp', 'save failed',
+          {'error': e.toString()});
     }
   }
 
@@ -733,10 +720,10 @@ class FirebaseService {
   String getCurrentUserId() {
     User? user = auth.currentUser; // get the current user
     if (user != null) {
-      print('Current User ID: ${user.uid}');
+      testLog('fb_service.getCurrentUserId', '', {'user': user.uid});
       return user.uid;
     } else {
-      print('No user is currently logged in.');
+      testLog('fb_service.getCurrentUserId', 'no user logged in', {});
       return '';
     }
   }
@@ -748,7 +735,8 @@ class FirebaseService {
           await firestore.collection('Users').doc(userId).get();
       return doc.data() as Map<String, dynamic>?;
     } catch (e) {
-      print('Error fetching user details: $e');
+      testLog(
+          'fb_service.getUserDetails', 'get failed', {'error': e.toString()});
       return null;
     }
   }
@@ -767,9 +755,10 @@ class FirebaseService {
         'preferredStore': preferredStore,
         'lastUpdated': FieldValue.serverTimestamp(),
       });
-      print('User profile updated successfully');
+      testLog('fb_service.updateUserProfile', 'saved', {'userId': userId});
     } catch (e) {
-      print('Error updating user profile: $e');
+      testLog('fb_service.updateUserProfile', 'save failed',
+          {'error': e.toString()});
     }
   }
 
@@ -789,7 +778,7 @@ class FirebaseService {
         }).toList();
       }
     } catch (e) {
-      print("Error fetching stores: $e");
+      testLog('fb_service.getStores', 'get failed', {'error': e.toString()});
       return [];
     }
   }
@@ -808,10 +797,11 @@ class FirebaseService {
         .where('logdate', isGreaterThanOrEqualTo: Timestamp.fromDate(weekStart))
         .where('logdate', isLessThanOrEqualTo: Timestamp.fromDate(weekEnd))
         .get();
-    // testing
-    print(
-        'getWasteLogsForWeek: ${weekStart.toIso8601String()} to ${weekEnd.toIso8601String()}');
-    print('  logs returned: ${snapshot.docs.length}');
+    testLog('fb_service.getWasteLogsForWeek', 'got', {
+      'from': weekStart.toIso8601String(),
+      'to': weekEnd.toIso8601String(),
+      'count': snapshot.docs.length
+    });
     return snapshot.docs
         .map((doc) => doc.data() as Map<String, dynamic>)
         .toList();
@@ -842,7 +832,8 @@ class FirebaseService {
 
       await batch.commit();
     } catch (e) {
-      print('Error saving user recipes: $e');
+      testLog(
+          'fb_service.saveUserRecipes', 'save failed', {'error': e.toString()});
     }
   }
 
@@ -857,7 +848,7 @@ class FirebaseService {
 
       await collectionRef.add(recipe); // adds one document
     } catch (e) {
-      print('Error appending recipe: $e');
+      testLog('fb_service.appendUserRecipe', 'save failed', {'recipe': recipe});
     }
   }
 
@@ -880,7 +871,8 @@ class FirebaseService {
         await doc.reference.delete();
       }
     } catch (e) {
-      print('Error removing recipe: $e');
+      testLog(
+          'fb_service.removeUserRecipe', 'delete failed', {'recipe': recipe});
     }
   }
 
@@ -901,7 +893,6 @@ class FirebaseService {
         .doc(userId)
         .collection('WasteLogs')
         .get();
-
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
@@ -945,7 +936,6 @@ class FirebaseService {
         'type': item['type'],
       });
     }
-
     await batch.commit();
   }
 
@@ -955,8 +945,6 @@ class FirebaseService {
     required String userId,
     required DateTime weekStart,
   }) async {
-    print(
-        "Marking stock updated for week: ${DateFormat('yyyy-MM-dd').format(weekStart)}");
     await firestore
         .collection('Users')
         .doc(userId)
@@ -965,5 +953,7 @@ class FirebaseService {
         .set({
       'stockUpdated': true,
     }, SetOptions(merge: true));
+    testLog('fb_service.markStockUpdatedInSmartlist', 'updated',
+        {'week': DateFormat('yyyy-MM-dd').format(weekStart)});
   }
 }
