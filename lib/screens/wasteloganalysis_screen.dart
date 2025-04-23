@@ -79,8 +79,11 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
         // 'totalInedible': totalInedible, don't want to show inedible
       };
       // testing - output result of weekly stats
-      testLog('waste.analysis.getWeeklyStats', 'results',
-          {'lable': label, 'total waste': totalWaste});
+      testLog('waste.analysis.getWeeklyStats', 'results', {
+        'lable': label,
+        'total waste': totalWaste,
+        'totalInedible': totalInedible
+      });
     }
 
     return weeklyStats;
@@ -185,7 +188,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
   double _getMaxWaste(Map<String, Map<String, double>> weeklyStats) {
     double max = 0;
     weeklyStats.forEach((key, stats) {
-      final total = (stats['totalWaste'] as double?) ?? 0.0;
+      final total = (stats['totalWaste']) ?? 0.0;
       if (total > max) max = total;
     });
     return max > 0 ? max + 20 : 100; // use 100 if everything is 0

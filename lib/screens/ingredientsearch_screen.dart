@@ -359,7 +359,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
         ));
         break;
       }
-      ingredient['amount'] = parsed ?? 0;
+      ingredient['amount'] = parsed;
       widget.onAddIngredient(ingredient);
     }
     if (!hasError) {

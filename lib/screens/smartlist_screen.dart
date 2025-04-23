@@ -128,6 +128,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
     return ingredientsList;
   }
 
+/*
   void _togglePurchased(String name, bool currentStatus) async {
     setState(() {
       for (var item in _smartlistItems) {
@@ -146,7 +147,7 @@ class _SmartlistScreenState extends State<SmartlistScreen> {
       items: _smartlistItems,
     );
   }
-
+*/
   // input to allow a user to add an item to the smart list manually
   void _addItem() {
     TextEditingController _nameController = TextEditingController();

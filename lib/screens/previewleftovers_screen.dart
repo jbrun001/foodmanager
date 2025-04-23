@@ -259,7 +259,7 @@ class _PreviewLeftoversScreenState extends State<PreviewLeftoversScreen> {
                               itemCount: scoredRecipes.length,
                               itemBuilder: (context, index) {
                                 final recipe = scoredRecipes[index];
-                                final score = recipe['matchScore'] as double;
+                                //final score = recipe['matchScore'] as double;
                                 final fraction =
                                     recipe['matchFraction'] as String;
                                 return Card(
