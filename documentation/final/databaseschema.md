@@ -1,0 +1,120 @@
+# Food Manager Schema Overview
+
+- **Ingredients** (Collection)
+  - `name`: `string`
+  - `unit`: `string`
+  - `type`: `string`
+  - `Moqs`: `array of objects`
+    - `Moqs[]:amount`: `number`
+    - `Moqs[]:units`: `string`
+    - `Moqs[]:storeName`: `string`
+    - `Moqs[]:URL`: `string`
+    - `Moqs[]:lastCollected`: `string`
+
+- **Store** (Collection)
+  - `name`: `string`
+
+- **Users** (Collection)
+  - `email`: `string`
+  - `preferredPortions`: `number`
+  - `preferredStore`: `string`
+  - `createdAt`: `timestamp`
+
+ 
+  - **Users/{userId}/AddedRecipes** (Collection)
+    - `additional_ingredients`: `array`
+    - `category`: `string`
+    - `cusine`: `string`
+    - `cooktime`: `number`
+    - `thumbnail`: `string`
+    - `image`: `string`
+    - `title`: `string`
+    - `calories`: `number`
+    - `keywords`: `string`
+    - `description`: `string`
+    - `preptime`: `number`
+    - `portions`: `number`
+    - `matchScore`: `number`
+    - `matchFraction`: `string`
+    - `ingredients`: `array of objects`
+      - `ingredients[]:amount`: `number`
+      - `ingredients[]:ingredient_id`: `number`
+      - `ingredients[]:unit`: `string`
+      - `ingredients[]:ingredient_name`: `string`
+    - `method`: `array of objects`
+      - `method[]:image`: `string`
+      - `method[]:step`: `string`
+
+  - **Users/{userId}/MealPlans** (Collection)
+    - `userId`: `string`
+    - `date`: `string`
+    - `title`: `string`
+    - `thumbnail`: `string`
+    - `description`: `string`
+    - `plannedPortions`: `number`
+    - `portions`: `number`
+    - `ingredients`: `array of objects`
+      - `ingredients[]:unit`: `string`
+      - `ingredients[]:ingredient_id`: `number`
+      - `ingredients[]:ingredient_name`: `string`
+      - `ingredients[]:amount`: `number`
+    - `ingredientsOriginal`: `array of objects`
+      - `ingredientsOriginal[]:unit`: `string`
+      - `ingredientsOriginal[]:ingredient_id`: `number`
+      - `ingredientsOriginal[]:ingredient_name`: `string`
+      - `ingredientsOriginal[]:amount`: `number`
+
+  - **Users/{userId}/SmartLists** (Collection)
+    - `weekStart`: `timestamp`
+    - `stockUpdated`: `boolean`
+    - `items`: `array of objects`
+      - `items[]:name`: `string`
+      - `items[]:amount`: `number`
+      - `items[]:unit`: `string`
+      - `items[]:type`: `string`
+      - `items[]:purchased`: `boolean`
+      - `items[]:isManual`: `boolean`
+      - `items[]:stock`: `number`
+      - `items[]:needed`: `number`
+      - `items[]:moq`: `number`
+      - `items[]:purchase_amount`: `number`
+      - `items[]:left_over_amount`: `number`
+  
+  - **Users/{userId}/StockItems** (Collection)
+    - `ingredientId`: `string`
+    - `ingredientAmount`: `number`
+    - `unit`: `string`
+    - `type`: `string`
+  
+  - **Users/{userId}/WasteLogs** (Collection)
+    - `week`: `timestamp`
+    - `logdate`: `timestamp`
+    - `amount`: `number`
+    - `recycled`: `number`
+    - `composted`: `number`
+    - `inedibleParts`: `number`
+
+- **Recipes** (Collection)
+  - `title`: `string`
+  - `description`: `string`
+  - `cooktime`: `number`
+  - `preptime`: `number`
+  - `calories`: `number`
+  - `portions`: `number`
+  - `cusine`: `string`
+  - `category`: `string`
+  - `keywords`: `string`
+  - `image`: `string`
+  - `thumbnail`: `string`
+  - `additional_ingredients`: `array`
+  - `method`: `array of objects`
+    - `method[]:step`: `string`
+    - `method[]:image`: `string`
+  - `ingredients`: `array of objects`
+    - `ingredients[]:ingredient_id`: `number`
+    - `ingredients[]:ingredient_name`: `string`
+    - `ingredients[]:amount`: `number`
+    - `ingredients[]:unit`: `string`
+
+
+
