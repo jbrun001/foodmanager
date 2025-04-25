@@ -43,7 +43,7 @@ class WasteSummary_Card extends StatelessWidget {
 
     double totalBought = 0.0;
     for (var item in smartlistItems) {
-      double purchaseAmount = (item['purchase_amount'] ?? 0.0) as double;
+      double purchaseAmount = (item['purchase_amount'] ?? 0).toDouble();
       if (purchaseAmount == 0.0) continue;
       String unit = item['unit'] ?? '';
       totalBought += convertToGrams(purchaseAmount, unit);
