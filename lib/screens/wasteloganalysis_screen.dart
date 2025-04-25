@@ -367,7 +367,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
                           axisNameSize: 20,
                           sideTitles: SideTitles(
                             showTitles: true,
-                            interval: 50, // fixed spacing like 0, 50, 100...
+                            interval: 250, // fixed intervals 250
                             reservedSize: 40,
                             getTitlesWidget: (double value, TitleMeta meta) {
                               return Text(value.toInt().toString());
