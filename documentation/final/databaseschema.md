@@ -19,7 +19,7 @@
   - `preferredPortions`: `number`
   - `preferredStore`: `string`
   - `createdAt`: `timestamp`
-
+  - `role`: `string`
  
   - **Users/{userId}/AddedRecipes** (Collection)
     - `additional_ingredients`: `array`
@@ -116,5 +116,29 @@
     - `ingredients[]:amount`: `number`
     - `ingredients[]:unit`: `string`
 
+  - **ScrapeBatches** (Collection)
+    - `createdAt`: `timestamp`
+    - `ingredients`: `array of string`
+    - `initiatedBy`: `string`
+    - `status`: `string`
+    - `storeName`: `string`
+
+  - **ScrapeResults** (Collection)
+    - `actionTaken`: `string`
+    - `batchId`: `string`
+    - `currentAmount`: `number`
+    - `currentUnits`: `string`
+    - `ingredientId`: `string`
+    - `matched`: `boolean`
+    - `moqIndex` : `numnber`
+    - `reviewed`: `boolean`
+    - `scrapeLog`: `array of string`
+    - `scrapedAmount`: `number`
+    - `scrapedUnits`: `string`
+    - `scrapedAt`: `timestamp`
+    - `status` : `string`
+    - `storeName` : `string`
+    - `title` : `string`
+    - `url` : `string`
 
 
