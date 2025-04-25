@@ -66,10 +66,15 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
       double totalRecycled = 0;
 
       for (var log in logs) {
-        totalWaste += (log['amount'] ?? 0) as double;
-        totalComposted += (log['composted'] ?? 0) as double;
-        totalInedible += (log['inedibleParts'] ?? 0) as double;
-        totalRecycled += (log['recycled'] ?? 0) as double;
+        // update to force double
+        totalWaste +=
+            (log['amount'] ?? 0) is num ? (log['amount'] ?? 0).toDouble() : 0.0;
+        totalComposted += (log['composted'] ?? 0) is num
+            ? (log['composted'] ?? 0).toDouble()
+            : 0.0;
+        totalInedible += (log['inedibleParts'] ?? 0) is num
+            ? (log['inedibleParts'] ?? 0).toDouble()
+            : 0.0;
       }
       String label = weekStart.toIso8601String().split('T')[0];
       weeklyStats[label] = {
@@ -146,7 +151,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           'logWeekStart': logWeekStart,
           'vs expected': currentWeekId
         });
-        lifetimeWaste += (log['amount'] ?? 0.0) as double;
+        lifetimeWaste += (log['amount'] ?? 0).toDouble();
       }
 
       double lifetimeBought = 0.0;
@@ -156,7 +161,9 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
 
         for (var rawItem in items) {
           final item = Map<String, dynamic>.from(rawItem);
-          double amount = (item['purchase_amount'] ?? 0.0) as double;
+          double amount = (item['purchase_amount'] ?? 0) is num
+              ? (item['purchase_amount'] ?? 0).toDouble()
+              : 0.0;
           if (amount == 0.0) continue;
           // debug
           //print(
@@ -188,7 +195,7 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
   double _getMaxWaste(Map<String, Map<String, double>> weeklyStats) {
     double max = 0;
     weeklyStats.forEach((key, stats) {
-      final total = (stats['totalWaste']) ?? 0.0;
+      final total = (stats['totalWaste'] ?? 0).toDouble();
       if (total > max) max = total;
     });
     return max > 0 ? max + 20 : 100; // use 100 if everything is 0
@@ -216,9 +223,9 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
     Map<String, double> latestStats = weeklyStats[latestWeekLabel] ??
         {'totalRecycled': 0, 'totalComposted': 0, 'totalInedible': 0};
 
-    double recycled = latestStats['totalRecycled'] ?? 0.0;
-    double composted = latestStats['totalComposted'] ?? 0.0;
-    double totalWaste = latestStats['totalWaste'] ?? 0.0;
+    double recycled = (latestStats['totalRecycled'] ?? 0).toDouble();
+    double composted = (latestStats['totalComposted'] ?? 0).toDouble();
+    double totalWaste = (latestStats['totalWaste'] ?? 0).toDouble();
 //    double inedible = latestStats['totalInedible']!;  don't show inedible
 //    double other = totalWaste - (composted + recycled);
 
@@ -282,8 +289,10 @@ class _WasteLogAnalysisScreenState extends State<WasteLogAnalysisScreen> {
           final smartlistItems =
               snapshot.data!['smartlistItems'] as List<Map<String, dynamic>>;
           final weekStart = snapshot.data!['weekStart'] as DateTime;
-          final lifetimeWaste = snapshot.data!['lifetimeWaste'] as double;
-          final lifetimeBought = snapshot.data!['lifetimeBought'] as double;
+          final lifetimeWaste =
+              (snapshot.data!['lifetimeWaste'] ?? 0).toDouble();
+          final lifetimeBought =
+              (snapshot.data!['lifetimeBought'] ?? 0).toDouble();
 
           final latestWeekLabel = weekStart.toIso8601String().split('T')[0];
           final double totalWaste =
