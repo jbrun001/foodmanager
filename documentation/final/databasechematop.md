@@ -24,11 +24,18 @@ graph TD
   Ingredients[Ingredients Collection]
   Recipes[Recipes Collection]
   Store[Store Collection]
+  ScrapeBatches[ScrapeBatch Collection]
+  ScrapeResults[ScrapeResults Collection]
 
   Ingredients -->|has array of| Moqs[Moqs]
 
   Recipes -->|has array of| IngredientsInRecipe[ingredients]
   Recipes -->|has array of| MethodSteps[method]
+
+  ScrapeBatches -->|has array of| ingredients[ingredients]
+
+  ScrapeResults -->|has array of| icrapeLogs[ScrapeLogs]
+  
 
 
 ```
