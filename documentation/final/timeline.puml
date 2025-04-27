@@ -1,0 +1,86 @@
+@startgantt MVP
+
+project starts the 2025-01-26
+
+-- Food Waste Experiment --
+[Participant Sign up] starts at 2024-02-17 and lasts 7 days
+[Baseline Food Waste Data Collection] starts at 2025-03-03 and ends 2025-03-30
+
+-- MVP Food Manager --
+[Environment Setup] starts at 2025-01-26 and lasts 4 days
+[Create Data Tables] starts at [Environment Setup]'s end and lasts 2 days
+[Authentication MVP] starts at [Create Data Tables]'s end and lasts 12 days
+[Ingredient Tracking MVP] starts at [Authentication MVP]'s end and lasts 3 days
+[Recipe Database MVP] starts at [Ingredient Tracking MVP]'s end and lasts 2 days
+[Meal Planning MVP] starts at [Recipe Database MVP]'s end and lasts 2 days
+[Smart Shopping Lists MVP] starts at [Meal Planning MVP]'s end and lasts 2 days
+[Preview Leftover Ingredients MVP] starts at [Smart Shopping Lists MVP]'s end and lasts 2 days
+[Food Waste Logging MVP] starts at [Preview Leftover Ingredients MVP]'s end and lasts 3 days
+
+-- Testing After MVP --
+[Functional Testing MVP] starts at [Food Waste Logging MVP]'s end and lasts 3 days
+[Security Testing NFR] starts at [Functional Testing MVP]'s end and lasts 1 days
+[Mobile App Build for testers] starts at [Security Testing NFR]'s end and lasts 8 days
+[Web Deploy] starts at [Mobile App Build for testers]'s end and lasts 1 days
+[UAT MVP] starts at [Web Deploy]'s end and lasts 10 days
+@endgantt
+
+@startgantt R1
+project starts the 2025-03-14
+
+-- Food Waste Experiment --
+[Baseline Food Waste Data Collection] starts at 2025-03-14 and ends 2025-03-30
+[Food Waste Analysis Plan] starts at 2025-03-24 and lasts 5 days
+[Recipe: Data Entry] starts at 2025-03-14 and lasts 10 days
+[Trial User Accounts] starts at 2025-04-09 and lasts 1 days
+[Food Waste Trial] starts at 2025-04-14 and ends 2025-04-26
+
+-- Food Manager MVP Tasks --
+[UAT MVP] starts at 2025-03-14 and ends 2025-03-21
+
+-- Food Manager R1 Tasks --
+[Meal Planning & Shopping List R1] starts at 2025-04-10 and lasts 1 days
+[Preview Leftover Ingredients R1] starts at [Meal Planning & Shopping List R1]'s end and lasts 1 days
+[Recipe Database R1] starts at [Preview Leftover Ingredients R1]'s end and lasts 0 days
+[Food Waste Logging R1] starts at [Recipe Database R1]'s end and lasts 0 days
+[Ingredient Tracking R1] starts at [Food Waste Logging R1]'s end and lasts 0 days
+[Minimum Order Quantity Scraping R1 (delayed)] starts at [Food Waste Logging R1]'s end and lasts 0 days
+
+-- Food Manager Admin Tasks --
+[Add New Ingredients R2] starts at [Recipe: Data Entry]'s end and lasts 2 days 
+[Add New Recipes R2] starts at [Add New Ingredients R2]'s end and lasts 2 days
+[Clean up Recipe Data] starts at [Add New Recipes R2]'s end and lasts 3 days
+
+-- Testing After R1 --
+[Functional Testing R1] starts at [Minimum Order Quantity Scraping R1 (delayed)]'s end and lasts 1 days
+[UAT R1] starts at [Functional Testing R1]'s start and lasts 2 days
+
+-- Food Manager R1.1 Extra --
+[View Recipe From Meal Plan] starts at [UAT R1]'s end and lasts 1 days
+[Screen Shortcuts] starts at [View Recipe From Meal Plan]'s end and lasts 0 days
+[Functional Testing R1.1] starts at [Screen Shortcuts]'s end and lasts 1 day   
+@endgantt
+
+
+@startgantt R2
+project starts the 2025-04-15
+
+-- Food Waste Experiment --
+[Food Waste Trial] starts at 2025-04-14 and ends 2025-04-26
+[Trial Data Download] starts at [Food Waste Trial]'s end and lasts 0 days
+[Food Waste Analysis] starts at [Food Waste Trial]'s end and lasts 0 days
+
+-- Food Manager R2 Tasks --
+
+-- Food Manager Admin R2 Tasks --
+[MoQ Scraping] starts at 2025-04-18 and ends 2025-04-25
+[Waste Log Download] starts at 2025-04-21 and lasts 2 days
+[Authentication] starts at 2025-04-21 and lasts 0 days
+
+
+-- Implementation Report --
+[Structure] starts at 2025-04-14 and lasts 1 days
+[Content] starts at [Structure]'s end and lasts 10 days
+[Add Experiment Analysis] starts at [Food Waste Analysis]'s end and lasts 0 days
+[Evaluation and Review] starts at [Content]'s end and lasts 2 days 
+@endgantt

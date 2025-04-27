@@ -1,0 +1,91 @@
+    @startuml
+    title Component Diagram for Food Manager App
+
+    package "Client Applications" {
+    [Flutter App] <<Mobile>>
+    }
+
+
+    package "Backend Cloud" {
+    [Firebase Database] <<Database>>
+    }
+
+    package "Backend doc@gs" {
+    [Node.js App] <<Server>>
+    [Web Data Collector] <<Service>>
+    }
+
+    package "Third Party" {
+    [Stores] <<External Service>>
+    }
+
+    [Flutter App] --> [Firebase Database] : <<Firebase SDK>>\n Read/Write Data
+    [Node.js App] --> [Firebase Database] :  <<Firebase Admin SDK>>\n Write Quantity Data
+    [Node.js App] --> [Web Data Collector] : <<Internal API Call>>\n Obtain Data
+    [Web Data Collector] --> [Stores] : <<HTTP(S)>>\n Fetch Pack Sizes
+    [Flutter App] --> [Firebase Database] : <<Firebase SDK>>\n Authentication
+
+    @enduml
+
+
+@startuml
+
+package "Client Applications" {
+  [Flutter APK/IPA] <<Mobile>>
+}
+
+package "Google OAuth Service" {
+  [Google Sign-In Button\nToken Management] <<Service>>
+}
+
+package "Admin Client" {
+  [Browser] <<Web>>
+}
+
+package "Web Client (Firebase Hosting)" {
+  [Flutter Web App] <<Web>>
+}
+
+package "Backend Cloud Firebase" {
+  [Firestore Database] <<Database>>
+}
+
+package "Backend (Google Cloud Run)" {
+  [foodmanager_admin\nNode.js App] <<Containerised Server>>
+  [Admin Functions\n+ web scraper] <<Routes>>
+}
+
+package "Third Party" {
+  [Stores] <<External Service>>
+}
+
+[Browser] <-up-> [Google Sign-In Button\nToken Management]
+[Flutter Web App] <-up-> [Google Sign-In Button\nToken Management]
+[Flutter APK/IPA] <--> [Firestore Database] : <<Firebase SDK>>\nRead/Write Data
+[Flutter Web App] <--> [Firestore Database] : <<Firebase SDK>>\nRead/Write Data
+[Admin Functions\n+ web scraper] <--> [Firestore Database] : <<Firebase Admin SDK>>\nRead/Write Quantity Data
+[foodmanager_admin\nNode.js App] --> [Admin Functions\n+ web scraper]
+[Admin Functions\n+ web scraper] <--> [Stores] : <<HTTPS>>\nFetch Pack Sizes
+[Flutter APK/IPA] --> [Firestore Database] : <<Firebase SDK>>\nAuthentication
+[Flutter Web App] --> [Firestore Database] : <<Firebase SDK>>\nAuthentication
+[Browser] --> [foodmanager_admin\nNode.js App]
+@enduml
+
+
+
+@startuml 0
+title Project Components
+
+package "Food Manager User App" {
+  [iOS] <<Mobile>>
+  [Android] <<Mobile>>
+  [Browser] <<Web>>
+}
+
+
+package "Food Manger Admin App" {
+  [Node.js Express] <<Mobile>>
+}
+
+
+@enduml
