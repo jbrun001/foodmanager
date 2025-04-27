@@ -1,10 +1,9 @@
-@startgantt MVP
+@startgantt MVP 1
 
-project starts the 2025-01-26
+project starts the 2025-01-26 
 
 -- Food Waste Experiment --
 [Participant Sign up] starts at 2024-02-17 and lasts 7 days
-[Baseline Food Waste Data Collection] starts at 2025-03-03 and ends 2025-03-30
 
 -- MVP Food Manager --
 [Environment Setup] starts at 2025-01-26 and lasts 4 days
@@ -19,11 +18,26 @@ project starts the 2025-01-26
 
 -- Testing After MVP --
 [Functional Testing MVP] starts at [Food Waste Logging MVP]'s end and lasts 3 days
+@endgantt
+
+
+@startgantt MVP 2
+
+project starts the 2025-02-27
+
+-- Food Waste Experiment --
+[Baseline Food Waste Data Collection] starts at 2025-03-03 and ends 2025-03-30
+
+-- MVP Food Manager --
+
+-- Testing After MVP --
+[Functional Testing MVP] starts the 2025-02-27 and lasts 3 days
 [Security Testing NFR] starts at [Functional Testing MVP]'s end and lasts 1 days
 [Mobile App Build for testers] starts at [Security Testing NFR]'s end and lasts 8 days
 [Web Deploy] starts at [Mobile App Build for testers]'s end and lasts 1 days
 [UAT MVP] starts at [Web Deploy]'s end and lasts 10 days
 @endgantt
+
 
 @startgantt R1
 project starts the 2025-03-14
@@ -60,6 +74,7 @@ project starts the 2025-03-14
 [Screen Shortcuts] starts at [View Recipe From Meal Plan]'s end and lasts 0 days
 [Functional Testing R1.1] starts at [Screen Shortcuts]'s end and lasts 1 day   
 @endgantt
+
 
 
 @startgantt R2
