@@ -83,8 +83,6 @@ Firebase configuration file lib\firebase_options.dart generated successfully wit
 | Android | | |
 | iOS | | |
 
-Learn more about using this file and next steps from the documentation:
-
 ---
 
 Add the flutter firebase modules
