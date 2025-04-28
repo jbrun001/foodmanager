@@ -9,6 +9,7 @@
 
 **Repositories:** 
 > [https://github.com/jbrun001/foodmanager](https://github.com/jbrun001/foodmanager)
+> 
 > [https://github.com/jbrun001/foodmanager_admin](https://github.com/jbrun001/foodmanager_admin)
 
 ---
@@ -27,6 +28,7 @@ A household food management application (meal planning, shopping lists) designed
 ## Experiment
 During this project, I ran an experiment. Will using this app reduce food waste? Trial participant households were asked to collect food waste data initially reporting via a google form and then during the trial of the app, reporting in the app. The app was developed as part of the method of this experiment.
 Details of the experiment can be found here:
+
 > https://github.com/jbrun001/foodmanager/experiment/Food_Waste_Analysis_Final.html
 
 ## Project

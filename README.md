@@ -1,7 +1,7 @@
 # Food Manager
 A household meal planning & shopping app to help reduce food waste.
 
-> https://github.com/jbrun001/foodmanager/project-highlights.md
+> https://github.com/jbrun001/foodmanager/blob/main/project-highlights.md
 
 Requirements
 - Flutter SDK
