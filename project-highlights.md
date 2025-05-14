@@ -45,7 +45,8 @@ This worked well and I think I will combine the two projects as a template (offe
 - Firestore was used as the database for this application, this worked well (there was no requirement for real time streaming of data - firebase realtime database - in this project, and choosing firestore kept database reads and writes low to take advantage of firebase free tier).
 - The web deployment of the Food Manager app was deployed to firebase hosting.
 - The admin application was built into a docker container and deployed to google cloud run
-- User app capable of supporting up to 91 users a day, on the free Firebase tier 
+- User app capable of supporting up to 91 users a day, on the free Firebase tier
+- Admin app is low frequency use and also inside free tier usage limits for google cloud run
 - The app and data were hosted in the europe-west2 (London) region.
 [![Deployment Diagram](https://jbrun001.github.io/media/projects/fm-deployment.png)](#)
 
