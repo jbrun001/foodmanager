@@ -72,6 +72,9 @@ Puppeteer Puppeteer-extra and Puppeteer-extra-stealth were used to scrape ingred
 
 ---
 
+## Project Presentation
+[Final Year Project Show Poster](https://jbrun001.github.io/media/projects/foodmanager-poster.pdf)
+
 ## Screenshots
 [![Recipe Database](https://jbrun001.github.io/media/projects/fm-recipeselect.png)](#)
 [![Meal Planner](https://jbrun001.github.io/media/projects/fm-planner.png)](#)
