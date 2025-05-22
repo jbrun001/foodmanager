@@ -32,7 +32,7 @@ Details and results of the experiment can be found here:
 > https://jbrun001.github.io/Food_Waste_Analysis_Final.html
 
 ## Project
-This was the first project I managed with a full full trial, with participants using the app and this had an impact on their household finances (meal planning and food purchase). The trial created time pressure within the project, but also helped with focus when deciding priorities (if the feature / function helped the success of the trial it was a higher priority).
+This was the first time I had managed a project which included a trial of the application to collect data as part of an experiment. In addition participants use of the app had an impact on their household finances (meal planning and food purchase), so there was a lot of pressure for the application to operate as expected. The trial created time pressure within the project, but also helped with focus when deciding priorities (if the feature / function helped the success of the trial it was a higher priority).
 
 Working across 4 platforms (web, Android, iOS, and Admin web) was a challenge in terms of testing. By selecting native flutter components only the Authentication elements required platform specific code.
 
@@ -53,7 +53,7 @@ This worked well and I think I will combine the two projects as a template (offe
 
 
 ## Web Scraping
-Puppeteer Puppeteer-extra and Puppeteer-extra-stealth were used to scrape ingredient pack sizes. This project doesn't have high frequency requirements for scraping (pack sizes change infrequently, so infrequent scrapes are required). Scraping was deployed using headless Chromium in a docker image with the admin app (written in javascript - node.js & express).
+Puppeteer, Puppeteer-extra and Puppeteer-extra-stealth were used to scrape ingredient pack sizes. This project doesn't have high frequency requirements for scraping (pack sizes change infrequently, so infrequent scrapes are required). Scraping was deployed using headless Chromium in a docker image with the admin app (written in node.js & express).
 
 ## Skills Developed
 - **Flutter/Dart** - New language for me
@@ -65,7 +65,7 @@ Puppeteer Puppeteer-extra and Puppeteer-extra-stealth were used to scrape ingred
 - **CRUD** - Stock control implementation
 - **Scraping** - Puppeteer, button clicking, Chromium, batching and results/log management
 - **People Management** - managing Trial Participants
-- **Mac Development** - better understanding of macOS and the apple ecosystem for development (Xcode etc.)
+- **Mac Development** - better understanding of macOS and the apple ecosystem for development (XCode etc.)
 
 ---
 [Return to my portfolio](https://jbrun001.github.io/allprojects.html)
